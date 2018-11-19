@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.dudu.myapplication">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/mybrary_app_ikon_02"
+        android:label="MyBrary"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".Sign_up_01_Activity">
+
+        </activity>
+
+        <activity android:name=".Sign_up_02_Activity">
+
+        </activity>
+
+        <activity android:name=".Sign_in_02_Activity">
+
+        </activity>
+
+        <activity android:name=".Home_01">
+
+        </activity>
+
+        <activity android:name=".Home_02">
+
+        </activity>
+
+        <activity android:name=".Home_03">
+
+        </activity>
+
+        <activity android:name=".Home_04">
+
+        </activity>
+
+        <activity android:name=".Home_05">
+
+        </activity>
+
+        <activity android:name=".Search_01">
+
+        </activity>
+
+
+    </application>
+
+    //권한 설정
+
+    //카메라
+    <uses-permission
+        android:name="android.permission.CAMERA">
+    </uses-permission>
+
+    //문자
+    <uses-permission
+        android:name="android.permission.SEND_SMS">
+    </uses-permission>
+
+    //전화
+    <uses-permission
+        android:name="android.permission.CALL_PHONE">
+    </uses-permission>
+
+    //앨범 접근
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE">
+    </uses-permission>
+
+</manifest>

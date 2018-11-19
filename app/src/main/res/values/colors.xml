@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--<color name="colorPrimary">#0c2960</color>-->
+    <!--<color name="colorPrimaryDark">#00574b</color>-->
+    <!--<color name="colorAccent">#D81B60</color>-->
+
+    <color name="colorPrimary">#bdbdbd</color>
+    <color name="colorPrimaryDark">#efefef</color>
+    <color name="colorAccent">#e47700</color>
+
+    <color name="pressed1">#959ca4</color>
+    <color name="pressed2">#646d79</color>
+
+    <color name="focused1">#959ca4</color>
+    <color name="focused2">#646d79</color>
+
+    <color name="default1">#686e77</color>
+    <color name="default2">#40474f</color>
+
+    <color name="red">#ff0000</color>
+    <color name="blue">#0000ff</color>
+    <color name="trans">#00ff0000</color>
+    <color name="gray">#808080</color>
+    <color name="white">#FFFFFF</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="navy">#08088A</color>
+    <color name="mybrary_main">#e47700</color>
+
+</resources>
