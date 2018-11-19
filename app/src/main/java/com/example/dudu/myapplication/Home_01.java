@@ -4,12 +4,18 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
@@ -17,9 +23,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Home_01 extends AppCompatActivity {
@@ -30,14 +42,15 @@ public class Home_01 extends AppCompatActivity {
     ImageButton home_01_menu_04_b;  //홈메뉴 버튼 4
     ImageButton home_01_menu_05_b;  //홈메뉴 버튼 5
     ImageButton home_01_search; //검색창 버튼
+    Button home_01_my_info;    //내 정보 변경
 
     ImageButton bt; //리싸이클러뷰 추가
     int book_rank_count = 1;    //순위 카운트
 
-    int REQ_CAMERA_SELECT = 1000;
-    int REQ_PICTURE_SELECT = 1000;
-    int REQ_CALL_SELECT = 1000;
-    int REQ_SMS_SELECT = 1000;
+    private static final int REQ_CAMERA_SELECT = 1000;
+    private static final int  REQ_PICTURE_SELECT = 1001;
+    private static final int  REQ_CALL_SELECT = 1002;
+    private static final int  REQ_SMS_SELECT = 1003;
 
     private long backPressedTime = 0;   //뒤로가기 2초 세기
 
@@ -114,6 +127,17 @@ public class Home_01 extends AppCompatActivity {
             }
         });
 
+        //메뉴 1 - > 내 정보 변경
+        home_01_my_info = findViewById(R.id.home_drawer_my_info);
+        home_01_my_info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(Home_01.this, Home_00_my_info.class);
+                startActivity(intent1);
+
+            }
+        });
+
 //         리싸이클러뷰
 
         final RecyclerView mRecyclerView;
@@ -156,11 +180,13 @@ public class Home_01 extends AppCompatActivity {
 
         });
 
+
         //왼쪽 상단 메뉴 프로필 사진 변경
         findViewById(R.id.home_drawer_profile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showprofile();
+                sendTakePhotoIntent();
             }
         });
 
@@ -344,6 +370,85 @@ public class Home_01 extends AppCompatActivity {
         builder.show();
     }
 
+
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bitmap bitmap = BitmapFactory.decodeFile(imageFilePath);
+            ExifInterface exif = null;
+
+            try {
+                exif = new ExifInterface(imageFilePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            int exifOrientation;
+            int exifDegree;
+
+            if (exif != null) {
+                exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                exifDegree = exifOrientationToDegrees(exifOrientation);
+            } else {
+                exifDegree = 0;
+            }
+
+            ((ImageView)findViewById(R.id.photo)).setImageBitmap(rotate(bitmap, exifDegree));
+        }
+    }
+
+    private int exifOrientationToDegrees(int exifOrientation) {
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            return 90;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            return 180;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            return 270;
+        }
+        return 0;
+    }
+
+    private Bitmap rotate(Bitmap bitmap, float degree) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+
+    private void sendTakePhotoIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+
+            if (photoFile != null) {
+                photoUri = FileProvider.getUriForFile(this, getPackageName(), photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "TEST_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,      /* prefix */
+                ".jpg",         /* suffix */
+                storageDir          /* directory */
+        );
+        imageFilePath = image.getAbsolutePath();
+        return image;
+    }
+}
 }
 
 

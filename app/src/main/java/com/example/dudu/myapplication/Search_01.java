@@ -20,7 +20,6 @@ public class Search_01 extends AppCompatActivity {
         search_back_B = findViewById(R.id.search_back_B);
         search_back_B.setOnClickListener(new View.OnClickListener(){
 
-
             @Override
             public void onClick(View v) {
 
