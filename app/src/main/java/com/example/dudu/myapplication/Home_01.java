@@ -4,18 +4,12 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
@@ -27,11 +21,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Home_01 extends AppCompatActivity {
@@ -48,14 +38,14 @@ public class Home_01 extends AppCompatActivity {
     int book_rank_count = 1;    //순위 카운트
 
     private static final int REQ_CAMERA_SELECT = 1000;
-    private static final int  REQ_PICTURE_SELECT = 1001;
-    private static final int  REQ_CALL_SELECT = 1002;
-    private static final int  REQ_SMS_SELECT = 1003;
+    private static final int REQ_PICTURE_SELECT = 1001;
+    private static final int REQ_CALL_SELECT = 1002;
+    private static final int REQ_SMS_SELECT = 1003;
 
     private long backPressedTime = 0;   //뒤로가기 2초 세기
 
     //왼쪽 상단 메뉴
-
+    ImageView iv = null;
 
 
 
@@ -182,11 +172,13 @@ public class Home_01 extends AppCompatActivity {
 
 
         //왼쪽 상단 메뉴 프로필 사진 변경
-        findViewById(R.id.home_drawer_profile).setOnClickListener(new View.OnClickListener() {
+        iv = (ImageView) findViewById(R.id.home_drawer_profile);
+
+
+        iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showprofile();
-                sendTakePhotoIntent();
             }
         });
 
@@ -202,43 +194,7 @@ public class Home_01 extends AppCompatActivity {
 
     }
 
-//        bt = findViewById(R.id.home_01_search);
-//        bt.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                switch (book_rank_count) {
-//
-//                    case 1: {
-//                        best_book_info_ArrayList.add(new Home_01_ArrayList(R.drawable.book_06, "7위", "골든아워 7", "칠국종", "2018.10"));
-//                        break;
-//                    }
-//
-//                    case 2: {
-//                        best_book_info_ArrayList.add(new Home_01_ArrayList(R.drawable.book_06, "8위", "골든아워 8", "팔국종", "2018.10"));
-//                        break;
-//                    }
-//
-//                    case 3: {
-//                        best_book_info_ArrayList.add(new Home_01_ArrayList(R.drawable.book_06, "9위", "골든아워 9", "구국종", "2018.10"));
-//                        break;
-//                    }
-//
-//                    case 4: {
-//                        best_book_info_ArrayList.add(new Home_01_ArrayList(R.drawable.book_06, "10위", "골든아워 10", "십국종", "2018.10"));
-//                        break;
-//                    }
-//
-//                    default: {
-//                        best_book_info_ArrayList.add(new Home_01_ArrayList(R.drawable.book_06, "11위", "없음", "없음", "없음"));
-//                    }
-//
-//                }
-//                mRecyclerView.setAdapter(myAdapter);
-//                book_rank_count += 1;
-//            }
-//        });
-//    }
+
 
     //뒤로 두번 누르면 종료
     @Override
@@ -247,9 +203,6 @@ public class Home_01 extends AppCompatActivity {
         long tempTime = System.currentTimeMillis();
         long intervalTime = tempTime - backPressedTime;
 
-//        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-//            drawerLayout.closeDrawer(GravityCompat.START);
-//        } else {
             if (0 <= intervalTime && (long) 2000 >= intervalTime) {
                 finishAffinity();
             } else {
@@ -273,24 +226,35 @@ public class Home_01 extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int pos) {
                 switch (pos + 1) {
 
-                case 1: {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    case 1: {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-                        int permissionCheck = ContextCompat.checkSelfPermission(Home_01.this, Manifest.permission.CAMERA);
+                            int permissionCheck1 = ContextCompat.checkSelfPermission(Home_01.this, Manifest.permission.CAMERA);
+                            int permissionCheck2 = ContextCompat.checkSelfPermission(Home_01.this, Manifest.permission.READ_EXTERNAL_STORAGE);
 
-                        if (permissionCheck == PackageManager.PERMISSION_DENIED) {
-                            // 권한 없음
-                            ActivityCompat.requestPermissions(Home_01.this, new String[]{Manifest.permission.CAMERA}, REQ_CAMERA_SELECT);
-                        } else {    // ACCESS_FINE_LOCATION 에 대한 권한이 이미 있음.
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivity(intent);
+                            if (permissionCheck1 == PackageManager.PERMISSION_DENIED | permissionCheck2 == PackageManager.PERMISSION_DENIED) {
+
+                                if (permissionCheck1 == PackageManager.PERMISSION_DENIED) {
+                                    // 권한 없음
+                                    ActivityCompat.requestPermissions(Home_01.this, new String[]{Manifest.permission.CAMERA}, REQ_CAMERA_SELECT);
+
+                                    if(permissionCheck2 == PackageManager.PERMISSION_DENIED){
+                                        // 권한 없음
+                                        ActivityCompat.requestPermissions(Home_01.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQ_PICTURE_SELECT);
+                                    }
+                                } else {
+                                    ActivityCompat.requestPermissions(Home_01.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQ_PICTURE_SELECT);
+                                }
+                            } else {    // ACCESS_FINE_LOCATION 에 대한 권한이 이미 있음.
+                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                startActivityForResult(intent, 1);
+
+                            }
 
                         }
 
+                        break;
                     }
-
-                    break;
-                }
                 case 2: {
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -314,6 +278,13 @@ public class Home_01 extends AppCompatActivity {
         });
         builder.show();
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        iv.setImageURI(data.getData());
+    }
+
 
     //프로필 문의하기 메소드
     void showquestion() {
@@ -370,85 +341,6 @@ public class Home_01 extends AppCompatActivity {
         builder.show();
     }
 
-
-
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bitmap bitmap = BitmapFactory.decodeFile(imageFilePath);
-            ExifInterface exif = null;
-
-            try {
-                exif = new ExifInterface(imageFilePath);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            int exifOrientation;
-            int exifDegree;
-
-            if (exif != null) {
-                exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-                exifDegree = exifOrientationToDegrees(exifOrientation);
-            } else {
-                exifDegree = 0;
-            }
-
-            ((ImageView)findViewById(R.id.photo)).setImageBitmap(rotate(bitmap, exifDegree));
-        }
-    }
-
-    private int exifOrientationToDegrees(int exifOrientation) {
-        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
-            return 90;
-        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
-            return 180;
-        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
-            return 270;
-        }
-        return 0;
-    }
-
-    private Bitmap rotate(Bitmap bitmap, float degree) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degree);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-    }
-
-
-    private void sendTakePhotoIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-            }
-
-            if (photoFile != null) {
-                photoUri = FileProvider.getUriForFile(this, getPackageName(), photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            }
-        }
-    }
-
-    private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "TEST_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,      /* prefix */
-                ".jpg",         /* suffix */
-                storageDir          /* directory */
-        );
-        imageFilePath = image.getAbsolutePath();
-        return image;
-    }
-}
 }
 
 
