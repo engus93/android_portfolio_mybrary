@@ -4,10 +4,10 @@ public class Search_01_ArrayList {
     public int drawableId;
     public String name;
     public String author;
-    public String date;
+    public String price;
     public double star;
 
-    public Search_01_ArrayList(int drawableId, String name, String author, double star){
+    public Search_01_ArrayList(int drawableId, String name, String author, String price, double star){
         this.drawableId = drawableId;
         this.name = name;
         this.author = author;
@@ -38,12 +38,12 @@ public class Search_01_ArrayList {
         this.author = author;
     }
 
-    public String getDate() {
-        return date;
+    public String getPrice() {
+        return price;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setPrice(String price) {
+        this.price = price;
     }
 
     public double getStar() {

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +42,7 @@ public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_H
         holder.heart_book_name.setText(heart_book_ArrayList.get(position).heart_name);
         holder.heart_book_author.setText(heart_book_ArrayList.get(position).heart_author);
         holder.heart_book_price.setText(heart_book_ArrayList.get(position).heart_price);
-        holder.heart_book_date.setText(heart_book_ArrayList.get(position).heart_date);
+        holder.heart_book_date.setRating((float)heart_book_ArrayList.get(position).heart_rank);
 
         holder.click_heart_heart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +79,7 @@ public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_H
         TextView heart_book_name;
         TextView heart_book_author;
         TextView heart_book_price;
-        TextView heart_book_date;
+        RatingBar heart_book_date;
 
         //클릭 변수
         CardView click_item;
@@ -90,7 +91,7 @@ public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_H
             heart_book_name = view.findViewById(R.id.heart_name);
             heart_book_author = view.findViewById(R.id.heart_author);
             heart_book_price = view.findViewById(R.id.heart_price);
-            heart_book_date = view.findViewById(R.id.heart_date);
+            heart_book_date = view.findViewById(R.id.heart_star);
             click_heart_heart = view.findViewById(R.id.heart_heart);
         }
     }

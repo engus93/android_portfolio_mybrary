@@ -15,8 +15,10 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +80,7 @@ public class Home_05 extends AppCompatActivity {
             }
         });
 
+
         //메뉴 5 - > 메뉴 4
         home_05_menu_04_b = findViewById(R.id.home_05_menu_04_B);
         home_05_menu_04_b.setOnClickListener(new View.OnClickListener() {
@@ -116,11 +119,9 @@ public class Home_05 extends AppCompatActivity {
         final ArrayList<Home_05_ArrayList> heart_book_ArrayList = new ArrayList<>();
         final Home_05_Adapter myAdapter = new Home_05_Adapter(getApplicationContext(),heart_book_ArrayList);
 
-        heart_book_ArrayList.add(new Home_05_ArrayList(R.drawable.book_06,  "그래서 하고 싶은 말이 뭔데?", "다케우치 가오루", "15,800원","2018.08",R.drawable.home_05_heart_02));
-        heart_book_ArrayList.add(new Home_05_ArrayList(R.drawable.book_02,  "룬의 아이들 1", "전민희", "15,800원","2018.11",R.drawable.home_05_heart_02));
-        heart_book_ArrayList.add(new Home_05_ArrayList(R.drawable.book_04,  "참을 수 없는 존재의 가벼움", "밀란 쿤데라", "15,800원","2018.06",R.drawable.home_05_heart_02));
-
-
+        heart_book_ArrayList.add(new Home_05_ArrayList(R.drawable.book_06,  "그래서 하고 싶은 말이 뭔데?", "다케우치 가오루", "15,800원",2.5, R.drawable.home_05_heart_02));
+        heart_book_ArrayList.add(new Home_05_ArrayList(R.drawable.book_02,  "룬의 아이들 1", "전민희", "15,800원",3.0, R.drawable.home_05_heart_02));
+        heart_book_ArrayList.add(new Home_05_ArrayList(R.drawable.book_04,  "참을 수 없는 존재의 가벼움", "밀란 쿤데라", "15,800원",4.0, R.drawable.home_05_heart_02));
 
         mRecyclerView.setAdapter(myAdapter);
 

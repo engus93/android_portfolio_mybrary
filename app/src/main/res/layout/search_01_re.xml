@@ -37,15 +37,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
             android:text="골든아워 1"
-            android:textSize="14sp"
+            android:textSize="15sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/search_author"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.2"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/search_book"
-            app:layout_constraintTop_toTopOf="@+id/search_book" />
+            app:layout_constraintTop_toTopOf="@+id/search_book"
+            app:layout_constraintVertical_chainStyle="spread_inside" />
 
         <TextView
             android:id="@+id/search_author"
@@ -54,24 +55,35 @@
             android:layout_marginEnd="5dp"
             android:text="이국종"
             android:textSize="13sp"
-            app:layout_constraintBottom_toTopOf="@+id/search_star"
+            app:layout_constraintBottom_toTopOf="@+id/search_price"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/search_name"
             app:layout_constraintTop_toBottomOf="@+id/search_name" />
+
+        <TextView
+            android:id="@+id/search_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="15,800원"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@+id/search_star"
+            app:layout_constraintStart_toStartOf="@+id/search_name"
+            app:layout_constraintTop_toBottomOf="@+id/search_author" />
 
         <RatingBar
             android:id="@+id/search_star"
             style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginBottom="5dp"
+            android:layout_height="wrap_content"
             android:isIndicator="false"
             android:max="6"
             android:numStars="5"
             android:progressTint="@color/mybrary_main"
             android:stepSize="0.5"
             app:layout_constraintBottom_toBottomOf="@+id/search_book"
-            app:layout_constraintStart_toStartOf="@+id/search_name" />
+            app:layout_constraintStart_toStartOf="@+id/search_name"
+            app:layout_constraintTop_toBottomOf="@+id/search_price" />
 
         <ImageButton
             android:id="@+id/search_heart_B"
