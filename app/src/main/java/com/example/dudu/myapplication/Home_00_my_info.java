@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -30,10 +31,10 @@ public class Home_00_my_info extends AppCompatActivity {
 
     int REQ_CAMERA_SELECT = 1000;
     int REQ_PICTURE_SELECT = 1000;
-    int REQ_CALL_SELECT = 1000;
-    int REQ_SMS_SELECT = 1000;
 
-    int count = 0;
+    //왼쪽 상단 메뉴
+    ImageView iv = null;
+    Button my_info_profile_B = null;
 
     protected void onCreate(Bundle savedIstancesState) {
         super.onCreate(savedIstancesState);
@@ -78,6 +79,17 @@ public class Home_00_my_info extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+            }
+        });
+
+        //왼쪽 상단 메뉴 프로필 사진 변경
+        iv = (ImageView) findViewById(R.id.my_info_profile);
+        my_info_profile_B = findViewById(R.id.my_info_profile_B);
+
+        my_info_profile_B.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showprofile();
             }
         });
 
@@ -129,14 +141,25 @@ public class Home_00_my_info extends AppCompatActivity {
                     case 1: {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-                            int permissionCheck = ContextCompat.checkSelfPermission(Home_00_my_info.this, Manifest.permission.CAMERA);
+                            int permissionCheck1 = ContextCompat.checkSelfPermission(Home_00_my_info.this, Manifest.permission.CAMERA);
+                            int permissionCheck2 = ContextCompat.checkSelfPermission(Home_00_my_info.this, Manifest.permission.READ_EXTERNAL_STORAGE);
 
-                            if (permissionCheck == PackageManager.PERMISSION_DENIED) {
-                                // 권한 없음
-                                ActivityCompat.requestPermissions(Home_00_my_info.this, new String[]{Manifest.permission.CAMERA}, REQ_CAMERA_SELECT);
+                            if (permissionCheck1 == PackageManager.PERMISSION_DENIED | permissionCheck2 == PackageManager.PERMISSION_DENIED) {
+
+                                if (permissionCheck1 == PackageManager.PERMISSION_DENIED) {
+                                    // 권한 없음
+                                    ActivityCompat.requestPermissions(Home_00_my_info.this, new String[]{Manifest.permission.CAMERA}, REQ_CAMERA_SELECT);
+
+                                    if(permissionCheck2 == PackageManager.PERMISSION_DENIED){
+                                        // 권한 없음
+                                        ActivityCompat.requestPermissions(Home_00_my_info.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQ_PICTURE_SELECT);
+                                    }
+                                } else {
+                                    ActivityCompat.requestPermissions(Home_00_my_info.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQ_PICTURE_SELECT);
+                                }
                             } else {    // ACCESS_FINE_LOCATION 에 대한 권한이 이미 있음.
                                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                startActivity(intent);
+                                startActivityForResult(intent, 1);
 
                             }
 
@@ -167,6 +190,17 @@ public class Home_00_my_info extends AppCompatActivity {
         });
         builder.show();
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        iv.setImageURI(data.getData());
+    }
+
+
+
+
+
 
 
 

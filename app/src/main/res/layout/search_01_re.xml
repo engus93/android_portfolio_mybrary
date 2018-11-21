@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/search_cardview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="2dp"
@@ -66,8 +67,8 @@
             android:isIndicator="false"
             android:max="6"
             android:numStars="5"
-            android:stepSize="0.5"
             android:progressTint="@color/mybrary_main"
+            android:stepSize="0.5"
             app:layout_constraintBottom_toBottomOf="@+id/search_book"
             app:layout_constraintStart_toStartOf="@+id/search_name" />
 

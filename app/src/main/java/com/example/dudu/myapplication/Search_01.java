@@ -38,8 +38,9 @@ public class Search_01 extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
-
         final ArrayList<Search_01_ArrayList> search_book_ArrayList = new ArrayList<>();
+        final Search_01_Adapter myAdapter = new Search_01_Adapter(getApplicationContext(),search_book_ArrayList);
+
         search_book_ArrayList.add(new Search_01_ArrayList(R.drawable.book_01, "골든아워 1", "이국종", 1.5));
         search_book_ArrayList.add(new Search_01_ArrayList(R.drawable.book_02,  "그래서 하고 싶은 말이 뭔데?", "다케우치 가오루", 3.0));
         search_book_ArrayList.add(new Search_01_ArrayList(R.drawable.book_03,  "룬의 아이들 1", "전민희", 4.5));
@@ -48,7 +49,6 @@ public class Search_01 extends AppCompatActivity {
         search_book_ArrayList.add(new Search_01_ArrayList(R.drawable.book_06,  "처음부터 잘 쓰는 사람은 없습니다", "이다혜", 1.0));
 
 
-        final Search_01_Adapter myAdapter = new Search_01_Adapter(search_book_ArrayList);
 
         mRecyclerView.setAdapter(myAdapter);
 
