@@ -38,6 +38,7 @@ public class Search_01 extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
         final ArrayList<Search_01_ArrayList> search_book_ArrayList = new ArrayList<>();
         final Search_01_Adapter myAdapter = new Search_01_Adapter(getApplicationContext(),search_book_ArrayList);
 

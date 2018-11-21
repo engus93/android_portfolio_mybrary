@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -111,15 +112,22 @@ public class Home_02 extends AppCompatActivity {
 
         mRecyclerView = findViewById(R.id.home_02_RE);
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.HORIZONTAL);
+        mLayoutManager = new GridLayoutManager(this,3);
+        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        final ArrayList<Home_02_01_ArrayList> home_02_01_ArrayList = new ArrayList<>();
-        home_02_01_ArrayList.add(new Home_02_01_ArrayList(R.drawable.user_profile, "0", "0", "0","나보다 잘 하는 사람을 바라보자!"));
+        final ArrayList<Home_02_02_ArrayList> home_02_02_ArrayList = new ArrayList<>();
+        final Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(),home_02_02_ArrayList);
+
+        //추가하기
+        home_02_02_ArrayList.add(new Home_02_02_ArrayList(R.drawable.book_01, "골든아워 1", "이국종", "2018.11.11"));
+        home_02_02_ArrayList.add(new Home_02_02_ArrayList(R.drawable.book_01, "골든아워 1", "이국종", "2018.11.11"));
+        home_02_02_ArrayList.add(new Home_02_02_ArrayList(R.drawable.book_01, "골든아워 1", "이국종", "2018.11.11"));
+        home_02_02_ArrayList.add(new Home_02_02_ArrayList(R.drawable.book_01, "골든아워 1", "이국종", "2018.11.11"));
+        home_02_02_ArrayList.add(new Home_02_02_ArrayList(R.drawable.book_01, "골든아워 1", "이국종", "2018.11.11"));
+        home_02_02_ArrayList.add(new Home_02_02_ArrayList(R.drawable.book_01, "골든아워 1", "이국종", "2018.11.11"));
 
 
-        final Home_02_Adapter myAdapter = new Home_02_Adapter(home_02_01_ArrayList);
 
         mRecyclerView.setAdapter(myAdapter);
 
