@@ -68,6 +68,7 @@ public class Sign_up_02_Activity extends AppCompatActivity {
                 if(user_sign_up_check.isChecked()){
                     Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.vp.co.kr/home/agreement_03.html"));
                     startActivity(intent1);
+                    //
                 }else{
 
                 }
