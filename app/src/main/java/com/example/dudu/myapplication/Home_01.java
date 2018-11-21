@@ -16,6 +16,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -47,12 +48,12 @@ public class Home_01 extends AppCompatActivity {
     //왼쪽 상단 메뉴
     ImageView iv = null;
 
-
-
     protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_01);
+
+
 
         //메뉴 1 - > 메뉴 2
         home_01_menu_02_b = findViewById(R.id.home_01_menu_02_B);
@@ -117,18 +118,13 @@ public class Home_01 extends AppCompatActivity {
             }
         });
 
-        //메뉴 1 - > 내 정보 변경
-        home_01_my_info = findViewById(R.id.home_drawer_my_info);
-        home_01_my_info.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent1 = new Intent(Home_01.this, Home_00_my_info.class);
-                startActivity(intent1);
 
-            }
-        });
 
-//         리싸이클러뷰
+
+
+
+
+        //--------------------------------리싸이클러뷰--------------------------------------------
 
         final RecyclerView mRecyclerView;
         RecyclerView.LayoutManager mLayoutManager;
@@ -152,11 +148,18 @@ public class Home_01 extends AppCompatActivity {
 
         mRecyclerView.setAdapter(myAdapter);
 
+
+
+
+
+
+        //------------------------왼쪽 상단 네비게이션 바------------------------------------
+
         // 전체화면인 DrawerLayout 객체 참조
-        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout_01);
 
         // Drawer 화면(뷰) 객체 참조
-        final View drawerView = (View) findViewById(R.id.home_drawer);
+        final View drawerView = (View) findViewById(R.id.home_drawer_01);
 
         // 드로어 화면을 열고 닫을 버튼 객체 참조
         final ImageButton btnOpenDrawer = (ImageButton) findViewById(R.id.home_menu_00_B);
@@ -170,19 +173,17 @@ public class Home_01 extends AppCompatActivity {
 
         });
 
-
-        //왼쪽 상단 메뉴 프로필 사진 변경
-        iv = (ImageView) findViewById(R.id.home_drawer_profile);
-
-
-        iv.setOnClickListener(new View.OnClickListener() {
+        //네비게이션바- > 내 정보 변경
+        findViewById(R.id.home_drawer_my_info).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showprofile();
+                Intent intent1 = new Intent(Home_01.this, Home_00_my_info.class);
+                startActivity(intent1);
+
             }
         });
 
-        //왼쪽 상단 메뉴 문의하기
+        //네비게이션바 -> 왼쪽 상단 메뉴 문의하기
         findViewById(R.id.home_drawer_question).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -190,11 +191,42 @@ public class Home_01 extends AppCompatActivity {
             }
         });
 
+        //네비게이션바 -> 왼쪽 상단 메뉴 문의하기
+        findViewById(R.id.home_drawer_logout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                android.app.AlertDialog.Builder alert_confirm = new android.app.AlertDialog.Builder(Home_01.this);
+                alert_confirm.setMessage("로그아웃 하시겠습니까?").setCancelable(false).setPositiveButton("아니요",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+
+                        }).setNegativeButton("네",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent1 = new Intent(Home_01.this, MainActivity.class);
+                                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent1);
+                                return;
+                            }
+                        });
+
+                android.app.AlertDialog alert = alert_confirm.create();
+
+                alert.show();
+
+
+
+
+            }
+        });
 
 
     }
-
-
 
     //뒤로 두번 누르면 종료
     @Override
@@ -210,81 +242,6 @@ public class Home_01 extends AppCompatActivity {
                 MainActivity.showToast(this, "한번 더 누르시면 종료가 됩니다.");
             }
         }
-//    }
-
-
-        //프로필 사진 교체 메소드
-    void showprofile() {
-        final List<String> ListItems = new ArrayList<>();
-        ListItems.add("사진 찍기");
-        ListItems.add("앨범 선택");
-        final CharSequence[] items = ListItems.toArray(new String[ListItems.size()]);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("프로필 사진");
-        builder.setItems(items, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int pos) {
-                switch (pos + 1) {
-
-                    case 1: {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-                            int permissionCheck1 = ContextCompat.checkSelfPermission(Home_01.this, Manifest.permission.CAMERA);
-                            int permissionCheck2 = ContextCompat.checkSelfPermission(Home_01.this, Manifest.permission.READ_EXTERNAL_STORAGE);
-
-                            if (permissionCheck1 == PackageManager.PERMISSION_DENIED | permissionCheck2 == PackageManager.PERMISSION_DENIED) {
-
-                                if (permissionCheck1 == PackageManager.PERMISSION_DENIED) {
-                                    // 권한 없음
-                                    ActivityCompat.requestPermissions(Home_01.this, new String[]{Manifest.permission.CAMERA}, REQ_CAMERA_SELECT);
-
-                                    if(permissionCheck2 == PackageManager.PERMISSION_DENIED){
-                                        // 권한 없음
-                                        ActivityCompat.requestPermissions(Home_01.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQ_PICTURE_SELECT);
-                                    }
-                                } else {
-                                    ActivityCompat.requestPermissions(Home_01.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQ_PICTURE_SELECT);
-                                }
-                            } else {    // ACCESS_FINE_LOCATION 에 대한 권한이 이미 있음.
-                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                startActivityForResult(intent, 1);
-
-                            }
-
-                        }
-
-                        break;
-                    }
-                case 2: {
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-                        int permissionCheck = ContextCompat.checkSelfPermission(Home_01.this, Manifest.permission.READ_EXTERNAL_STORAGE);
-
-                        if (permissionCheck == PackageManager.PERMISSION_DENIED) {
-                            // 권한 없음
-                            ActivityCompat.requestPermissions(Home_01.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQ_PICTURE_SELECT);
-                        } else {    // ACCESS_FINE_LOCATION 에 대한 권한이 이미 있음.
-                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                            intent.setType("image/*");
-                            startActivity(intent);
-                        }
-                    }
-
-                    break;
-                }
-                }
-            }
-        });
-        builder.show();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        iv.setImageURI(data.getData());
-    }
-
 
     //프로필 문의하기 메소드
     void showquestion() {
@@ -342,6 +299,95 @@ public class Home_01 extends AppCompatActivity {
     }
 
 }
+
+
+////왼쪽 상단 메뉴 프로필 사진 변경
+//        iv = (ImageView) findViewById(R.id.home_drawer_profile);
+//
+//                iv.setOnClickListener(new View.OnClickListener() {
+//@Override
+//public void onClick(View view) {
+//        showprofile();
+//        }
+//        });
+
+
+
+
+//        //프로필 사진 교체 메소드
+//    void showprofile() {
+//        final List<String> ListItems = new ArrayList<>();
+//        ListItems.add("사진 찍기");
+//        ListItems.add("앨범 선택");
+//        final CharSequence[] items = ListItems.toArray(new String[ListItems.size()]);
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle("프로필 사진");
+//        builder.setItems(items, new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int pos) {
+//                switch (pos + 1) {
+//
+//                    case 1: {
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//
+//                            int permissionCheck1 = ContextCompat.checkSelfPermission(Home_01.this, Manifest.permission.CAMERA);
+//                            int permissionCheck2 = ContextCompat.checkSelfPermission(Home_01.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+//
+//                            if (permissionCheck1 == PackageManager.PERMISSION_DENIED | permissionCheck2 == PackageManager.PERMISSION_DENIED) {
+//
+//                                if (permissionCheck1 == PackageManager.PERMISSION_DENIED) {
+//                                    // 권한 없음
+//                                    ActivityCompat.requestPermissions(Home_01.this, new String[]{Manifest.permission.CAMERA}, REQ_CAMERA_SELECT);
+//
+//                                    if(permissionCheck2 == PackageManager.PERMISSION_DENIED){
+//                                        // 권한 없음
+//                                        ActivityCompat.requestPermissions(Home_01.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQ_PICTURE_SELECT);
+//                                    }
+//                                } else {
+//                                    ActivityCompat.requestPermissions(Home_01.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQ_PICTURE_SELECT);
+//                                }
+//                            } else {    // ACCESS_FINE_LOCATION 에 대한 권한이 이미 있음.
+//                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                                startActivityForResult(intent, 1);
+//
+//                            }
+//
+//                        }
+//
+//                        break;
+//                    }
+//                case 2: {
+//
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//
+//                        int permissionCheck = ContextCompat.checkSelfPermission(Home_01.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+//
+//                        if (permissionCheck == PackageManager.PERMISSION_DENIED) {
+//                            // 권한 없음
+//                            ActivityCompat.requestPermissions(Home_01.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQ_PICTURE_SELECT);
+//                        } else {    // ACCESS_FINE_LOCATION 에 대한 권한이 이미 있음.
+//                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                            intent.setType("image/*");
+//                            startActivity(intent);
+//                        }
+//                    }
+//
+//                    break;
+//                }
+//                }
+//            }
+//        });
+//        builder.show();
+//    }
+//
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+//    {
+//        iv.setImageURI(data.getData());
+//    }
+
+
+
 
 
 
