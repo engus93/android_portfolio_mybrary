@@ -30,29 +30,15 @@ public class Home_00_my_info extends AppCompatActivity {
     private TextView genre;
 
     int REQ_CAMERA_SELECT = 1000;
-    int REQ_PICTURE_SELECT = 1000;
+    int REQ_PICTURE_SELECT = 1001;
 
     //왼쪽 상단 메뉴
-    ImageView iv = null;
+    static ImageView user_profile = null;
     Button my_info_profile_B = null;
 
     protected void onCreate(Bundle savedIstancesState) {
         super.onCreate(savedIstancesState);
         setContentView(R.layout.home_00_my_info);
-
-
-//        Intent intent1 = getIntent();
-//        String name;
-//        if(intent1.hasExtra("nick")){
-//            name = intent1.getStringExtra("nick");
-//            nick = (TextView) findViewById(R.id.home_00_my_info_nick);
-//            nick.setText(name);
-//
-//        }else if(intent1.hasExtra("genre")) {
-//            name = intent1.getStringExtra("genre");
-//            genre = (TextView) findViewById(R.id.home_00_my_info_genre);
-//            genre.setText(name);
-//        }
 
             //내 정보 수정 - > 닉네임 수정
         bt_02 = findViewById(R.id.my_info_nick_B);
@@ -83,7 +69,7 @@ public class Home_00_my_info extends AppCompatActivity {
         });
 
         //왼쪽 상단 메뉴 프로필 사진 변경
-        iv = (ImageView) findViewById(R.id.my_info_profile);
+        user_profile = (ImageView) findViewById(R.id.my_info_profile);
         my_info_profile_B = findViewById(R.id.my_info_profile_B);
 
         my_info_profile_B.setOnClickListener(new View.OnClickListener() {
@@ -194,7 +180,7 @@ public class Home_00_my_info extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        iv.setImageURI(data.getData());
+        user_profile.setImageURI(data.getData());
     }
 
 
