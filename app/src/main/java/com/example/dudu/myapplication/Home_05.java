@@ -114,12 +114,13 @@ public class Home_05 extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         final ArrayList<Home_05_ArrayList> heart_book_ArrayList = new ArrayList<>();
+        final Home_05_Adapter myAdapter = new Home_05_Adapter(getApplicationContext(),heart_book_ArrayList);
+
         heart_book_ArrayList.add(new Home_05_ArrayList(R.drawable.book_06,  "그래서 하고 싶은 말이 뭔데?", "다케우치 가오루", "15,800원","2018.08",R.drawable.home_05_heart_02));
         heart_book_ArrayList.add(new Home_05_ArrayList(R.drawable.book_02,  "룬의 아이들 1", "전민희", "15,800원","2018.11",R.drawable.home_05_heart_02));
         heart_book_ArrayList.add(new Home_05_ArrayList(R.drawable.book_04,  "참을 수 없는 존재의 가벼움", "밀란 쿤데라", "15,800원","2018.06",R.drawable.home_05_heart_02));
 
 
-        final Home_05_Adapter myAdapter = new Home_05_Adapter(heart_book_ArrayList);
 
         mRecyclerView.setAdapter(myAdapter);
 

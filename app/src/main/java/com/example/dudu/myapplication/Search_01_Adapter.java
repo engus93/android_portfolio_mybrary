@@ -18,7 +18,6 @@ import java.util.ArrayList;
 public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.MyViewHolder>  {
 
     Context context;
-    CardView click_item;
 
     private ArrayList<Search_01_ArrayList> search_book_ArrayList;
 
@@ -37,7 +36,6 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-
 
         final String selItem = search_book_ArrayList.get(position).name;
 
@@ -89,7 +87,6 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
         //클릭 변수
         CardView click_item;
         ImageButton heart_bt;
-
 
         MyViewHolder(View view){
             super(view);
