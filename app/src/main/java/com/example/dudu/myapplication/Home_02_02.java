@@ -35,20 +35,21 @@ public class Home_02_02 extends AppCompatActivity {
 
         int position = intent1.getIntExtra("position",-1);
 
-        if(!(position == 0)){
+        if(!(position == -1)){
 
-            home_02_02_book_name.setText(Home_02_01.home_02_03_ArrayList.get(position).getBook());
-            home_02_02_book_name.setText(Home_02_01.home_02_03_ArrayList.get(position).getName());
-            home_02_02_book_name.setText(Home_02_01.home_02_03_ArrayList.get(position).getAuthor());
-            home_02_02_book_name.setText(Home_02_01.home_02_03_ArrayList.get(position).getFinish());
-            home_02_02_book_name.setText(Home_02_01.home_02_03_ArrayList.get(position).getMain());
+//            home_02_02_book_image.setImage(Home_02_01.home_02_02_ArrayList.get(position).getBook());
+            home_02_02_book_name.setText(Home_02_01.home_02_02_ArrayList.get(position).getName());
+            home_02_02_book_author.setText(Home_02_01.home_02_02_ArrayList.get(position).getAuthor());
+            home_02_02_book_date.setText(Home_02_01.home_02_02_ArrayList.get(position).getFinish());
+            home_02_02_book_main.setText(Home_02_01.home_02_02_ArrayList.get(position).getMain());
+
+        }else{
+
+            MainActivity.showToast(Home_02_02.this, "빈 페이지입니다.");
+            finish();
 
         }
 
-//
-//        editTextID.setText(mList.get(getAdapterPosition()).getId());
-//        editTextEnglish.setText(mList.get(getAdapterPosition()).getEnglish());
-//        editTextKorean.setText(mList.get(getAdapterPosition()).getKorean());
 
 
         //뒤로가기

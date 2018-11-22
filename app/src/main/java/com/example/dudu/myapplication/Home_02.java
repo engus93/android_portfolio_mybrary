@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -25,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import static com.example.dudu.myapplication.MainActivity.showToast;
 
 public class Home_02 extends AppCompatActivity {
 
@@ -179,7 +183,7 @@ public class Home_02 extends AppCompatActivity {
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        final Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(),Home_02_01.home_02_03_ArrayList);
+        final Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(),Home_02_01.home_02_02_ArrayList);
         mRecyclerView.setAdapter(myAdapter);
 
 
@@ -196,9 +200,29 @@ public class Home_02 extends AppCompatActivity {
             finishAffinity();
         } else {
             backPressedTime = tempTime;
-            MainActivity.showToast(this, "한번 더 누르시면 종료가 됩니다.");
+            showToast(this, "한번 더 누르시면 종료가 됩니다.");
         }
 
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        // 롱클릭했을 때 나오는 context Menu 의 항목을 선택(클릭) 했을 때 호출
+
+        Log.d("팝업", "진입");
+
+        switch(item.getItemId()) {
+            case 1001 :// 빨강 메뉴 선택시
+                Log.d("팝업", "수정완료");
+                showToast(this, "수정 완료");
+                return true;
+            case 1002 :// 녹색 메뉴 선택시
+                Log.d("팝업", "수정완료");
+                showToast(this, "삭제 완료");
+                return true;
+        }
+
+        return super.onContextItemSelected(item);
     }
 
     //프로필 사진 교체 메소드
@@ -310,5 +334,6 @@ public class Home_02 extends AppCompatActivity {
         });
         builder.show();
     }
+
 
 }

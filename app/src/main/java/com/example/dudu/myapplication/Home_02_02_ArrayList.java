@@ -5,12 +5,14 @@ public class Home_02_02_ArrayList {
     public String name;
     public String author;
     public String finish;
+    public String main;
 
-    public Home_02_02_ArrayList(int book, String name, String author, String finish) {
+    public Home_02_02_ArrayList(int book, String name, String author, String finish, String main) {
         this.book = book;
         this.name = name;
         this.author = author;
         this.finish = finish;
+        this.main = main;
     }
 
     public int getBook() {
@@ -43,5 +45,13 @@ public class Home_02_02_ArrayList {
 
     public void setFinish(String finish) {
         this.finish = finish;
+    }
+
+    public String getMain() {
+        return main;
+    }
+
+    public void setMain(String main) {
+        this.main = main;
     }
 }

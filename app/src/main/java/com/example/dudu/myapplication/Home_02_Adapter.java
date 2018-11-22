@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -13,13 +16,13 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_02_re_02>  {
+public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_02_re_02> {
 
     Context context;
 
     private ArrayList<Home_02_02_ArrayList> home_02_02_ArrayList;
 
-    public Home_02_Adapter(Context context,ArrayList<Home_02_02_ArrayList> home_02_02_ArrayList){
+    public Home_02_Adapter(Context context, ArrayList<Home_02_02_ArrayList> home_02_02_ArrayList) {
         this.context = context;
         this.home_02_02_ArrayList = home_02_02_ArrayList;
     }
@@ -45,11 +48,12 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
         holder.book_author.setText(home_02_02_ArrayList.get(position).author);
         holder.book_finish.setText(home_02_02_ArrayList.get(position).finish);
 
-        holder.click_item.setOnClickListener(new View.OnClickListener(){
+        holder.click_item.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 Context context = v.getContext();
-                Toast.makeText(context,selItem,Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, selItem, Toast.LENGTH_SHORT).show();
                 Intent intent1 = new Intent(context, Home_02_02.class);
                 intent1.putExtra("position", position);
                 context.startActivity(intent1);
@@ -66,7 +70,7 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
         return home_02_02_ArrayList.size();
     }
 
-    public static class home_02_re_02 extends RecyclerView.ViewHolder {
+    public static class home_02_re_02 extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
         //2번
         ImageView book_image;
@@ -75,7 +79,7 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
         TextView book_finish;
         CardView click_item;
 
-        home_02_re_02(View view){
+        home_02_re_02(View view) {
             super(view);
             book_image = view.findViewById(R.id.home_02_re_book_I);
             book_name = view.findViewById(R.id.home_02_re_book_name_T);
@@ -83,8 +87,20 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
             book_finish = view.findViewById(R.id.home_02_re_book_finish_T);
             click_item = view.findViewById(R.id.home_02_cardview);
 
+            view.setOnCreateContextMenuListener(this);
+
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
+            menu.setHeaderTitle("무엇을 하시겠습니까?");
+            MenuItem Edit = menu.add(Menu.NONE, 1001, 1, "편집");
+            MenuItem Delete = menu.add(Menu.NONE, 1002, 2, "삭제");
+
+
+
         }
 
     }
-
 }

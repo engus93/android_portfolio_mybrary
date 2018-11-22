@@ -34,7 +34,6 @@ public class Home_02_01 extends AppCompatActivity {
 
 
     static ArrayList<Home_02_02_ArrayList> home_02_02_ArrayList = new ArrayList<>();
-    static ArrayList<Home_02_03_ArrayList> home_02_03_ArrayList = new ArrayList<>();
 
     protected void onCreate(Bundle savedInstancesState) {
 
@@ -97,8 +96,7 @@ public class Home_02_01 extends AppCompatActivity {
 
                                 }else {
 
-                                    home_02_02_ArrayList.add(new Home_02_02_ArrayList(R.drawable.home_02_default, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString()));
-                                    home_02_03_ArrayList.add(new Home_02_03_ArrayList(R.drawable.home_02_default, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
+                                    home_02_02_ArrayList.add(new Home_02_02_ArrayList(R.drawable.home_02_default, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
 
                                     Intent intent1 = new Intent(Home_02_01.this, Home_02.class);
                                     intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
