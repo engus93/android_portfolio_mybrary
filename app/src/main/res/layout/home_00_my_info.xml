@@ -29,8 +29,9 @@
         android:layout_marginEnd="15dp"
         android:layout_weight="7"
         android:background="@null"
-        android:text="\t내 정보 변경"
         android:gravity="center_vertical"
+        android:text="내 정보 변경"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/my_info_back_B"
         app:layout_constraintTop_toTopOf="parent" />

@@ -46,10 +46,10 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
 
         holder.click_item.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Toast.makeText(context,selItem,Toast.LENGTH_SHORT).show();
             }
+
         });
 
     }

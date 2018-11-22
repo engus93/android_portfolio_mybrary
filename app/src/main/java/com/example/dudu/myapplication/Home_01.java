@@ -219,12 +219,8 @@ public class Home_01 extends AppCompatActivity {
 
                 alert.show();
 
-
-
-
             }
         });
-
 
     }
 

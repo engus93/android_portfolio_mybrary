@@ -27,6 +27,20 @@ public class Sign_up_02_Activity extends AppCompatActivity {
         sign_up_02_back_IB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                //키보드 내리기
+                if (view != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+
+                //잠시대기
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 finish();
             }
         });
@@ -44,7 +58,7 @@ public class Sign_up_02_Activity extends AppCompatActivity {
 
                 //잠시대기
                 try {
-                    Thread.sleep(300);
+                    Thread.sleep(200);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
