@@ -1,13 +1,11 @@
 package com.example.dudu.myapplication;
 
-import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -36,6 +34,7 @@ public class Home_02_01 extends AppCompatActivity {
 
 
     static ArrayList<Home_02_02_ArrayList> home_02_02_ArrayList = new ArrayList<>();
+    static ArrayList<Home_02_03_ArrayList> home_02_03_ArrayList = new ArrayList<>();
 
     protected void onCreate(Bundle savedInstancesState) {
 
@@ -98,18 +97,10 @@ public class Home_02_01 extends AppCompatActivity {
 
                                 }else {
 
+                                    home_02_02_ArrayList.add(new Home_02_02_ArrayList(R.drawable.home_02_default, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString()));
+                                    home_02_03_ArrayList.add(new Home_02_03_ArrayList(R.drawable.home_02_default, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
+
                                     Intent intent1 = new Intent(Home_02_01.this, Home_02.class);
-
-                                    intent1.putExtra("home_02_01_book_name", home_02_01_book_name.getText().toString());
-                                    intent1.putExtra("home_02_01_book_author", home_02_01_book_author.getText().toString());
-                                    intent1.putExtra("home_02_01_book_date", home_02_01_book_date.getText().toString());
-                                    intent1.putExtra("home_02_01_book_main", home_02_01_book_main.getText().toString());
-
-
-                                    home_02_02_ArrayList.add(new Home_02_02_ArrayList(R.drawable.book_01, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString()));
-//                                    home_02_02_ArrayList_put.add(new Home_02_02_ArrayList(R.drawable.book_01, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString()));
-
-
                                     intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                     startActivity(intent1);
 

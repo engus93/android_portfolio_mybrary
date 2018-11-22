@@ -22,6 +22,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Home_02 extends AppCompatActivity {
@@ -120,30 +122,6 @@ public class Home_02 extends AppCompatActivity {
 
         });
 
-        //         리싸이클러뷰
-//
-//        final RecyclerView mRecyclerView;
-//        RecyclerView.LayoutManager mLayoutManager;
-//
-//        mRecyclerView = findViewById(R.id.home_02_RE);
-//        mRecyclerView.setHasFixedSize(true);
-//        mLayoutManager = new GridLayoutManager(this,3);
-//        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
-//        mRecyclerView.setLayoutManager(mLayoutManager);
-//
-//        ArrayList<Home_02_02_ArrayList> home_02_02_ArrayList = new ArrayList<>();
-//        final Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(),Home_02_01.home_02_02_ArrayList_put);
-
-//        //추가하기
-//        home_02_02_ArrayList.add(new Home_02_02_ArrayList(R.drawable.book_01, "골든아워 1", "이국종", "2018년 11월 11일 12시 28분"));
-//        home_02_02_ArrayList.add(new Home_02_02_ArrayList(R.drawable.book_01, "골든아워 1", "이국종", "2018년 11월 11일 12시 28분"));
-//        home_02_02_ArrayList.add(new Home_02_02_ArrayList(R.drawable.book_01, "골든아워 1", "이국종", "2018년 11월 11일 12시 28분"));
-//        home_02_02_ArrayList.add(new Home_02_02_ArrayList(R.drawable.book_01, "골든아워 1", "이국종", "2018년 11월 11일 12시 28분"));
-//        home_02_02_ArrayList.add(new Home_02_02_ArrayList(R.drawable.book_01, "골든아워 1", "이국종", "2018년 11월 11일 12시 28분"));
-//        home_02_02_ArrayList.add(new Home_02_02_ArrayList(R.drawable.book_01, "골든아워 1", "이국종", "2018년 11월 11일 12시 28분"));
-
-//        mRecyclerView.setAdapter(myAdapter);
-
         //메뉴 2 - > 메뉴 1
         findViewById(R.id.home_02_re_fropile_I).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,7 +129,6 @@ public class Home_02 extends AppCompatActivity {
 
             }
         });
-
 
         // 전체화면인 DrawerLayout 객체 참조
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
@@ -202,39 +179,8 @@ public class Home_02 extends AppCompatActivity {
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        final Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(),Home_02_01.home_02_02_ArrayList);
+        final Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(),Home_02_01.home_02_03_ArrayList);
         mRecyclerView.setAdapter(myAdapter);
-
-//        Log.d("책내용넘기기","진입");
-//
-//        Intent intent1 = getIntent();
-//
-//        String home_02_01_book_name;
-//        String home_02_01_book_author;
-//        String home_02_01_book_date;
-//        String home_02_01_book_main;
-//
-//        if(intent1.hasExtra("home_02_01_book_name")) {
-//
-//            Log.d("책내용넘기기","if 진입");
-//
-//            home_02_01_book_name = intent1.getStringExtra("home_02_01_book_name");
-//            home_02_01_book_author = intent1.getStringExtra("home_02_01_book_author");
-//            home_02_01_book_date = intent1.getStringExtra("home_02_01_book_date");
-//            home_02_01_book_main = intent1.getStringExtra("home_02_01_book_main");
-//
-//            ArrayList<Home_02_02_ArrayList> home_02_02_ArrayList = new ArrayList<>();
-//
-//            home_02_02_ArrayList.add(new Home_02_02_ArrayList(R.drawable.book_01, home_02_01_book_name, home_02_01_book_author, home_02_01_book_date));
-//
-//            home_02_02_ArrayList.add(new Home_02_02_ArrayList(R.drawable.book_01, "골든아워 1", "이국종", "2018년 11월 11일 12시 28분"));
-//
-//            Log.d("책내용넘기기","푸쉬");
-//
-//
-//        }
-
-
 
 
     }
@@ -364,7 +310,5 @@ public class Home_02 extends AppCompatActivity {
         });
         builder.show();
     }
-
-
 
 }

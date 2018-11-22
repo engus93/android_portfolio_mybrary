@@ -1,6 +1,7 @@
 package com.example.dudu.myapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -35,7 +36,7 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
 
     //묶어주기
     @Override
-    public void onBindViewHolder(home_02_re_02 holder, int position) {
+    public void onBindViewHolder(home_02_re_02 holder, final int position) {
 
         final String selItem = home_02_02_ArrayList.get(position).name;
 
@@ -47,7 +48,12 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
         holder.click_item.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                Context context = v.getContext();
                 Toast.makeText(context,selItem,Toast.LENGTH_SHORT).show();
+                Intent intent1 = new Intent(context, Home_02_02.class);
+                intent1.putExtra("position", position);
+                context.startActivity(intent1);
+
             }
 
         });
