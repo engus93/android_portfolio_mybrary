@@ -2,6 +2,7 @@ package com.example.dudu.myapplication;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -44,7 +45,7 @@ public class Home_02_03 extends AppCompatActivity {
 
         if(!(position == -1)){
 
-//            home_02_02_book_image.setImage(Home_02_01.home_02_02_ArrayList.get(position).getBook());
+            home_02_03_book_image.setImageURI(Home_02_01.home_02_02_ArrayList.get(position).getBook());
             home_02_03_book_name.setText(Home_02_01.home_02_02_ArrayList.get(position).getName());
             home_02_03_book_author.setText(Home_02_01.home_02_02_ArrayList.get(position).getAuthor());
             home_02_03_book_date.setText(Home_02_01.home_02_02_ArrayList.get(position).getFinish());
@@ -63,7 +64,8 @@ public class Home_02_03 extends AppCompatActivity {
             public void onClick(View view) {
 
                 finish();
-                Home_02_01.home_02_02_ArrayList.set(position,new Home_02_02_ArrayList(R.drawable.home_02_default, home_02_03_book_name.getText().toString(), home_02_03_book_author.getText().toString(), home_02_03_book_date.getText().toString(), home_02_03_book_main.getText().toString()));
+                Home_02_01.home_02_02_ArrayList.set(position,new Home_02_02_ArrayList(Home_02_01.home_02_02_ArrayList.get(position).getBook(), home_02_03_book_name.getText().toString(), home_02_03_book_author.getText().toString(), home_02_03_book_date.getText().toString(), home_02_03_book_main.getText().toString()));
+                MainActivity.showToast(Home_02_03.this, "수정 되었습니다.");
 
             }
         });
@@ -81,7 +83,7 @@ public class Home_02_03 extends AppCompatActivity {
 
     }
 
-    //뒤로 두번 누르면 종료
+    //수정 종료 방지
     @Override
     public void onBackPressed() {
 

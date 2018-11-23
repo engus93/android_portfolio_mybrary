@@ -39,17 +39,21 @@ public class Home_02 extends AppCompatActivity {
     ImageButton home_02_menu_05_b;
     ImageButton home_02_search; //검색창 버튼
 
+    TextView home_02_book_count;  //내 서재 게시글 변수
+
     private long backPressedTime = 0;
 
-    int REQ_CAMERA_SELECT = 1000;
-    int REQ_PICTURE_SELECT = 1000;
-    int REQ_CALL_SELECT = 1000;
-    int REQ_SMS_SELECT = 1000;
+    int REQ_CAMERA_SELECT = 1100;
+    int REQ_PICTURE_SELECT = 1200;
+    int REQ_CALL_SELECT = 1300;
+    int REQ_SMS_SELECT = 1400;
 
     protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_02);
+
+        home_02_book_count = findViewById(R.id.home_02_re_mini_1_T);  //내 서재 게시글 수
 
         //메뉴 2 - > 메뉴 1
         home_02_menu_01_b = findViewById(R.id.home_02_menu_01_B);
@@ -135,10 +139,10 @@ public class Home_02 extends AppCompatActivity {
         });
 
         // 전체화면인 DrawerLayout 객체 참조
-        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout_02);
 
         // Drawer 화면(뷰) 객체 참조
-        final View drawerView = (View) findViewById(R.id.home_drawer);
+        final View drawerView = (View) findViewById(R.id.home_drawer_01);
 
         // 드로어 화면을 열고 닫을 버튼 객체 참조
         ImageButton btnOpenDrawer = (ImageButton) findViewById(R.id.home_menu_00_B);
@@ -151,19 +155,52 @@ public class Home_02 extends AppCompatActivity {
             }
         });
 
-        //왼쪽 상단 메뉴 프로필 사진 변경
-        findViewById(R.id.home_drawer_profile).setOnClickListener(new View.OnClickListener() {
+        //네비게이션바- > 내 정보 변경
+        findViewById(R.id.home_drawer_my_info).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showprofile();
+                Intent intent1 = new Intent(Home_02.this, Home_00_my_info.class);
+                startActivity(intent1);
+
             }
         });
 
-        //왼쪽 상단 메뉴 문의하기
+        //네비게이션바 -> 왼쪽 상단 메뉴 문의하기
         findViewById(R.id.home_drawer_question).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showquestion();
+            }
+        });
+
+        //네비게이션바 -> 왼쪽 로그아웃
+        findViewById(R.id.home_drawer_logout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                android.app.AlertDialog.Builder alert_confirm = new android.app.AlertDialog.Builder(Home_02.this);
+                alert_confirm.setMessage("로그아웃 하시겠습니까?").setCancelable(false).setPositiveButton("아니요",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+
+                        }).setNegativeButton("네",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent1 = new Intent(Home_02.this, MainActivity.class);
+                                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent1);
+                                return;
+                            }
+                        });
+
+                android.app.AlertDialog alert = alert_confirm.create();
+
+                alert.show();
+
             }
         });
 
@@ -173,6 +210,10 @@ public class Home_02 extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        //내 서재 게시글 수 갱신
+        String a = String.valueOf(Home_02_01.home_02_02_ArrayList.size());
+        home_02_book_count.setText(a);
 
         final RecyclerView mRecyclerView;
         RecyclerView.LayoutManager mLayoutManager;

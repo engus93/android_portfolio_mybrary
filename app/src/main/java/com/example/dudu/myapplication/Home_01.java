@@ -35,13 +35,8 @@ public class Home_01 extends AppCompatActivity {
     ImageButton home_01_search; //검색창 버튼
     Button home_01_my_info;    //내 정보 변경
 
-    ImageButton bt; //리싸이클러뷰 추가
-    int book_rank_count = 1;    //순위 카운트
-
-    private static final int REQ_CAMERA_SELECT = 1000;
-    private static final int REQ_PICTURE_SELECT = 1001;
-    private static final int REQ_CALL_SELECT = 1002;
-    private static final int REQ_SMS_SELECT = 1003;
+    private static final int REQ_CALL_SELECT = 1300;
+    private static final int REQ_SMS_SELECT = 1400;
 
     private long backPressedTime = 0;   //뒤로가기 2초 세기
 
@@ -191,7 +186,7 @@ public class Home_01 extends AppCompatActivity {
             }
         });
 
-        //네비게이션바 -> 왼쪽 상단 메뉴 문의하기
+        //네비게이션바 -> 왼쪽 로그아웃
         findViewById(R.id.home_drawer_logout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
