@@ -11,6 +11,7 @@ public class Search_01_ArrayList {
         this.drawableId = drawableId;
         this.name = name;
         this.author = author;
+        this.price = price;
         this.star = star;
     }
 

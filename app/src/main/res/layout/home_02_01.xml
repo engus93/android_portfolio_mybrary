@@ -22,7 +22,7 @@
         app:srcCompat="@drawable/back" />
 
     <TextView
-        android:id="@+id/textView42"
+        android:id="@+id/home_02_01_title"
         android:layout_width="0dp"
         android:layout_height="35dp"
         android:layout_marginStart="15dp"

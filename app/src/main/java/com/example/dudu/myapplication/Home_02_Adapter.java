@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -53,13 +54,26 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
             @Override
             public void onClick(View v) {
                 Context context = v.getContext();
-                Toast.makeText(context, selItem, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, selItem, Toast.LENGTH_SHORT).show();
                 Intent intent1 = new Intent(context, Home_02_02.class);
                 intent1.putExtra("position", position);
                 context.startActivity(intent1);
-
             }
 
+        });
+
+        holder.click_item.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+
+//                Toast.makeText(context, selItem+"롱", Toast.LENGTH_SHORT).show();
+                Intent intent1 = new Intent(context, Home_02_03.class);
+                intent1.putExtra("position", position);
+                context.startActivity(intent1);
+
+                return true; // 다음 이벤트 계속 진행 false, 이벤트 완료 true
+            }
         });
 
     }
@@ -70,7 +84,7 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
         return home_02_02_ArrayList.size();
     }
 
-    public static class home_02_re_02 extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
+    public static class home_02_re_02 extends RecyclerView.ViewHolder {
 
         //2번
         ImageView book_image;
@@ -87,20 +101,9 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
             book_finish = view.findViewById(R.id.home_02_re_book_finish_T);
             click_item = view.findViewById(R.id.home_02_cardview);
 
-            view.setOnCreateContextMenuListener(this);
-
-        }
-
-        @Override
-        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-
-            menu.setHeaderTitle("무엇을 하시겠습니까?");
-            MenuItem Edit = menu.add(Menu.NONE, 1001, 1, "편집");
-            MenuItem Delete = menu.add(Menu.NONE, 1002, 2, "삭제");
-
-
 
         }
 
     }
+
 }

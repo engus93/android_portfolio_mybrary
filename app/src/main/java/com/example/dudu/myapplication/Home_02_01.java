@@ -19,6 +19,8 @@ import java.util.Locale;
 
 public class Home_02_01 extends AppCompatActivity {
 
+    //등록
+
     Calendar myCalendar = Calendar.getInstance();
 
     ImageView home_02_01_book_image;

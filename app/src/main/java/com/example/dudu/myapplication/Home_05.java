@@ -105,25 +105,7 @@ public class Home_05 extends AppCompatActivity {
             }
         });
 
-        //         리싸이클러뷰
 
-        final RecyclerView mRecyclerView;
-        RecyclerView.LayoutManager mLayoutManager;
-
-        mRecyclerView = findViewById(R.id.home_05_RE);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        final ArrayList<Home_05_ArrayList> heart_book_ArrayList = new ArrayList<>();
-        final Home_05_Adapter myAdapter = new Home_05_Adapter(getApplicationContext(),heart_book_ArrayList);
-
-        heart_book_ArrayList.add(new Home_05_ArrayList(R.drawable.book_06,  "그래서 하고 싶은 말이 뭔데?", "다케우치 가오루", "15,800원",2.5, R.drawable.home_05_heart_02));
-        heart_book_ArrayList.add(new Home_05_ArrayList(R.drawable.book_02,  "룬의 아이들 1", "전민희", "15,800원",3.0, R.drawable.home_05_heart_02));
-        heart_book_ArrayList.add(new Home_05_ArrayList(R.drawable.book_04,  "참을 수 없는 존재의 가벼움", "밀란 쿤데라", "15,800원",4.0, R.drawable.home_05_heart_02));
-
-        mRecyclerView.setAdapter(myAdapter);
 
         //왼쪽 상단 메뉴
 
@@ -161,6 +143,27 @@ public class Home_05 extends AppCompatActivity {
                 showquestion();
             }
         });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //         리싸이클러뷰
+
+        final RecyclerView mRecyclerView;
+        RecyclerView.LayoutManager mLayoutManager;
+
+        mRecyclerView = findViewById(R.id.home_05_RE);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        final Home_05_Adapter myAdapter = new Home_05_Adapter(getApplicationContext(),Search_01_Adapter.heart_book_ArrayList);
+
+        mRecyclerView.setAdapter(myAdapter);
 
     }
 

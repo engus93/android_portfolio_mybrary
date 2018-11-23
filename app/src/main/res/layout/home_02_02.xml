@@ -145,13 +145,11 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="15dp"
-                android:layout_marginBottom="30dp"
                 android:background="@color/trans"
                 android:hint="메모"
                 android:inputType="textMultiLine"
                 android:textAlignment="viewStart"
                 android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline24"
                 app:layout_constraintStart_toStartOf="@+id/guideline23"
                 app:layout_constraintTop_toBottomOf="@+id/home_02_02_date" />
@@ -170,6 +168,20 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.9" />
 
+            <Button
+                android:id="@+id/home_02_02_remove_B"
+                android:background="@drawable/all_stroke"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="30dp"
+                android:text="삭제하기"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline24"
+                app:layout_constraintStart_toStartOf="@+id/guideline23"
+                app:layout_constraintTop_toBottomOf="@+id/home_02_02_main" />
 
 
         </android.support.constraint.ConstraintLayout>

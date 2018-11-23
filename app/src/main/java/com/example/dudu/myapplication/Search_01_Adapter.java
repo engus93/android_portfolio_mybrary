@@ -21,8 +21,10 @@ import java.util.ArrayList;
 public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.MyViewHolder>  {
 
     Context context;
+    boolean book_check;
 
     private ArrayList<Search_01_ArrayList> search_book_ArrayList;
+    static ArrayList<Home_05_ArrayList> heart_book_ArrayList = new ArrayList<>();
 
     Search_01_Adapter(Context context,ArrayList<Search_01_ArrayList> searchInfoArrayList){
         this.context = context;
@@ -62,53 +64,67 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
             @Override
             public void onClick(View v) {
 
-                switch(v.getId()) {
-                    case R.id.search_heart_B :
+                switch (v.getId()) {
+                    case R.id.search_heart_B:
                         holder.heart_bt.setSelected(!holder.heart_bt.isSelected());
                         break;
                 }
-                if(holder.heart_bt.isSelected()){
 
-                    //키보드 내리기
-                    if (v != null) {
-                        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                for (int i = 0; i < heart_book_ArrayList.size(); i++) {
+
+                    String name = heart_book_ArrayList.get(i).heart_name;
+
+                    if (name.equals(selItem)) {
+
+                        Toast.makeText(context, selItem + "가 이미 찜목록에 있습니다.", Toast.LENGTH_SHORT).show();
+
+                        break;
+                    } else {
+                        book_check = true;
                     }
-
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    Toast.makeText(context,selItem + "가 찜목록에 추가 되었습니다.",Toast.LENGTH_SHORT).show();
-
-                    Intent intent1 = new Intent();
-
-                    intent1.putExtra("search_book", search_book_ArrayList.get(position).toString());
-
-
-//                    heart_book_ArrayList.add(new Home_05_ArrayList(search_book_ArrayList.get(position).drawableId, search_book_ArrayList.get(position).name, search_book_ArrayList.get(position).author, search_book_ArrayList.get(position).price,(float) search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02));
-//                    Log.d("리싸이클", "Add 완료");
-                }else{
-
-                    //키보드 내리기
-                    if (v != null) {
-                        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                    }
-
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    Toast.makeText(context,selItem + "가 찜목록에 삭제 되었습니다.",Toast.LENGTH_SHORT).show();
 
                 }
 
-            }
+                    if (holder.heart_bt.isSelected() && book_check || heart_book_ArrayList.size() == 0) {
+
+                        //키보드 내리기
+                        if (v != null) {
+                            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        }
+
+                        try {
+                            Thread.sleep(200);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+
+                            heart_book_ArrayList.add(new Home_05_ArrayList(search_book_ArrayList.get(position).drawableId, search_book_ArrayList.get(position).name, search_book_ArrayList.get(position).author, search_book_ArrayList.get(position).price, (float) search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02));
+
+                            Toast.makeText(context, selItem + "가 찜목록에 추가 되었습니다.", Toast.LENGTH_SHORT).show();
+//                    Intent intent1 = new Intent();
+//                    intent1.putExtra("search_book", heart_book_ArrayList.get(position).toString());
+
+                    } else {
+
+                        //키보드 내리기
+                        if (v != null) {
+                            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        }
+
+                        try {
+                            Thread.sleep(200);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        Toast.makeText(context, selItem + "가 이미 찜목록에 있습니다.", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                }
         });
 
     }

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 public class Home_02_02 extends AppCompatActivity {
 
+    //보기
 
     ImageView home_02_02_book_image;
     TextView home_02_02_book_name;
@@ -19,6 +20,7 @@ public class Home_02_02 extends AppCompatActivity {
     TextView home_02_02_book_date;
     TextView home_02_02_book_main;
     ImageButton home_02_02_back_B;
+    Button home_02_02_remove_B;
 
     @Override
     protected void onCreate(Bundle savedInstancesState) {
@@ -30,10 +32,11 @@ public class Home_02_02 extends AppCompatActivity {
         home_02_02_book_author = findViewById(R.id.home_02_02_author);
         home_02_02_book_date = findViewById(R.id.home_02_02_date);
         home_02_02_book_main = findViewById(R.id.home_02_02_main);
+        home_02_02_remove_B = findViewById(R.id.home_02_02_remove_B);
 
         Intent intent1 = getIntent();
 
-        int position = intent1.getIntExtra("position",-1);
+        final int position = intent1.getIntExtra("position",-1);
 
         if(!(position == -1)){
 
@@ -50,6 +53,16 @@ public class Home_02_02 extends AppCompatActivity {
 
         }
 
+
+        home_02_02_remove_B.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                finish();
+                Home_02_01.home_02_02_ArrayList.remove(position);
+
+            }
+        });
 
 
         //뒤로가기
