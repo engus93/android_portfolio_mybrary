@@ -150,6 +150,7 @@ public class Home_02_01 extends AppCompatActivity {
 
                                         Intent intent1 = new Intent(Home_02_01.this, Home_02.class);
                                         intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                        MainActivity.showToast(Home_02_01.this, "작성 되었습니다.");
                                         startActivity(intent1);
 
                                         return;
@@ -386,7 +387,7 @@ public class Home_02_01 extends AppCompatActivity {
         Log.i("galleryAddPic", "Call");
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         // 해당 경로에 있는 파일을 객체화(새로 파일을 만든다는 것으로 이해하면 안 됨)
-        File f = new File(CurrentPhotoPath);
+        File f = new File(currentPhotoPath);
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         sendBroadcast(mediaScanIntent);
@@ -415,7 +416,21 @@ public class Home_02_01 extends AppCompatActivity {
                     break;
 
                 case REQUEST_TAKE_PHOTO:
-                    getPictureForPhoto(); //카메라에서 가져오기
+//                    getPictureForPhoto(); //카메라에서 가져오기
+
+                    if (resultCode == Activity.RESULT_OK) {
+                        try {
+                            Log.i("REQUEST_TAKE_PHOTO", "OK");
+                            galleryAddPic();
+
+                            home_02_01_book_image.setImageURI(imageUri);
+
+                        } catch (Exception e) {
+                            Log.e("REQUEST_TAKE_PHOTO", e.toString());
+                        }
+                    } else {
+                        Toast.makeText(Home_02_01.this, "사진찍기를 취소하였습니다.", Toast.LENGTH_SHORT).show();
+                    }
                     break;
 
                 default:
