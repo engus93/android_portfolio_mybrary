@@ -1,6 +1,8 @@
 package com.example.dudu.myapplication;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -29,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -64,7 +67,7 @@ public class Home_02_01 extends AppCompatActivity {
 
     private String currentPhotoPath;//실제 사진 파일 경로
 
-    Uri imageUri = null;
+    Uri imageUri;
 
 
     static ArrayList<Home_02_02_ArrayList> home_02_02_ArrayList = new ArrayList<>();
@@ -140,28 +143,16 @@ public class Home_02_01 extends AppCompatActivity {
 
                                 }else {
 
-                                    if(imageUri == null) {
-
-                                        Log.d("체크", "사진 어디냐");
-
-                                        home_02_02_ArrayList.add(new Home_02_02_ArrayList(String.valueOf(R.drawable.home_02_default), home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
-
-                                        Intent intent1 = new Intent(Home_02_01.this, Home_02.class);
-                                        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                        startActivity(intent1);
-
-                                    }else {
 
                                         Log.d("체크", "사진 어디냐1");
 
-                                        home_02_02_ArrayList.add(new Home_02_02_ArrayList(imageUri.toString(), home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
+                                        home_02_02_ArrayList.add(new Home_02_02_ArrayList(imageUri, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
 
                                         Intent intent1 = new Intent(Home_02_01.this, Home_02.class);
                                         intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                         startActivity(intent1);
 
                                         return;
-                                    }
                                 }
 
 
@@ -282,7 +273,7 @@ public class Home_02_01 extends AppCompatActivity {
         final CharSequence[] items = ListItems.toArray(new String[ListItems.size()]);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("프로필 사진");
+        builder.setTitle("서재 사진 등록");
         builder.setItems(items, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int pos) {
@@ -365,36 +356,6 @@ public class Home_02_01 extends AppCompatActivity {
 
     }
 
-    //갤러리에서 가져오기
-    private void selectGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("image/*");
-        startActivityForResult(intent, REQUEST_TAKE_ALBUM);
-    }
-
-    //선택한 데이터 처리 1
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-
-            switch (requestCode) {
-
-                case REQUEST_TAKE_ALBUM:
-                    sendPicture(data.getData()); //갤러리에서 가져오기
-                    break;
-                case REQUEST_TAKE_PHOTO:
-                    getPictureForPhoto(); //카메라에서 가져오기
-                    break;
-                default:
-                    break;
-            }
-
-        }
-    }
-
     //선택한 데이터 처리 2
     private void sendPicture(Uri imgUri) {
 
@@ -411,6 +372,57 @@ public class Home_02_01 extends AppCompatActivity {
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//경로를 통해 비트맵으로 전환
         home_02_01_book_image.setImageBitmap(rotate(bitmap, exifDegree));//이미지 뷰에 비트맵 넣기
 
+    }
+
+    //갤러리에서 가져오기
+    private void selectGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_TAKE_ALBUM);
+    }
+
+    private void galleryAddPic(){
+        Log.i("galleryAddPic", "Call");
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        // 해당 경로에 있는 파일을 객체화(새로 파일을 만든다는 것으로 이해하면 안 됨)
+        File f = new File(CurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        sendBroadcast(mediaScanIntent);
+        Toast.makeText(this, "사진이 앨범에 저장되었습니다.", Toast.LENGTH_SHORT).show();
+    }
+
+    //선택한 데이터 처리 1
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+
+            switch (requestCode) {
+
+                case REQUEST_TAKE_ALBUM:
+
+                    if (resultCode == Activity.RESULT_OK) {
+                        if (data.getData() != null) {
+                            sendPicture(data.getData());
+                            imageUri = data.getData();
+                            String RealPthImage = getRealPathFromURI(imageUri);
+                            imageUri = Uri.parse(RealPthImage);
+                        }
+                    }
+                    break;
+
+                case REQUEST_TAKE_PHOTO:
+                    getPictureForPhoto(); //카메라에서 가져오기
+                    break;
+
+                default:
+                    break;
+            }
+
+        }
     }
 
     //이미지 찍은 포커스 대로 가져오기
@@ -432,7 +444,7 @@ public class Home_02_01 extends AppCompatActivity {
         Matrix matrix = new Matrix();
         // 회전 각도 셋팅
         matrix.postRotate(degree);
-// 이미지와 Matrix 를 셋팅해서 Bitmap 객체 생성
+        // 이미지와 Matrix 를 셋팅해서 Bitmap 객체 생성
         return Bitmap.createBitmap(src, 0, 0, src.getWidth(),
                 src.getHeight(), matrix, true);
     }
@@ -448,9 +460,6 @@ public class Home_02_01 extends AppCompatActivity {
 
         return cursor.getString(column_index);
     }
-
-
-
 
     //권한 체크 1
     private void checkPermission() {
@@ -495,7 +504,7 @@ public class Home_02_01 extends AppCompatActivity {
 
     }
 
-    //권한 있으면 프사 기능
+    //권한 있으면 사진 기능 가능
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {

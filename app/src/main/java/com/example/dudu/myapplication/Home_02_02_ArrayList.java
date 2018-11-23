@@ -3,13 +3,13 @@ package com.example.dudu.myapplication;
 import android.net.Uri;
 
 public class Home_02_02_ArrayList {
-    public String book;
+    public Uri book;
     public String name;
     public String author;
     public String finish;
     public String main;
 
-    public Home_02_02_ArrayList(String book, String name, String author, String finish, String main) {
+    public Home_02_02_ArrayList(Uri book, String name, String author, String finish, String main) {
         this.book = book;
         this.name = name;
         this.author = author;
@@ -17,11 +17,11 @@ public class Home_02_02_ArrayList {
         this.main = main;
     }
 
-    public String getBook() {
+    public Uri getBook() {
         return book;
     }
 
-    public void setBook(String book) {
+    public void setBook(Uri book) {
         this.book = book;
     }
 
