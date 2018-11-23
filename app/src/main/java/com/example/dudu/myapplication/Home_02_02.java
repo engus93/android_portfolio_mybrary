@@ -1,6 +1,7 @@
 package com.example.dudu.myapplication;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -40,7 +41,7 @@ public class Home_02_02 extends AppCompatActivity {
 
         if(!(position == -1)){
 
-//            home_02_02_book_image.setImage(Home_02_01.home_02_02_ArrayList.get(position).getBook());
+            home_02_02_book_image.setImageURI(Uri.parse(Home_02_01.home_02_02_ArrayList.get(position).getBook()));
             home_02_02_book_name.setText(Home_02_01.home_02_02_ArrayList.get(position).getName());
             home_02_02_book_author.setText(Home_02_01.home_02_02_ArrayList.get(position).getAuthor());
             home_02_02_book_date.setText(Home_02_01.home_02_02_ArrayList.get(position).getFinish());

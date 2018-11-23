@@ -2,6 +2,7 @@ package com.example.dudu.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -44,7 +45,7 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
 
         final String selItem = home_02_02_ArrayList.get(position).name;
 
-        holder.book_image.setImageResource(home_02_02_ArrayList.get(position).book);
+        holder.book_image.setImageURI(Uri.parse(home_02_02_ArrayList.get(position).book));
         holder.book_name.setText(home_02_02_ArrayList.get(position).name);
         holder.book_author.setText(home_02_02_ArrayList.get(position).author);
         holder.book_finish.setText(home_02_02_ArrayList.get(position).finish);

@@ -1,20 +1,41 @@
 package com.example.dudu.myapplication;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class Home_02_01 extends AppCompatActivity {
@@ -33,6 +54,17 @@ public class Home_02_01 extends AppCompatActivity {
 
     String set_date;
     Boolean Regeneration = false;
+
+    //사진 추가하기
+
+    private static final int MY_PERMISSION_CAMERA = 1111;
+    private static final int REQUEST_TAKE_PHOTO = 1112;
+    private static final int REQUEST_TAKE_ALBUM = 1113;
+    private static final int REQUEST_IMAGE_CROP = 1114;
+
+    private String currentPhotoPath;//실제 사진 파일 경로
+
+    Uri imageUri = null;
 
 
     static ArrayList<Home_02_02_ArrayList> home_02_02_ArrayList = new ArrayList<>();
@@ -64,6 +96,16 @@ public class Home_02_01 extends AppCompatActivity {
         final SimpleDateFormat dateFormat = new SimpleDateFormat("yy년 MM월 dd일 HH시 mm분", java.util.Locale.getDefault());
         set_date = dateFormat.format(date);
         home_02_01_book_date.setText(set_date);
+
+        //책 사진 등록
+        home_02_01_book_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                checkPermission();
+
+            }
+        });
 
         //등록 버튼
 
@@ -98,13 +140,28 @@ public class Home_02_01 extends AppCompatActivity {
 
                                 }else {
 
-                                    home_02_02_ArrayList.add(new Home_02_02_ArrayList(R.drawable.home_02_default, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
+                                    if(imageUri == null) {
 
-                                    Intent intent1 = new Intent(Home_02_01.this, Home_02.class);
-                                    intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                    startActivity(intent1);
+                                        Log.d("체크", "사진 어디냐");
 
-                                    return;
+                                        home_02_02_ArrayList.add(new Home_02_02_ArrayList(String.valueOf(R.drawable.home_02_default), home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
+
+                                        Intent intent1 = new Intent(Home_02_01.this, Home_02.class);
+                                        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                        startActivity(intent1);
+
+                                    }else {
+
+                                        Log.d("체크", "사진 어디냐1");
+
+                                        home_02_02_ArrayList.add(new Home_02_02_ArrayList(imageUri.toString(), home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
+
+                                        Intent intent1 = new Intent(Home_02_01.this, Home_02.class);
+                                        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                        startActivity(intent1);
+
+                                        return;
+                                    }
                                 }
 
 
@@ -214,6 +271,254 @@ public class Home_02_01 extends AppCompatActivity {
 
     }
 
+    //------------------------책 사진 적용--------------
+
+    //프로필 사진 설정
+    void showprofile() {
+
+        final List<String> ListItems = new ArrayList<>();
+        ListItems.add("사진 찍기");
+        ListItems.add("앨범 선택");
+        final CharSequence[] items = ListItems.toArray(new String[ListItems.size()]);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("프로필 사진");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int pos) {
+
+                        if (pos == 0) {
+                            selectPhoto();
+                        } else if (pos == 1) {
+                            selectGallery();
+                        }
+                    }
+
+                }
+
+        );
+
+        builder.show();
+    }
+
+    //카메라로 찍은 사진 가져오기
+    private void selectPhoto() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+
+                }
+                if (photoFile != null) {
+                    imageUri = FileProvider.getUriForFile(this, "com.example.dudu.myapplication", photoFile);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                    startActivityForResult(intent, REQUEST_TAKE_PHOTO);
+                }
+            }
+
+        }
+    }
+
+    //이미지 파일화 시키기
+
+    public File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = timeStamp + ".png";
+        File imageFile = null;
+        File storageDir = new File(Environment.getExternalStorageDirectory() + "/Pictures", "MyBrary");
+
+        if (!storageDir.exists()) {
+            Log.i("currentPhotoPath", storageDir.toString());
+            storageDir.mkdirs();
+        }
+
+        imageFile = new File(storageDir, imageFileName);
+        currentPhotoPath = imageFile.getAbsolutePath();
+
+        return imageFile;
+    }
+
+    //찍은 사진 가져오기
+    private void getPictureForPhoto() {
+        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(currentPhotoPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int exifOrientation;
+        int exifDegree;
+
+        if (exif != null) {
+            exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            exifDegree = exifOrientationToDegrees(exifOrientation);
+        } else {
+            exifDegree = 0;
+        }
+        home_02_01_book_image.setImageBitmap(rotate(bitmap, exifDegree));//이미지 뷰에 비트맵 넣기
+
+    }
+
+    //갤러리에서 가져오기
+    private void selectGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_TAKE_ALBUM);
+    }
+
+    //선택한 데이터 처리 1
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+
+            switch (requestCode) {
+
+                case REQUEST_TAKE_ALBUM:
+                    sendPicture(data.getData()); //갤러리에서 가져오기
+                    break;
+                case REQUEST_TAKE_PHOTO:
+                    getPictureForPhoto(); //카메라에서 가져오기
+                    break;
+                default:
+                    break;
+            }
+
+        }
+    }
+
+    //선택한 데이터 처리 2
+    private void sendPicture(Uri imgUri) {
+
+        String imagePath = getRealPathFromURI(imgUri); // path 경로
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(imagePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        int exifDegree = exifOrientationToDegrees(exifOrientation);
+
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//경로를 통해 비트맵으로 전환
+        home_02_01_book_image.setImageBitmap(rotate(bitmap, exifDegree));//이미지 뷰에 비트맵 넣기
+
+    }
+
+    //이미지 찍은 포커스 대로 가져오기
+    private int exifOrientationToDegrees(int exifOrientation) {
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            return 90;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            return 180;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            return 270;
+        }
+        return 0;
+    }
+
+    //이미지 정방향 맞춰주기
+    private Bitmap rotate(Bitmap src, float degree) {
+
+        // Matrix 객체 생성
+        Matrix matrix = new Matrix();
+        // 회전 각도 셋팅
+        matrix.postRotate(degree);
+// 이미지와 Matrix 를 셋팅해서 Bitmap 객체 생성
+        return Bitmap.createBitmap(src, 0, 0, src.getWidth(),
+                src.getHeight(), matrix, true);
+    }
+
+    //경로 가져오기
+    private String getRealPathFromURI(Uri contentUri) {
+        int column_index = 0;
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+        if (cursor.moveToFirst()) {
+            column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        }
+
+        return cursor.getString(column_index);
+    }
+
+
+
+
+    //권한 체크 1
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // 처음 호출시엔 if()안의 부분은 false로 리턴 됨 -> else{..}의 요청으로 넘어감
+            if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) ||
+                    (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA))) {
+
+//                Log.d("체크", "1");
+                new android.app.AlertDialog.Builder(this)
+                        .setTitle("알림")
+                        .setMessage("저장소 권한이 거부되었습니다. 사용을 원하시면 설정에서 해당 권한을 직접 허용하셔야 합니다.")
+                        .setNeutralButton("설정", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                intent.setData(Uri.parse("package:" + getPackageName()));
+                                startActivity(intent);
+                            }
+                        })
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .setCancelable(false)
+                        .create()
+                        .show();
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, MY_PERMISSION_CAMERA);
+
+//                Log.d("체크", "2");
+
+            }
+        }else{
+
+            //프로필 사진 바꾸기
+            showprofile();
+
+        }
+
+    }
+
+    //권한 있으면 프사 기능
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSION_CAMERA:{
+                for (int i = 0; i < grantResults.length; i++) {
+                    // grantResults[] : 허용된 권한은 0, 거부한 권한은 -1
+                    if (grantResults[i] < 0) {
+                        Toast.makeText(this, "해당 권한을 활성화 하셔야 합니다.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+
+//                Log.d("체크", "권한 진입");
+
+                showprofile();
+
+                break;
+            }
+
+        }
+
+
+    }
 
 
 }
