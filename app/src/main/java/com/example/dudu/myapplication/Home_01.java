@@ -7,20 +7,15 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,16 +27,17 @@ public class Home_01 extends AppCompatActivity {
     ImageButton home_01_menu_03_b;  //홈메뉴 버튼 3
     ImageButton home_01_menu_04_b;  //홈메뉴 버튼 4
     ImageButton home_01_menu_05_b;  //홈메뉴 버튼 5
+
     ImageButton home_01_search; //검색창 버튼
-    Button home_01_my_info;    //내 정보 변경
+//    Button home_01_my_info;    //내 정보 변경
 
     private static final int REQ_CALL_SELECT = 1300;
     private static final int REQ_SMS_SELECT = 1400;
 
     private long backPressedTime = 0;   //뒤로가기 2초 세기
 
-    //왼쪽 상단 메뉴
-    ImageView iv = null;
+//    왼쪽 상단 메뉴
+//    ImageView iv = null;
 
     protected void onCreate(Bundle savedInstancesState) {
 
@@ -157,7 +153,7 @@ public class Home_01 extends AppCompatActivity {
         final View drawerView = (View) findViewById(R.id.home_drawer_01);
 
         // 드로어 화면을 열고 닫을 버튼 객체 참조
-        final ImageButton btnOpenDrawer = (ImageButton) findViewById(R.id.home_menu_00_B);
+        final ImageButton btnOpenDrawer = (ImageButton) findViewById(R.id.home_menu_01_B);
 
         // 드로어 여는 버튼 리스너
         btnOpenDrawer.setOnClickListener(new View.OnClickListener() {

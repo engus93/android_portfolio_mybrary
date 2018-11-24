@@ -7,19 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <RelativeLayout
 
-        android:id="@+id/home_drawer_01"
-        android:layout_width="215dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@color/white">
-
-        <include
-            layout="@layout/home_drawer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </RelativeLayout>
 
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -28,7 +16,7 @@
         android:layout_height="match_parent">
 
         <ImageButton
-            android:id="@+id/home_menu_00_B"
+            android:id="@+id/home_menu_01_B"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_marginTop="5dp"
@@ -47,6 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:layout_gravity="center"
+            android:layout_marginStart="15dp"
             android:layout_marginTop="5dp"
             android:layout_weight="5"
             android:gravity="center"
@@ -56,10 +45,7 @@
             android:textSize="18sp"
             android:textStyle="bold"
             android:typeface="serif"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.2"
-            app:layout_constraintStart_toEndOf="@+id/search_back_B"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/home_menu_01_B"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
@@ -185,5 +171,18 @@
 
     <!--드로어레이아웃-->
 
+    <RelativeLayout
+
+        android:id="@+id/home_drawer_01"
+        android:layout_width="215dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/white">
+
+        <include
+            layout="@layout/home_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
 
 </android.support.v4.widget.DrawerLayout>

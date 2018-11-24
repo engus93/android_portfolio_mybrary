@@ -112,7 +112,7 @@ public class Home_04 extends AppCompatActivity {
         final View drawerView = (View) findViewById(R.id.home_drawer_01);
 
         // 드로어 화면을 열고 닫을 버튼 객체 참조
-        ImageButton btnOpenDrawer = (ImageButton) findViewById(R.id.home_menu_00_B);
+        ImageButton btnOpenDrawer = (ImageButton) findViewById(R.id.home_menu_01_B);
 
         // 드로어 여는 버튼 리스너
         btnOpenDrawer.setOnClickListener(new View.OnClickListener() {

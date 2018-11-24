@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,8 +23,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import static com.example.dudu.myapplication.MainActivity.showToast;
@@ -38,6 +35,8 @@ public class Home_02 extends AppCompatActivity {
     ImageButton home_02_menu_04_b;
     ImageButton home_02_menu_05_b;
     ImageButton home_02_search; //검색창 버튼
+
+    TextView home_02_nick_title;
 
     TextView home_02_book_count;  //내 서재 게시글 변수
 
@@ -54,6 +53,7 @@ public class Home_02 extends AppCompatActivity {
         setContentView(R.layout.home_02);
 
         home_02_book_count = findViewById(R.id.home_02_re_mini_1_T);  //내 서재 게시글 수
+        home_02_nick_title = findViewById(R.id.home_02_nick_title); //내 닉네임 글
 
         //메뉴 2 - > 메뉴 1
         home_02_menu_01_b = findViewById(R.id.home_02_menu_01_B);
@@ -142,16 +142,16 @@ public class Home_02 extends AppCompatActivity {
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout_02);
 
         // Drawer 화면(뷰) 객체 참조
-        final View drawerView = (View) findViewById(R.id.home_drawer_01);
-
-        // 드로어 화면을 열고 닫을 버튼 객체 참조
-        ImageButton btnOpenDrawer = (ImageButton) findViewById(R.id.home_menu_00_B);
+        final View drawerView = (View) findViewById(R.id.home_drawer_02);
 
         // 드로어 여는 버튼 리스너
-        btnOpenDrawer.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.home_menu_02_B).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 drawerLayout.openDrawer(drawerView);
+
+                System.out.println("드로어 열기");
+
             }
         });
 
@@ -161,6 +161,8 @@ public class Home_02 extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent1 = new Intent(Home_02.this, Home_00_my_info.class);
                 startActivity(intent1);
+
+                System.out.println("내정보 변경");
 
             }
         });
@@ -205,6 +207,8 @@ public class Home_02 extends AppCompatActivity {
         });
 
 
+
+
     }
 
     @Override
@@ -215,7 +219,10 @@ public class Home_02 extends AppCompatActivity {
         String a = String.valueOf(Home_02_01.home_02_02_ArrayList.size());
         home_02_book_count.setText(a);
 
-        final RecyclerView mRecyclerView;
+        //닉네임 + 서재
+        home_02_nick_title.setText("골아파덕 님의 서재"); //내 닉네임 의 서재
+
+        RecyclerView mRecyclerView;
         RecyclerView.LayoutManager mLayoutManager;
 
         mRecyclerView = findViewById(R.id.home_02_RE);
@@ -224,7 +231,7 @@ public class Home_02 extends AppCompatActivity {
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        final Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(),Home_02_01.home_02_02_ArrayList);
+        Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(),Home_02_01.home_02_02_ArrayList);
         mRecyclerView.setAdapter(myAdapter);
 
 
@@ -328,7 +335,7 @@ public class Home_02 extends AppCompatActivity {
         ListItems.add("SMS로 문의하기");
         final CharSequence[] items = ListItems.toArray(new String[ListItems.size()]);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(Home_02.this);
         builder.setTitle("문의하기");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int pos) {
