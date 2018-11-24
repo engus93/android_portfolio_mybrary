@@ -69,7 +69,6 @@ public class Home_02_01 extends AppCompatActivity {
 
     Uri imageUri;
 
-
     static ArrayList<Home_02_02_ArrayList> home_02_02_ArrayList = new ArrayList<>();
 
     protected void onCreate(Bundle savedInstancesState) {

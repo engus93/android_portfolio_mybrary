@@ -4,6 +4,7 @@
     package="com.example.dudu.myapplication">
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@drawable/mybrary_app_ikon_02"
         android:label="MyBrary"

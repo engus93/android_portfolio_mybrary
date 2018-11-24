@@ -30,10 +30,8 @@ public class Home_04 extends AppCompatActivity {
 
     private long backPressedTime = 0;
 
-    int REQ_CAMERA_SELECT = 1000;
-    int REQ_PICTURE_SELECT = 1000;
-    int REQ_CALL_SELECT = 1000;
-    int REQ_SMS_SELECT = 1000;
+    int REQ_CALL_SELECT = 1300;
+    int REQ_SMS_SELECT = 1400;
 
 
     protected void onCreate(Bundle savedInstancesState) {
@@ -189,61 +187,6 @@ public class Home_04 extends AppCompatActivity {
             MainActivity.showToast(this, "한번 더 누르시면 종료가 됩니다.");
         }
 
-    }
-
-    //프로필 사진 교체 메소드
-    void showprofile() {
-        final List<String> ListItems = new ArrayList<>();
-        ListItems.add("사진 찍기");
-        ListItems.add("앨범 선택");
-        final CharSequence[] items = ListItems.toArray(new String[ListItems.size()]);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("프로필 사진");
-        builder.setItems(items, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int pos) {
-                switch (pos + 1) {
-
-                    case 1: {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-                            int permissionCheck = ContextCompat.checkSelfPermission(Home_04.this, Manifest.permission.CAMERA);
-
-                            if (permissionCheck == PackageManager.PERMISSION_DENIED) {
-                                // 권한 없음
-                                ActivityCompat.requestPermissions(Home_04.this, new String[]{Manifest.permission.CAMERA}, REQ_CAMERA_SELECT);
-                            } else {    // ACCESS_FINE_LOCATION 에 대한 권한이 이미 있음.
-                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                startActivity(intent);
-
-                            }
-
-                        }
-
-                        break;
-                    }
-                    case 2: {
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-                            int permissionCheck = ContextCompat.checkSelfPermission(Home_04.this, Manifest.permission.READ_EXTERNAL_STORAGE);
-
-                            if (permissionCheck == PackageManager.PERMISSION_DENIED) {
-                                // 권한 없음
-                                ActivityCompat.requestPermissions(Home_04.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQ_PICTURE_SELECT);
-                            } else {    // ACCESS_FINE_LOCATION 에 대한 권한이 이미 있음.
-                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                                intent.setType("image/*");
-                                startActivity(intent);
-                            }
-                        }
-
-                        break;
-                    }
-                }
-            }
-        });
-        builder.show();
     }
 
     //문의하기 메소드

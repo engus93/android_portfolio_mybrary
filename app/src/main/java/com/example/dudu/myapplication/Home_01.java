@@ -29,22 +29,16 @@ public class Home_01 extends AppCompatActivity {
     ImageButton home_01_menu_05_b;  //홈메뉴 버튼 5
 
     ImageButton home_01_search; //검색창 버튼
-//    Button home_01_my_info;    //내 정보 변경
 
-    private static final int REQ_CALL_SELECT = 1300;
-    private static final int REQ_SMS_SELECT = 1400;
+    int REQ_CALL_SELECT = 1300;
+    int REQ_SMS_SELECT = 1400;
 
     private long backPressedTime = 0;   //뒤로가기 2초 세기
-
-//    왼쪽 상단 메뉴
-//    ImageView iv = null;
 
     protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_01);
-
-
 
         //메뉴 1 - > 메뉴 2
         home_01_menu_02_b = findViewById(R.id.home_01_menu_02_B);
