@@ -3,6 +3,7 @@ package com.example.dudu.myapplication;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -33,6 +34,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class Home_00_my_info extends AppCompatActivity {
@@ -40,7 +42,7 @@ public class Home_00_my_info extends AppCompatActivity {
     Button bt_02;
     Button bt_03;
     ImageButton my_info_back_B;
-    private TextView nick;
+//    private TextView nick;
     private TextView genre;
 
     private static final int MY_PERMISSION_CAMERA = 1111;
@@ -61,7 +63,6 @@ public class Home_00_my_info extends AppCompatActivity {
     protected void onCreate(Bundle savedIstancesState) {
         super.onCreate(savedIstancesState);
         setContentView(R.layout.home_00_my_info);
-
 
         //내 정보 수정 - > 닉네임 수정
         bt_02 = findViewById(R.id.my_info_nick_B);
@@ -110,19 +111,37 @@ public class Home_00_my_info extends AppCompatActivity {
     protected void onResume(){
         super.onResume();
 
-        Intent intent1 = getIntent();
-        String name;
-        if(intent1.hasExtra("nick")){
-            name = intent1.getStringExtra("nick");
-            nick = (TextView) findViewById(R.id.home_00_my_info_nick);
-            nick.setText(name);
+        //쉐어드 -> 닉네임 가져오기
+
+        SharedPreferences savenick_info = getSharedPreferences("member_info", MODE_PRIVATE);
+
+        //쉐어드 안에 있는 정보 가져오기
+        String nick = savenick_info.getString("user_nick", "");
+
+        if(!(nick.equals(""))) {
+
+            Log.d("체크", "닉네임 수정");
+
+            //해쉬맵 생성
+            HashMap<String, Member_ArrayList> nick_map = new HashMap<>();
+
+            //해쉬맵에 삽입
+            nick_map = App.gson.fromJson("user_nick", App.collectionTypeMember);
+
+            //일치
+            TextView user_nick = (TextView) findViewById(R.id.home_00_my_info_nick);
+            user_nick.setText((CharSequence) nick_map.get("user_nick"));
+
         }
 
-        if(intent1.hasExtra("genre")) {
-            name = intent1.getStringExtra("genre");
-            genre = (TextView) findViewById(R.id.home_00_my_info_genre);
-            genre.setText(name);
-        }
+//        Intent intent1 = getIntent();
+//        String name;
+//
+//        if (intent1.hasExtra("genre")) {
+//            name = intent1.getStringExtra("genre");
+//            genre = (TextView) findViewById(R.id.home_00_my_info_genre);
+//            genre.setText(name);
+//        }
 
     }
 

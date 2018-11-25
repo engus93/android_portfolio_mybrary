@@ -2,6 +2,7 @@ package com.example.dudu.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,9 +10,20 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
+import java.util.HashMap;
+
 public class Sign_up_02_Activity extends AppCompatActivity {
+
+    //회원정보 받는 뷰
+    EditText user_id;
+    EditText user_password_01;
+    EditText user_password_02;
+    EditText user_e_mail;
+    EditText user_name;
+    EditText user_birth_day;
 
     ImageButton sign_up_02_back_IB;
     Button sign_up_02_sign_in_01_B;
@@ -21,6 +33,13 @@ public class Sign_up_02_Activity extends AppCompatActivity {
 
         super.onCreate(savedinstanesState);
         setContentView(R.layout.sign_up_02);
+
+        user_id = findViewById(R.id.user_id_in);
+        user_password_01 = findViewById(R.id.user_password_in_01);
+        user_password_02 = findViewById(R.id.user_password_in_02);
+        user_e_mail = findViewById(R.id.user_e_mail_in);
+        user_name = findViewById(R.id.user_name_in);
+        user_birth_day = findViewById(R.id.user_date_in);
 
         //뒤로가기
         sign_up_02_back_IB = findViewById(R.id.search_back_B);
@@ -56,19 +75,64 @@ public class Sign_up_02_Activity extends AppCompatActivity {
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 }
 
-                //잠시대기
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(300);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
-                //화면 이동
-                MainActivity.showToast(Sign_up_02_Activity.this, "회원 가입 완료");
-                Intent intent1 = new Intent(Sign_up_02_Activity.this, MainActivity.class);
-                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent1);
+                if (user_id.getText().toString().length() <= 0) {
 
+                    MainActivity.showToast(Sign_up_02_Activity.this, "아이디를 입력해주세요.");
+
+                } else if (user_password_01.getText().toString().length() <= 0) {
+
+                    MainActivity.showToast(Sign_up_02_Activity.this, "패스워드를 확인해주세요.");
+
+                } else if (user_password_02.getText().toString().length() <= 0) {
+
+                    MainActivity.showToast(Sign_up_02_Activity.this, "패스워드를 확인해주세요.");
+
+                } else if (!(user_password_01.getText().toString().equals(user_password_02.getText().toString()))) {
+
+                    MainActivity.showToast(Sign_up_02_Activity.this, "패스워드를 확인해주세요.");
+
+                } else if (user_e_mail.getText().toString().length() <= 0) {
+
+                    MainActivity.showToast(Sign_up_02_Activity.this, "이메일을 입력해주세요.");
+
+                } else if (user_birth_day.getText().toString().length() <= 0) {
+
+                    MainActivity.showToast(Sign_up_02_Activity.this, "생일을 입력해주세요.");
+
+                } else {
+
+                    //쉐어드 생성
+                    SharedPreferences saveMember_info = getSharedPreferences("member_info", MODE_PRIVATE);
+                    SharedPreferences.Editor save = saveMember_info.edit();
+
+                    //해쉬맵 생성
+                    HashMap<String, Member_ArrayList> member_map = new HashMap<>();
+
+                    //정보 삽입
+                    Member_ArrayList user_info = new Member_ArrayList(user_id.getText().toString(), user_password_01.getText().toString(), user_e_mail.getText().toString(),
+                            user_name.getText().toString(), user_birth_day.getText().toString());
+                    //정보 -> 해쉬맵에 삽입
+                    member_map.put(user_info.getMember_id(), user_info);
+
+                    //해쉬맵(Gson 변환) -> 쉐어드 삽입
+                    save.putString(user_info.getMember_id(), App.gson.toJson(member_map));
+
+                    //커밋
+                    save.commit();
+
+                    //화면 이동
+                    MainActivity.showToast(Sign_up_02_Activity.this, "회원 가입 완료");
+                    Intent intent1 = new Intent(Sign_up_02_Activity.this, MainActivity.class);
+                    intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(intent1);
+
+                }
             }
 
         });

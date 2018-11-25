@@ -1,12 +1,15 @@
 package com.example.dudu.myapplication;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+
+import java.util.HashMap;
 
 public class Home_00_my_info_01 extends AppCompatActivity {
 
@@ -18,6 +21,8 @@ public class Home_00_my_info_01 extends AppCompatActivity {
         super.onCreate(savedIstancesState);
         setContentView(R.layout.home_00_my_info_01);
 
+        my_info_nick = findViewById(R.id.my_info_01_nick_ET);
+
         //닉네임 수정 -> 닉네임 수정 완료
         bt_01 = findViewById(R.id.my_info_01_nick_B);
         bt_01.setOnClickListener(new View.OnClickListener() {
@@ -25,12 +30,32 @@ public class Home_00_my_info_01 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                my_info_nick = (EditText) findViewById(R.id.my_info_01_nick_ET);
+                //쉐어드 생성
+                SharedPreferences savenick_info = getSharedPreferences("member_info", MODE_PRIVATE);
+                SharedPreferences.Editor save = savenick_info.edit();
+
+                //해쉬맵 생성
+                HashMap<String, String> nick_map = new HashMap<>();
+
+                //정보 삽입
+                String user_nick = my_info_nick.getText().toString();
+
+                //정보 -> 해쉬맵에 삽입
+                nick_map.put("user_nick", user_nick);
+
+                //해쉬맵(Gson 변환) -> 쉐어드 삽입
+                save.putString("user_nick", App.gson.toJson(nick_map));
+
+                //커밋
+                save.commit();
+
+//                my_info_nick = (EditText) findViewById(R.id.my_info_01_nick_ET);
                 Intent intent1 = new Intent(Home_00_my_info_01.this, Home_00_my_info.class);
-                intent1.putExtra("nick", my_info_nick.getText().toString());
-                intent1.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                finish();
+//                intent1.putExtra("nick", my_info_nick.getText().toString());
+                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                finish();
                 startActivity(intent1);
+
             }
         });
 
