@@ -3,6 +3,7 @@ package com.example.dudu.myapplication;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -20,9 +21,11 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.example.dudu.myapplication.MainActivity.showToast;
@@ -232,6 +235,32 @@ public class Home_02 extends AppCompatActivity {
         Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(),Home_02_01.home_02_02_ArrayList);
         mRecyclerView.setAdapter(myAdapter);
 
+        //쉐어드 생성
+        SharedPreferences savenick_info = getSharedPreferences("member_info", MODE_PRIVATE);
+
+        //쉐어드 안에 있는 정보 가져오기 - 프사
+        String profile = savenick_info.getString(App.User_ID + "_user_profile", "");
+
+        //프사 세팅
+        if(!(profile.equals(""))) {
+
+            Log.d("체크", "좋아하는 책 수정");
+
+            //해쉬맵 생성
+            HashMap<String, String> profile_map = new HashMap<>();
+
+            //해쉬맵에 삽입
+            profile_map = App.gson.fromJson(profile,App.collectionTypeString);
+
+            //이미지 삽입 (드로어)
+            ImageView drower_profile = findViewById(R.id.home_drawer_profile);
+            drower_profile.setImageURI(Uri.parse(profile_map.get(App.User_ID + "_user_profile")));
+
+            //이미지 삽입 (내 서재)
+            ImageView mybrary_profile = findViewById(R.id.home_02_re_fropile_I);
+            mybrary_profile.setImageURI(Uri.parse(profile_map.get(App.User_ID + "_user_profile")));
+
+        }
 
     }
 

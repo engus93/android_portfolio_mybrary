@@ -48,79 +48,81 @@ public class Sign_in_02_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent intent1 = new Intent(Sign_in_02_Activity.this, Home_01.class);
-                MainActivity.showToast(Sign_in_02_Activity.this, "로그인");
-                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent1);
+//                Intent intent1 = new Intent(Sign_in_02_Activity.this, Home_01.class);
+//                MainActivity.showToast(Sign_in_02_Activity.this, "로그인");
+//                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(intent1);
 
-//                //키보드 내리기
-//                if (view != null) {
-//                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-//                }
-//
-//                //잠시대기
-//                try {
-//                    Thread.sleep(300);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                if (sign_in_02_id.getText().toString().length() <= 0) {
-//
-//                    MainActivity.showToast(Sign_in_02_Activity.this, "아이디를 입력해주세요");
-//
-//                } else if (sign_in_02_password.getText().toString().length() <= 0) {
-//
-//                    MainActivity.showToast(Sign_in_02_Activity.this, "비밀번호를 입력해주세요");
-//
-//                } else {
-//
-//                    //쉐어드 생성
-//                    SharedPreferences saveMember_info = getSharedPreferences("member_info", MODE_PRIVATE);
-//
-//                    //쉐어드 안에 있는 정보 가져오기
-//                    String check = saveMember_info.getString(sign_in_02_id.getText().toString(), "");
-//
-//                    if (!(check.equals(""))) {
-//
-//                        Log.d("체크", "아이디 일치");
-//
-//                        //해쉬맵 생성
-//                        HashMap<String, Member_ArrayList> member_map = new HashMap<>();
-//
-//                        //해쉬맵에 삽입
-//                        member_map = App.gson.fromJson(check, App.collectionTypeMember);
-//
-//                        //일치
-//                        if (member_map.get(sign_in_02_id.getText().toString()).member_password_01.equals(sign_in_02_password.getText().toString())) {
-//
-//                            Log.d("체크", "비번 일치");
-//
-//                            Intent intent1 = new Intent(Sign_in_02_Activity.this, Home_01.class);
-//                            MainActivity.showToast(Sign_in_02_Activity.this, "로그인");
-//                            intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            startActivity(intent1);
-//
-//                        } else {    //비번 불일치
-//
-//                            Log.d("체크", "비번 불일치");
-//
-//                            MainActivity.showToast(Sign_in_02_Activity.this, "패스워드가 일치하지 않습니다.");
-//
-//                        }
-//
-//                    } else { //아이디 불일치
-//
-//                        Log.d("체크", "아이디 불일치");
-//
-//                        MainActivity.showToast(Sign_in_02_Activity.this, "아이디가 일치하지 않습니다.");
-//
-//                    }
-//
-//                }
+                //키보드 내리기
+                if (view != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+
+                //잠시대기
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if (sign_in_02_id.getText().toString().length() <= 0) {
+
+                    MainActivity.showToast(Sign_in_02_Activity.this, "아이디를 입력해주세요");
+
+                } else if (sign_in_02_password.getText().toString().length() <= 0) {
+
+                    MainActivity.showToast(Sign_in_02_Activity.this, "비밀번호를 입력해주세요");
+
+                } else {
+
+                    //쉐어드 생성
+                    SharedPreferences saveMember_info = getSharedPreferences("member_info", MODE_PRIVATE);
+
+                    //쉐어드 안에 있는 정보 가져오기
+                    String check = saveMember_info.getString(sign_in_02_id.getText().toString(), "");
+
+                    if (!(check.equals(""))) {
+
+                        Log.d("체크", "아이디 일치");
+
+                        //해쉬맵 생성
+                        HashMap<String, Member_ArrayList> member_map = new HashMap<>();
+
+                        //해쉬맵에 삽입
+                        member_map = App.gson.fromJson(check, App.collectionTypeMember);
+
+                        //일치
+                        if (member_map.get(sign_in_02_id.getText().toString()).member_password_01.equals(sign_in_02_password.getText().toString())) {
+
+                            Log.d("체크", "비번 일치");
+
+                            App.User_ID = sign_in_02_id.getText().toString();
+
+                            Intent intent1 = new Intent(Sign_in_02_Activity.this, Home_01.class);
+                            MainActivity.showToast(Sign_in_02_Activity.this, "로그인");
+                            intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent1);
+
+                        } else {    //비번 불일치
+
+                            Log.d("체크", "비번 불일치");
+
+                            MainActivity.showToast(Sign_in_02_Activity.this, "패스워드가 일치하지 않습니다.");
+
+                        }
+
+                    } else { //아이디 불일치
+
+                        Log.d("체크", "아이디 불일치");
+
+                        MainActivity.showToast(Sign_in_02_Activity.this, "아이디가 일치하지 않습니다.");
+
+                    }
+
+                }
 
             }
 

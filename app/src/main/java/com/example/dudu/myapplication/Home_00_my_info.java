@@ -39,30 +39,27 @@ import java.util.List;
 
 public class Home_00_my_info extends AppCompatActivity {
 
-    Button bt_02;
-    Button bt_03;
-    ImageButton my_info_back_B;
-//    private TextView nick;
-    private TextView genre;
+    ImageView iv_view;  //프로필 사진
+    Button bt_02;   //닉네임 수정 버튼
+    Button bt_03;   //닉네임 수정 버튼
+    Button my_info_profile_B; //프로필 사진 수정 버튼
+    ImageButton my_info_back_B; //뒤로가기
 
     private static final int MY_PERMISSION_CAMERA = 1111;
     private static final int REQUEST_TAKE_PHOTO = 1112;
     private static final int REQUEST_TAKE_ALBUM = 1113;
     private static final int REQUEST_IMAGE_CROP = 1114;
 
-    ImageView iv_view;
-
     private String currentPhotoPath;//실제 사진 파일 경로
 
     Uri imageUri;
     Uri photoURI, albumURI;
 
-    //왼쪽 상단 메뉴
-    Button my_info_profile_B; //뒤로가기
-
     protected void onCreate(Bundle savedIstancesState) {
         super.onCreate(savedIstancesState);
         setContentView(R.layout.home_00_my_info);
+
+        iv_view = (ImageView) findViewById(R.id.my_info_profile);   //프로필 사진
 
         //내 정보 수정 - > 닉네임 수정
         bt_02 = findViewById(R.id.my_info_nick_B);
@@ -93,9 +90,7 @@ public class Home_00_my_info extends AppCompatActivity {
         });
 
         //왼쪽 상단 메뉴 프로필 사진 변경
-        iv_view = (ImageView) findViewById(R.id.my_info_profile);
         my_info_profile_B = findViewById(R.id.my_info_profile_B);
-
         my_info_profile_B.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,37 +106,64 @@ public class Home_00_my_info extends AppCompatActivity {
     protected void onResume(){
         super.onResume();
 
-        //쉐어드 -> 닉네임 가져오기
-
+        //쉐어드 생성
         SharedPreferences savenick_info = getSharedPreferences("member_info", MODE_PRIVATE);
 
-        //쉐어드 안에 있는 정보 가져오기
-        String nick = savenick_info.getString("user_nick", "");
+        //쉐어드 안에 있는 정보 가져오기 - 프사
+        String profile = savenick_info.getString(App.User_ID + "_user_profile", "");
+
+        //쉐어드 안에 있는 정보 가져오기 - 닉네임
+        String nick = savenick_info.getString(App.User_ID + "_user_nick", "");
+
+        //쉐어드 안에 있는 정보 가져오기 - 좋아하는 책
+        String like = savenick_info.getString(App.User_ID + "_user_like", "");
 
         if(!(nick.equals(""))) {
 
             Log.d("체크", "닉네임 수정");
 
             //해쉬맵 생성
-            HashMap<String, Member_ArrayList> nick_map = new HashMap<>();
+            HashMap<String, String> nick_map = new HashMap<>();
 
             //해쉬맵에 삽입
-            nick_map = App.gson.fromJson("user_nick", App.collectionTypeMember);
+            nick_map = App.gson.fromJson(nick,App.collectionTypeString);
 
             //일치
-            TextView user_nick = (TextView) findViewById(R.id.home_00_my_info_nick);
-            user_nick.setText((CharSequence) nick_map.get("user_nick"));
+            TextView user_nick = findViewById(R.id.home_00_my_info_nick);
+            user_nick.setText(nick_map.get(App.User_ID + "_user_nick"));
 
         }
 
-//        Intent intent1 = getIntent();
-//        String name;
-//
-//        if (intent1.hasExtra("genre")) {
-//            name = intent1.getStringExtra("genre");
-//            genre = (TextView) findViewById(R.id.home_00_my_info_genre);
-//            genre.setText(name);
-//        }
+        if(!(like.equals(""))) {
+
+            Log.d("체크", "좋아하는 책 수정");
+
+            //해쉬맵 생성
+            HashMap<String, String> like_map = new HashMap<>();
+
+            //해쉬맵에 삽입
+            like_map = App.gson.fromJson(like,App.collectionTypeString);
+
+            //일치
+            TextView user_like = findViewById(R.id.home_00_my_info_genre);
+            user_like.setText(like_map.get(App.User_ID + "_user_like"));
+
+        }
+
+        if(!(profile.equals(""))) {
+
+            Log.d("체크", "좋아하는 책 수정");
+
+            //해쉬맵 생성
+            HashMap<String, String> profile_map = new HashMap<>();
+
+            //해쉬맵에 삽입
+            profile_map = App.gson.fromJson(profile,App.collectionTypeString);
+
+            //이미지 삽입
+            iv_view.setImageURI(Uri.parse(profile_map.get(App.User_ID + "_user_profile")));
+
+        }
 
     }
 
@@ -171,6 +193,9 @@ public class Home_00_my_info extends AppCompatActivity {
             );
 
             builder.show();
+
+
+
         }
 
     //카메라로 찍은 사진 가져오기
@@ -235,6 +260,25 @@ public class Home_00_my_info extends AppCompatActivity {
         }
         iv_view.setImageBitmap(rotate(bitmap, exifDegree));//이미지 뷰에 비트맵 넣기
 
+        //쉐어드 생성
+        SharedPreferences savenick_info = getSharedPreferences("member_info", MODE_PRIVATE);
+        SharedPreferences.Editor save = savenick_info.edit();
+
+        //해쉬맵 생성
+        HashMap<String, String> profile_map = new HashMap<>();
+
+        //정보 삽입
+        String user_profile = imageUri.toString();
+
+        //정보 -> 해쉬맵에 삽입
+        profile_map.put(App.User_ID + "_user_profile", user_profile);
+
+        //해쉬맵(Gson 변환) -> 쉐어드 삽입
+        save.putString(App.User_ID + "_user_profile", App.gson.toJson(profile_map));
+
+        //저장
+        save.apply();
+
     }
 
     //갤러리에서 가져오기
@@ -283,6 +327,25 @@ public class Home_00_my_info extends AppCompatActivity {
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//경로를 통해 비트맵으로 전환
         iv_view.setImageBitmap(rotate(bitmap, exifDegree));//이미지 뷰에 비트맵 넣기
 
+        //쉐어드 생성
+        SharedPreferences savenick_info = getSharedPreferences("member_info", MODE_PRIVATE);
+        SharedPreferences.Editor save = savenick_info.edit();
+
+        //해쉬맵 생성
+        HashMap<String, String> profile_map = new HashMap<>();
+
+        //정보 삽입
+        String user_profile = imageUri.toString();
+
+        //정보 -> 해쉬맵에 삽입
+        profile_map.put(App.User_ID + "_user_profile", user_profile);
+
+        //해쉬맵(Gson 변환) -> 쉐어드 삽입
+        save.putString(App.User_ID + "_user_profile", App.gson.toJson(profile_map));
+
+        //저장
+        save.apply();
+
     }
 
     //이미지 찍은 포커스 대로 가져오기
@@ -304,7 +367,7 @@ public class Home_00_my_info extends AppCompatActivity {
         Matrix matrix = new Matrix();
         // 회전 각도 셋팅
         matrix.postRotate(degree);
-// 이미지와 Matrix 를 셋팅해서 Bitmap 객체 생성
+        // 이미지와 Matrix 를 셋팅해서 Bitmap 객체 생성
         return Bitmap.createBitmap(src, 0, 0, src.getWidth(),
                 src.getHeight(), matrix, true);
     }

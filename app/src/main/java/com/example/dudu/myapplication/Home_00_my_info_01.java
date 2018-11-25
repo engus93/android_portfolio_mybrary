@@ -41,19 +41,16 @@ public class Home_00_my_info_01 extends AppCompatActivity {
                 String user_nick = my_info_nick.getText().toString();
 
                 //정보 -> 해쉬맵에 삽입
-                nick_map.put("user_nick", user_nick);
+                nick_map.put(App.User_ID + "_user_nick", user_nick);
 
                 //해쉬맵(Gson 변환) -> 쉐어드 삽입
-                save.putString("user_nick", App.gson.toJson(nick_map));
+                save.putString(App.User_ID + "_user_nick", App.gson.toJson(nick_map));
 
-                //커밋
-                save.commit();
+                //저장
+                save.apply();
 
-//                my_info_nick = (EditText) findViewById(R.id.my_info_01_nick_ET);
                 Intent intent1 = new Intent(Home_00_my_info_01.this, Home_00_my_info.class);
-//                intent1.putExtra("nick", my_info_nick.getText().toString());
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                finish();
                 startActivity(intent1);
 
             }
@@ -68,6 +65,15 @@ public class Home_00_my_info_01 extends AppCompatActivity {
             }
         });
 
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        Intent intent1 = new Intent(Home_00_my_info_01.this, Home_00_my_info.class);
+        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent1);
 
     }
 

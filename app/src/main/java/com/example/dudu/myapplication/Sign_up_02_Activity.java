@@ -25,6 +25,9 @@ public class Sign_up_02_Activity extends AppCompatActivity {
     EditText user_name;
     EditText user_birth_day;
 
+    //아이디 체크 불린
+    boolean id_check_boolean;
+
     ImageButton sign_up_02_back_IB;
     Button sign_up_02_sign_in_01_B;
     CheckBox user_sign_up_check;
@@ -85,6 +88,10 @@ public class Sign_up_02_Activity extends AppCompatActivity {
 
                     MainActivity.showToast(Sign_up_02_Activity.this, "아이디를 입력해주세요.");
 
+                } else if (!id_check_boolean) {
+
+                    MainActivity.showToast(Sign_up_02_Activity.this, "아이디 중복 체크를 해주세요.");
+
                 } else if (user_password_01.getText().toString().length() <= 0) {
 
                     MainActivity.showToast(Sign_up_02_Activity.this, "패스워드를 확인해주세요.");
@@ -123,8 +130,8 @@ public class Sign_up_02_Activity extends AppCompatActivity {
                     //해쉬맵(Gson 변환) -> 쉐어드 삽입
                     save.putString(user_info.getMember_id(), App.gson.toJson(member_map));
 
-                    //커밋
-                    save.commit();
+                    //저장
+                    save.apply();
 
                     //화면 이동
                     MainActivity.showToast(Sign_up_02_Activity.this, "회원 가입 완료");
@@ -135,6 +142,34 @@ public class Sign_up_02_Activity extends AppCompatActivity {
                 }
             }
 
+        });
+
+        //아이디 중복 체크
+        findViewById(R.id.user_id_check).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //쉐어드 생성
+                SharedPreferences saveMember_info = getSharedPreferences("member_info", MODE_PRIVATE);
+
+                //쉐어드 안에 있는 정보 가져오기
+                String id_check = saveMember_info.getString(user_id.getText().toString(), "");
+
+                if(id_check.equals("")){
+
+                    id_check_boolean = true;
+
+                    MainActivity.showToast(Sign_up_02_Activity.this, "사용 가능한 아이디 입니다.");
+
+                }else{
+
+                    id_check_boolean = false;
+
+                    MainActivity.showToast(Sign_up_02_Activity.this, "사용 불가능한 아이디 입니다.");
+
+                }
+
+            }
         });
 
         //약관 동의
