@@ -64,28 +64,36 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
             @Override
             public void onClick(View v) {
 
-                switch (v.getId()) {
-                    case R.id.search_heart_B:
-                        holder.heart_bt.setSelected(!holder.heart_bt.isSelected());
-                        break;
-                }
+//                switch (v.getId()) {
+//                    case R.id.search_heart_B:
+//                        holder.heart_bt.setSelected(!holder.heart_bt.isSelected());
+//                        break;
+//                }
 
                 for (int i = 0; i < heart_book_ArrayList.size(); i++) {
 
                     String name = heart_book_ArrayList.get(i).heart_name;
 
-                    if (name.equals(selItem)) {
+                    if (!name.equals(selItem)) {
+                        book_check = true;
 
-                        Toast.makeText(context, selItem + "가 이미 찜목록에 있습니다.", Toast.LENGTH_SHORT).show();
+                        Log.d("체크", "체크 true");
+
+                    } else {
+                        book_check = false;
+
+                        Log.d("체크", "체크 false");
 
                         break;
-                    } else {
-                        book_check = true;
                     }
+
+                    Log.d("체크", "break");
 
                 }
 
-                    if (holder.heart_bt.isSelected() && book_check || heart_book_ArrayList.size() == 0) {
+
+
+                    if (book_check || heart_book_ArrayList.size() == 0) {
 
                         //키보드 내리기
                         if (v != null) {
@@ -107,7 +115,7 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
 //                    intent1.putExtra("search_book", heart_book_ArrayList.get(position).toString());
 
                     } else {
-
+                        Log.d("체크", "체크 false 02");
                         //키보드 내리기
                         if (v != null) {
                             InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -121,6 +129,8 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
                         }
 
                         Toast.makeText(context, selItem + "가 이미 찜목록에 있습니다.", Toast.LENGTH_SHORT).show();
+
+                        book_check = true;
 
                     }
 
