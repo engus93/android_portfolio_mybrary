@@ -21,13 +21,14 @@ import java.util.ArrayList;
 public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_02_re_02> {
 
     Context context;
-
-    private ArrayList<Home_02_02_ArrayList> home_02_02_ArrayList;
+    ArrayList<Home_02_02_ArrayList> home_02_02_Array;
 
     public Home_02_Adapter(Context context, ArrayList<Home_02_02_ArrayList> home_02_02_ArrayList) {
         this.context = context;
-        this.home_02_02_ArrayList = home_02_02_ArrayList;
+//        App.home_02_02_ArrayList = home_02_02_ArrayList;
+        this.home_02_02_Array = home_02_02_ArrayList;
     }
+
 
     //틀 생성
     @Override
@@ -43,12 +44,14 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
     @Override
     public void onBindViewHolder(home_02_re_02 holder, final int position) {
 
-        final String selItem = home_02_02_ArrayList.get(position).name;
+//        String selItem = App.home_02_02_ArrayList.get(position).name;
 
-        holder.book_image.setImageURI(home_02_02_ArrayList.get(position).book);
-        holder.book_name.setText(home_02_02_ArrayList.get(position).name);
-        holder.book_author.setText(home_02_02_ArrayList.get(position).author);
-        holder.book_finish.setText(home_02_02_ArrayList.get(position).finish);
+        Log.d("체크", home_02_02_Array.get(position).book);
+
+        holder.book_image.setImageURI(Uri.parse(home_02_02_Array.get(position).book ));
+        holder.book_name.setText(home_02_02_Array.get(position).name);
+        holder.book_author.setText(home_02_02_Array.get(position).author);
+        holder.book_finish.setText(home_02_02_Array.get(position).finish);
 
         holder.click_item.setOnClickListener(new View.OnClickListener() {
 
@@ -82,7 +85,7 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
     //현재 위치
     @Override
     public int getItemCount() {
-        return home_02_02_ArrayList.size();
+        return home_02_02_Array.size();
     }
 
     public static class home_02_re_02 extends RecyclerView.ViewHolder {

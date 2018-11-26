@@ -164,7 +164,7 @@ public class Home_00_my_info extends AppCompatActivity {
 
         if(!(profile.equals(""))) {
 
-            Log.d("체크", "좋아하는 책 수정");
+            Log.d("체크", "프사 수정");
 
             //해쉬맵 생성
             HashMap<String, String> profile_map = new HashMap<>();

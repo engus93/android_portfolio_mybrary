@@ -2,6 +2,7 @@ package com.example.dudu.myapplication;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.HashMap;
 
 public class Home_02_02 extends AppCompatActivity {
 
@@ -42,11 +45,11 @@ public class Home_02_02 extends AppCompatActivity {
 
         if (!(position == -1)) {
 
-            home_02_02_book_image.setImageURI(Home_02_01.home_02_02_ArrayList.get(position).getBook());
-            home_02_02_book_name.setText(Home_02_01.home_02_02_ArrayList.get(position).getName());
-            home_02_02_book_author.setText(Home_02_01.home_02_02_ArrayList.get(position).getAuthor());
-            home_02_02_book_date.setText(Home_02_01.home_02_02_ArrayList.get(position).getFinish());
-            home_02_02_book_main.setText(Home_02_01.home_02_02_ArrayList.get(position).getMain());
+            home_02_02_book_image.setImageURI(Uri.parse(App.home_02_02_ArrayList.get(position).getBook()));
+            home_02_02_book_name.setText(App.home_02_02_ArrayList.get(position).getName());
+            home_02_02_book_author.setText(App.home_02_02_ArrayList.get(position).getAuthor());
+            home_02_02_book_date.setText(App.home_02_02_ArrayList.get(position).getFinish());
+            home_02_02_book_main.setText(App.home_02_02_ArrayList.get(position).getMain());
 
         } else {
 
@@ -73,9 +76,42 @@ public class Home_02_02 extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
-                                finish();
-                                Home_02_01.home_02_02_ArrayList.remove(position);
+                                App.home_02_02_ArrayList.remove(position);
+
+                                App.mybrary_sort();
+
+                                //쉐어드 생성
+                                SharedPreferences saveMember_info = getSharedPreferences("member_info", MODE_PRIVATE);
+                                SharedPreferences.Editor save = saveMember_info.edit();
+
+                                //해쉬맵 생성
+                                HashMap<String, Home_02_02_ArrayList> mybrary_map = new HashMap<>();
+
+                                mybrary_map.clear();
+
+                                //정보 -> 해쉬맵에 삽입
+                                for(int i = 0; i < App.home_02_02_ArrayList.size(); i++){
+
+                                    mybrary_map.put(App.User_ID + "_MyBrary_" + i , App.home_02_02_ArrayList.get(i));
+
+                                }
+
+                                //쉐어드 초기화
+                                save.clear();
+
+                                //해쉬맵(Gson 변환) -> 쉐어드 삽입
+                                save.putString(App.User_ID + "_MyBrary", App.gson.toJson(mybrary_map));
+
+                                //저장
+                                save.apply();
+
                                 MainActivity.showToast(Home_02_02.this, "삭제 되었습니다.");
+
+                                //정렬
+                                App.mybrary_sort();
+
+                                onBackPressed();
+
                                 return;
                             }
                         });
@@ -97,6 +133,15 @@ public class Home_02_02 extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        Intent intent1 = new Intent(Home_02_02.this, Home_02.class);
+        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent1);
 
     }
 

@@ -53,6 +53,16 @@ public class Home_02 extends AppCompatActivity {
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_02);
 
+        //-------------------------------쉐어드-------------------------------------
+
+        //쉐어드 생성
+        SharedPreferences saveMember_info = getSharedPreferences("member_info", MODE_PRIVATE);
+
+        //쉐어드 안에 있는 정보 가져오기
+        String check = saveMember_info.getString(App.User_ID + "_MyBrary", "");
+
+
+
         home_02_book_count = findViewById(R.id.home_02_re_mini_1_T);  //내 서재 게시글 수
         home_02_nick_title = findViewById(R.id.home_02_nick_title); //내 닉네임 글
 
@@ -217,23 +227,11 @@ public class Home_02 extends AppCompatActivity {
         super.onResume();
 
         //내 서재 게시글 수 갱신
-        String a = String.valueOf(Home_02_01.home_02_02_ArrayList.size());
+        String a = String.valueOf(App.home_02_02_ArrayList.size());
         home_02_book_count.setText(a);
 
         //닉네임 + 서재
         home_02_nick_title.setText("골아파덕 님의 서재"); //내 닉네임 의 서재
-
-        RecyclerView mRecyclerView;
-        RecyclerView.LayoutManager mLayoutManager;
-
-        mRecyclerView = findViewById(R.id.home_02_RE);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new GridLayoutManager(this,3);
-        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(),Home_02_01.home_02_02_ArrayList);
-        mRecyclerView.setAdapter(myAdapter);
 
         //--------------------------------------쉐어드---------------------------------------------------
 
@@ -248,6 +246,9 @@ public class Home_02 extends AppCompatActivity {
 
         //쉐어드 안에 있는 정보 가져오기 - 대화명
         String talk = savenick_info.getString(App.User_ID + "_user_talk", "");
+
+        //쉐어드 안에 있는 정보 가져오기 - 대화명
+        String mybrary = savenick_info.getString(App.User_ID + "_MyBrary", "");
 
         //프사 세팅
         if(!(profile.equals(""))) {
@@ -302,6 +303,67 @@ public class Home_02 extends AppCompatActivity {
             user_talk.setText(user_talk_map.get(App.User_ID + "_user_talk"));
 
         }
+
+        if (!(mybrary.equals(""))) {
+
+            Log.d("체크", "잘 불러옴");
+
+            //해쉬맵 생성
+            HashMap<String, Home_02_02_ArrayList> mybrary_map = new HashMap<>();
+
+            //해쉬맵에 삽입
+            mybrary_map = App.gson.fromJson(mybrary, App.collectionTypeMyBrary);
+
+            App.home_02_02_ArrayList.clear();
+
+            for (int i = 0; i < mybrary_map.size(); i++) {
+
+                Log.d("체크", "잘 넣음");
+
+                App.home_02_02_ArrayList.add(mybrary_map.get(App.User_ID + "_MyBrary_" + i));
+
+            }
+
+            //---------------------------리싸이클러뷰---------------------------------
+            RecyclerView mRecyclerView;
+            RecyclerView.LayoutManager mLayoutManager;
+
+            mRecyclerView = findViewById(R.id.home_02_RE);
+            mRecyclerView.setHasFixedSize(true);
+            mLayoutManager = new GridLayoutManager(this,3);
+            ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
+            mRecyclerView.setLayoutManager(mLayoutManager);
+
+
+            if (!(mybrary.equals(""))) {
+
+                App.mybrary_sort();
+
+//                App.list.clear();
+//
+//                for (int i = App.home_02_02_ArrayList.size(); 0 < i; i--) {
+//
+//                    App.list.add(App.home_02_02_ArrayList.get(i - 1));
+//
+//                }
+//
+//                App.home_02_02_ArrayList.clear();
+//
+//                for (int i = 0; i < App.list.size(); i++) {
+//
+//                    Log.d("체크", "잘 넣음");
+//
+//                    App.home_02_02_ArrayList.add(App.list.get(i));
+//
+//                }
+
+            }
+
+            Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(),App.home_02_02_ArrayList);
+            mRecyclerView.setAdapter(myAdapter);
+
+        }
+
 
     }
 

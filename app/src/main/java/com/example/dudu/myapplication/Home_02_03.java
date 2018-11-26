@@ -2,6 +2,7 @@ package com.example.dudu.myapplication;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.net.URI;
+import java.util.HashMap;
 
 public class Home_02_03 extends AppCompatActivity {
 
@@ -45,11 +49,11 @@ public class Home_02_03 extends AppCompatActivity {
 
         if(!(position == -1)){
 
-            home_02_03_book_image.setImageURI(Home_02_01.home_02_02_ArrayList.get(position).getBook());
-            home_02_03_book_name.setText(Home_02_01.home_02_02_ArrayList.get(position).getName());
-            home_02_03_book_author.setText(Home_02_01.home_02_02_ArrayList.get(position).getAuthor());
-            home_02_03_book_date.setText(Home_02_01.home_02_02_ArrayList.get(position).getFinish());
-            home_02_03_book_main.setText(Home_02_01.home_02_02_ArrayList.get(position).getMain());
+            home_02_03_book_image.setImageURI(Uri.parse(App.home_02_02_ArrayList.get(position).getBook()));
+            home_02_03_book_name.setText(App.home_02_02_ArrayList.get(position).getName());
+            home_02_03_book_author.setText(App.home_02_02_ArrayList.get(position).getAuthor());
+            home_02_03_book_date.setText(App.home_02_02_ArrayList.get(position).getFinish());
+            home_02_03_book_main.setText(App.home_02_02_ArrayList.get(position).getMain());
 
         }else{
 
@@ -63,9 +67,39 @@ public class Home_02_03 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                finish();
-                Home_02_01.home_02_02_ArrayList.set(position,new Home_02_02_ArrayList(Home_02_01.home_02_02_ArrayList.get(position).getBook(), home_02_03_book_name.getText().toString(), home_02_03_book_author.getText().toString(), home_02_03_book_date.getText().toString(), home_02_03_book_main.getText().toString()));
+                App.home_02_02_ArrayList.set(position,new Home_02_02_ArrayList(App.home_02_02_ArrayList.get(position).getBook(), home_02_03_book_name.getText().toString(), home_02_03_book_author.getText().toString(), home_02_03_book_date.getText().toString(), home_02_03_book_main.getText().toString()));
+
+                App.mybrary_sort();
+
+                //쉐어드 생성
+                SharedPreferences saveMember_info = getSharedPreferences("member_info", MODE_PRIVATE);
+                SharedPreferences.Editor save = saveMember_info.edit();
+
+                //해쉬맵 생성
+                HashMap<String, Home_02_02_ArrayList> mybrary_map = new HashMap<>();
+
+                //정보 -> 해쉬맵에 삽입
+                for(int i = 0; i < App.home_02_02_ArrayList.size(); i++){
+
+                    mybrary_map.put(App.User_ID + "_MyBrary_" + i , App.home_02_02_ArrayList.get(i));
+
+                }
+
+                //쉐어드 초기화
+                save.clear();
+
+                //해쉬맵(Gson 변환) -> 쉐어드 삽입
+                save.putString(App.User_ID + "_MyBrary", App.gson.toJson(mybrary_map));
+
+                //저장
+                save.apply();
+
                 MainActivity.showToast(Home_02_03.this, "수정 되었습니다.");
+
+                //종료
+                Intent intent1 = new Intent(Home_02_03.this, Home_02.class);
+                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent1);
 
             }
         });
@@ -100,7 +134,9 @@ public class Home_02_03 extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        finish();
+                        Intent intent1 = new Intent(Home_02_03.this, Home_02.class);
+                        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        startActivity(intent1);
 
                         return;
                     }

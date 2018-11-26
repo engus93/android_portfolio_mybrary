@@ -124,6 +124,7 @@ public class Sign_up_02_Activity extends AppCompatActivity {
                     //정보 삽입
                     Member_ArrayList user_info = new Member_ArrayList(user_id.getText().toString(), user_password_01.getText().toString(), user_e_mail.getText().toString(),
                             user_name.getText().toString(), user_birth_day.getText().toString());
+
                     //정보 -> 해쉬맵에 삽입
                     member_map.put(user_info.getMember_id(), user_info);
 

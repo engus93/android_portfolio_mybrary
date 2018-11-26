@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -38,6 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -58,6 +60,8 @@ public class Home_02_01 extends AppCompatActivity {
     String set_date;
     Boolean Regeneration = false;
 
+    Context context;
+
     //사진 추가하기
 
     private static final int MY_PERMISSION_CAMERA = 1111;
@@ -69,7 +73,7 @@ public class Home_02_01 extends AppCompatActivity {
 
     Uri imageUri;
 
-    static ArrayList<Home_02_02_ArrayList> home_02_02_ArrayList = new ArrayList<>();
+    Uri imageUri_01 = Uri.parse("android.resource://com.example.dudu.myapplication/drawable/home_02_default.png");
 
     protected void onCreate(Bundle savedInstancesState) {
 
@@ -142,15 +146,48 @@ public class Home_02_01 extends AppCompatActivity {
 
                                 }else {
 
-
                                         Log.d("체크", "사진 어디냐1");
 
-                                        home_02_02_ArrayList.add(new Home_02_02_ArrayList(imageUri, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
+                                    //쉐어드 생성
+                                    SharedPreferences saveMember_info = getSharedPreferences("member_info", MODE_PRIVATE);
+                                    SharedPreferences.Editor save = saveMember_info.edit();
+
+                                    //해쉬맵 생성
+                                    HashMap<String, Home_02_02_ArrayList> mybrary_map = new HashMap<>();
+
+                                    App.mybrary_sort(); //정렬
+
+                                    if(imageUri == null) {
+                                        Log.d("체크", "널");
+                                        //정보 삽입
+                                        App.home_02_02_ArrayList.add(new Home_02_02_ArrayList(home_02_01_book_image.getDrawable().toString(), home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
+                                    }else{
+                                        Log.d("체크", "잘");
+                                        //정보 삽입
+                                        App.home_02_02_ArrayList.add(new Home_02_02_ArrayList(imageUri.toString(), home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
+                                    }
+
+                                    //정보 -> 해쉬맵에 삽입
+                                    for(int i = 0; i < App.home_02_02_ArrayList.size(); i++){
+
+                                        mybrary_map.put(App.User_ID + "_MyBrary_" + i , App.home_02_02_ArrayList.get(i));
+
+                                    }
+
+                                    save.clear();
+
+                                    //해쉬맵(Gson 변환) -> 쉐어드 삽입
+                                    save.putString(App.User_ID + "_MyBrary", App.gson.toJson(mybrary_map));
+
+                                    //저장
+                                    save.apply();
 
                                         Intent intent1 = new Intent(Home_02_01.this, Home_02.class);
                                         intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                         MainActivity.showToast(Home_02_01.this, "작성 되었습니다.");
                                         startActivity(intent1);
+
+
 
                                         return;
                                 }
@@ -239,7 +276,9 @@ public class Home_02_01 extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        finish();
+                        Intent intent1 = new Intent(Home_02_01.this, Home_02.class);
+                        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        startActivity(intent1);
 
                     }
 
@@ -248,6 +287,7 @@ public class Home_02_01 extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Regeneration = true;
                         Intent intent1 = new Intent(Home_02_01.this, Home_02.class);
+                        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         startActivity(intent1);
                         return;
                     }
