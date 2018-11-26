@@ -34,6 +34,8 @@
 
         <activity android:name=".Home_00_my_info_02"/>
 
+        <activity android:name=".Home_00_my_info_03"/>
+
         <activity android:name=".Home_02"/>
 
         <activity android:name=".Home_02_01"/>

@@ -11,20 +11,20 @@ import android.widget.ImageButton;
 
 import java.util.HashMap;
 
-public class Home_00_my_info_02 extends AppCompatActivity {
+public class Home_00_my_info_03 extends AppCompatActivity {
 
     Button bt_01;
-    ImageButton my_info_02_genre_B;
-    EditText my_info_genre;
+    ImageButton my_info_03_talk_B;
+    EditText my_info_talk;
 
     protected void onCreate(Bundle savedIstancesState) {
         super.onCreate(savedIstancesState);
-        setContentView(R.layout.home_00_my_info_02);
+        setContentView(R.layout.home_00_my_info_03);
 
-        my_info_genre = (EditText) findViewById(R.id.my_info_02_genre_ET);
+        my_info_talk = (EditText) findViewById(R.id.my_info_03_talk_ET);
 
         //닉네임 수정 -> 닉네임 수정 완료
-        bt_01 = findViewById(R.id.my_info_02_genre_B);
+        bt_01 = findViewById(R.id.my_info_03_talk_B);
         bt_01.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -39,18 +39,18 @@ public class Home_00_my_info_02 extends AppCompatActivity {
                 HashMap<String, String> user_map = new HashMap<>();
 
                 //정보 삽입
-                String user_like = my_info_genre.getText().toString();
+                String user_talk = my_info_talk.getText().toString();
 
                 //정보 -> 해쉬맵에 삽입
-                user_map.put(App.User_ID + "_user_like", user_like);
+                user_map.put(App.User_ID + "_user_talk", user_talk);
 
                 //해쉬맵(Gson 변환) -> 쉐어드 삽입
-                save.putString(App.User_ID + "_user_like", App.gson.toJson(user_map));
+                save.putString(App.User_ID + "_user_talk", App.gson.toJson(user_map));
 
                 //저장
                 save.apply();
 
-                Intent intent1 = new Intent(Home_00_my_info_02.this, Home_00_my_info.class);
+                Intent intent1 = new Intent(Home_00_my_info_03.this, Home_00_my_info.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
 
@@ -58,8 +58,8 @@ public class Home_00_my_info_02 extends AppCompatActivity {
         });
 
         //뒤로가기
-        my_info_02_genre_B = findViewById(R.id.my_info_02_back_B);
-        my_info_02_genre_B.setOnClickListener(new View.OnClickListener() {
+        my_info_03_talk_B = findViewById(R.id.my_info_03_back_B);
+        my_info_03_talk_B.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
@@ -72,7 +72,7 @@ public class Home_00_my_info_02 extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        Intent intent1 = new Intent(Home_00_my_info_02.this, Home_00_my_info.class);
+        Intent intent1 = new Intent(Home_00_my_info_03.this, Home_00_my_info.class);
         intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent1);
 

@@ -235,11 +235,19 @@ public class Home_02 extends AppCompatActivity {
         Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(),Home_02_01.home_02_02_ArrayList);
         mRecyclerView.setAdapter(myAdapter);
 
+        //--------------------------------------쉐어드---------------------------------------------------
+
         //쉐어드 생성
         SharedPreferences savenick_info = getSharedPreferences("member_info", MODE_PRIVATE);
 
         //쉐어드 안에 있는 정보 가져오기 - 프사
         String profile = savenick_info.getString(App.User_ID + "_user_profile", "");
+
+        //쉐어드 안에 있는 정보 가져오기 - 닉네임
+        String nick = savenick_info.getString(App.User_ID + "_user_nick", "");
+
+        //쉐어드 안에 있는 정보 가져오기 - 대화명
+        String talk = savenick_info.getString(App.User_ID + "_user_talk", "");
 
         //프사 세팅
         if(!(profile.equals(""))) {
@@ -259,6 +267,39 @@ public class Home_02 extends AppCompatActivity {
             //이미지 삽입 (내 서재)
             ImageView mybrary_profile = findViewById(R.id.home_02_re_fropile_I);
             mybrary_profile.setImageURI(Uri.parse(profile_map.get(App.User_ID + "_user_profile")));
+
+        }
+
+        if(!(nick.equals(""))) {
+
+            Log.d("체크", "닉네임 수정");
+
+            //해쉬맵 생성
+            HashMap<String, String> nick_map = new HashMap<>();
+
+            //해쉬맵에 삽입
+            nick_map = App.gson.fromJson(nick,App.collectionTypeString);
+
+            //일치
+            TextView user_nick = findViewById(R.id.home_02_nick_title);
+            user_nick.setText(nick_map.get(App.User_ID + "_user_nick"));
+
+        }
+
+
+        if(!(talk.equals(""))) {
+
+            Log.d("체크", "대화명 수정");
+
+            //해쉬맵 생성
+            HashMap<String, String> user_talk_map = new HashMap<>();
+
+            //해쉬맵에 삽입
+            user_talk_map = App.gson.fromJson(talk,App.collectionTypeString);
+
+            //일치
+            TextView user_talk = findViewById(R.id.home_02_re_screen_T);
+            user_talk.setText(user_talk_map.get(App.User_ID + "_user_talk"));
 
         }
 

@@ -81,6 +81,15 @@ public class Home_00_my_info extends AppCompatActivity {
             }
         });
 
+        //내 정보 수정 - > 대화명 수정
+        findViewById(R.id.my_info_talk_B).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(Home_00_my_info.this, Home_00_my_info_03.class);
+                startActivity(intent1);
+            }
+        });
+
         my_info_back_B = findViewById(R.id.my_info_back_B);
         my_info_back_B.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -117,6 +126,9 @@ public class Home_00_my_info extends AppCompatActivity {
 
         //쉐어드 안에 있는 정보 가져오기 - 좋아하는 책
         String like = savenick_info.getString(App.User_ID + "_user_like", "");
+
+        //쉐어드 안에 있는 정보 가져오기 - 대화명
+        String talk = savenick_info.getString(App.User_ID + "_user_talk", "");
 
         if(!(nick.equals(""))) {
 
@@ -162,6 +174,22 @@ public class Home_00_my_info extends AppCompatActivity {
 
             //이미지 삽입
             iv_view.setImageURI(Uri.parse(profile_map.get(App.User_ID + "_user_profile")));
+
+        }
+
+        if(!(talk.equals(""))) {
+
+            Log.d("체크", "대화명 수정");
+
+            //해쉬맵 생성
+            HashMap<String, String> user_talk_map = new HashMap<>();
+
+            //해쉬맵에 삽입
+            user_talk_map = App.gson.fromJson(talk,App.collectionTypeString);
+
+            //일치
+            TextView user_talk = findViewById(R.id.home_00_my_info_talk);
+            user_talk.setText(user_talk_map.get(App.User_ID + "_user_talk"));
 
         }
 
