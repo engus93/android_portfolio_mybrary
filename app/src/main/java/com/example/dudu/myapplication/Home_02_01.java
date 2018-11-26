@@ -73,8 +73,6 @@ public class Home_02_01 extends AppCompatActivity {
 
     Uri imageUri;
 
-    Uri imageUri_01 = Uri.parse("android.resource://com.example.dudu.myapplication/drawable/home_02_default.png");
-
     protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
@@ -149,7 +147,7 @@ public class Home_02_01 extends AppCompatActivity {
                                         Log.d("체크", "사진 어디냐1");
 
                                     //쉐어드 생성
-                                    SharedPreferences saveMember_info = getSharedPreferences("member_info", MODE_PRIVATE);
+                                    SharedPreferences saveMember_info = getSharedPreferences("mybrary", MODE_PRIVATE);
                                     SharedPreferences.Editor save = saveMember_info.edit();
 
                                     //해쉬맵 생성
@@ -160,7 +158,7 @@ public class Home_02_01 extends AppCompatActivity {
                                     if(imageUri == null) {
                                         Log.d("체크", "널");
                                         //정보 삽입
-                                        App.home_02_02_ArrayList.add(new Home_02_02_ArrayList(home_02_01_book_image.getDrawable().toString(), home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
+                                        App.home_02_02_ArrayList.add(new Home_02_02_ArrayList("null", home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
                                     }else{
                                         Log.d("체크", "잘");
                                         //정보 삽입

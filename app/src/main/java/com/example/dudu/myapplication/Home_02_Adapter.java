@@ -48,7 +48,11 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
 
         Log.d("체크", home_02_02_Array.get(position).book);
 
-        holder.book_image.setImageURI(Uri.parse(home_02_02_Array.get(position).book ));
+        if(home_02_02_Array.get(position).book.equals("null")){
+            holder.book_image.setImageResource(R.drawable.home_02_default);
+        }else{
+            holder.book_image.setImageURI(Uri.parse(home_02_02_Array.get(position).book ));
+        }
         holder.book_name.setText(home_02_02_Array.get(position).name);
         holder.book_author.setText(home_02_02_Array.get(position).author);
         holder.book_finish.setText(home_02_02_Array.get(position).finish);

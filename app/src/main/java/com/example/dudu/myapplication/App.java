@@ -28,8 +28,7 @@ public class App extends Application {
 
     static Type collectionTypeString = new TypeToken<HashMap<String,String>>(){}.getType();
 
-
-
+    static boolean image_check; //이미지 체크용
 
     @Override
     public void onCreate() {

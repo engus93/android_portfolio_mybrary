@@ -116,19 +116,31 @@ public class Home_00_my_info extends AppCompatActivity {
         super.onResume();
 
         //쉐어드 생성
-        SharedPreferences savenick_info = getSharedPreferences("member_info", MODE_PRIVATE);
+        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
 
         //쉐어드 안에 있는 정보 가져오기 - 프사
         String profile = savenick_info.getString(App.User_ID + "_user_profile", "");
 
+        if(!(profile.equals(""))) {
+
+            Log.d("체크", "프사 수정");
+
+            //해쉬맵 생성
+            HashMap<String, String> profile_map = new HashMap<>();
+
+            //해쉬맵에 삽입
+            profile_map = App.gson.fromJson(profile,App.collectionTypeString);
+
+            //이미지 삽입
+            iv_view.setImageURI(Uri.parse(profile_map.get(App.User_ID + "_user_profile")));
+
+        }
+
+        //쉐어드 생성
+        savenick_info = getSharedPreferences("member_info_01", MODE_PRIVATE);
+
         //쉐어드 안에 있는 정보 가져오기 - 닉네임
         String nick = savenick_info.getString(App.User_ID + "_user_nick", "");
-
-        //쉐어드 안에 있는 정보 가져오기 - 좋아하는 책
-        String like = savenick_info.getString(App.User_ID + "_user_like", "");
-
-        //쉐어드 안에 있는 정보 가져오기 - 대화명
-        String talk = savenick_info.getString(App.User_ID + "_user_talk", "");
 
         if(!(nick.equals(""))) {
 
@@ -146,6 +158,12 @@ public class Home_00_my_info extends AppCompatActivity {
 
         }
 
+        //쉐어드 생성
+        savenick_info = getSharedPreferences("member_info_02", MODE_PRIVATE);
+
+        //쉐어드 안에 있는 정보 가져오기 - 좋아하는 책
+        String like = savenick_info.getString(App.User_ID + "_user_like", "");
+
         if(!(like.equals(""))) {
 
             Log.d("체크", "좋아하는 책 수정");
@@ -162,20 +180,11 @@ public class Home_00_my_info extends AppCompatActivity {
 
         }
 
-        if(!(profile.equals(""))) {
+        //쉐어드 생성
+        savenick_info = getSharedPreferences("member_info_03", MODE_PRIVATE);
 
-            Log.d("체크", "프사 수정");
-
-            //해쉬맵 생성
-            HashMap<String, String> profile_map = new HashMap<>();
-
-            //해쉬맵에 삽입
-            profile_map = App.gson.fromJson(profile,App.collectionTypeString);
-
-            //이미지 삽입
-            iv_view.setImageURI(Uri.parse(profile_map.get(App.User_ID + "_user_profile")));
-
-        }
+        //쉐어드 안에 있는 정보 가져오기 - 대화명
+        String talk = savenick_info.getString(App.User_ID + "_user_talk", "");
 
         if(!(talk.equals(""))) {
 
@@ -289,7 +298,7 @@ public class Home_00_my_info extends AppCompatActivity {
         iv_view.setImageBitmap(rotate(bitmap, exifDegree));//이미지 뷰에 비트맵 넣기
 
         //쉐어드 생성
-        SharedPreferences savenick_info = getSharedPreferences("member_info", MODE_PRIVATE);
+        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
         SharedPreferences.Editor save = savenick_info.edit();
 
         //해쉬맵 생성
@@ -356,7 +365,7 @@ public class Home_00_my_info extends AppCompatActivity {
         iv_view.setImageBitmap(rotate(bitmap, exifDegree));//이미지 뷰에 비트맵 넣기
 
         //쉐어드 생성
-        SharedPreferences savenick_info = getSharedPreferences("member_info", MODE_PRIVATE);
+        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
         SharedPreferences.Editor save = savenick_info.edit();
 
         //해쉬맵 생성

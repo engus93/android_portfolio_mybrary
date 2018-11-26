@@ -49,7 +49,13 @@ public class Home_02_03 extends AppCompatActivity {
 
         if(!(position == -1)){
 
-            home_02_03_book_image.setImageURI(Uri.parse(App.home_02_02_ArrayList.get(position).getBook()));
+            if(App.home_02_02_ArrayList.get(position).book.equals("null")){
+                home_02_03_book_image.setImageResource(R.drawable.home_02_default);
+            }else{
+                home_02_03_book_image.setImageURI(Uri.parse(App.home_02_02_ArrayList.get(position).getBook()));
+            }
+
+//            home_02_03_book_image.setImageURI(Uri.parse(App.home_02_02_ArrayList.get(position).getBook()));
             home_02_03_book_name.setText(App.home_02_02_ArrayList.get(position).getName());
             home_02_03_book_author.setText(App.home_02_02_ArrayList.get(position).getAuthor());
             home_02_03_book_date.setText(App.home_02_02_ArrayList.get(position).getFinish());
@@ -72,7 +78,7 @@ public class Home_02_03 extends AppCompatActivity {
                 App.mybrary_sort();
 
                 //쉐어드 생성
-                SharedPreferences saveMember_info = getSharedPreferences("member_info", MODE_PRIVATE);
+                SharedPreferences saveMember_info = getSharedPreferences("mybrary", MODE_PRIVATE);
                 SharedPreferences.Editor save = saveMember_info.edit();
 
                 //해쉬맵 생성

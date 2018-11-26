@@ -61,8 +61,6 @@ public class Home_02 extends AppCompatActivity {
         //쉐어드 안에 있는 정보 가져오기
         String check = saveMember_info.getString(App.User_ID + "_MyBrary", "");
 
-
-
         home_02_book_count = findViewById(R.id.home_02_re_mini_1_T);  //내 서재 게시글 수
         home_02_nick_title = findViewById(R.id.home_02_nick_title); //내 닉네임 글
 
@@ -226,34 +224,28 @@ public class Home_02 extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        //내 서재 게시글 수 갱신
-        String a = String.valueOf(App.home_02_02_ArrayList.size());
-        home_02_book_count.setText(a);
-
-        //닉네임 + 서재
-        home_02_nick_title.setText("골아파덕 님의 서재"); //내 닉네임 의 서재
-
         //--------------------------------------쉐어드---------------------------------------------------
 
+
+
+
+
+
+
+
+
+
+
         //쉐어드 생성
-        SharedPreferences savenick_info = getSharedPreferences("member_info", MODE_PRIVATE);
+        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
 
         //쉐어드 안에 있는 정보 가져오기 - 프사
         String profile = savenick_info.getString(App.User_ID + "_user_profile", "");
 
-        //쉐어드 안에 있는 정보 가져오기 - 닉네임
-        String nick = savenick_info.getString(App.User_ID + "_user_nick", "");
-
-        //쉐어드 안에 있는 정보 가져오기 - 대화명
-        String talk = savenick_info.getString(App.User_ID + "_user_talk", "");
-
-        //쉐어드 안에 있는 정보 가져오기 - 대화명
-        String mybrary = savenick_info.getString(App.User_ID + "_MyBrary", "");
-
         //프사 세팅
         if(!(profile.equals(""))) {
 
-            Log.d("체크", "좋아하는 책 수정");
+            Log.d("체크", "프사 수정");
 
             //해쉬맵 생성
             HashMap<String, String> profile_map = new HashMap<>();
@@ -271,6 +263,12 @@ public class Home_02 extends AppCompatActivity {
 
         }
 
+        //쉐어드 생성
+        savenick_info = getSharedPreferences("member_info_01", MODE_PRIVATE);
+
+        //쉐어드 안에 있는 정보 가져오기 - 닉네임
+        String nick = savenick_info.getString(App.User_ID + "_user_nick", "");
+
         if(!(nick.equals(""))) {
 
             Log.d("체크", "닉네임 수정");
@@ -287,6 +285,11 @@ public class Home_02 extends AppCompatActivity {
 
         }
 
+        //쉐어드 생성
+        savenick_info = getSharedPreferences("member_info_02", MODE_PRIVATE);
+
+        //쉐어드 안에 있는 정보 가져오기 - 대화명
+        String talk = savenick_info.getString(App.User_ID + "_user_talk", "");
 
         if(!(talk.equals(""))) {
 
@@ -303,6 +306,12 @@ public class Home_02 extends AppCompatActivity {
             user_talk.setText(user_talk_map.get(App.User_ID + "_user_talk"));
 
         }
+
+        //쉐어드 생성
+        savenick_info = getSharedPreferences("mybrary", MODE_PRIVATE);
+
+        //쉐어드 안에 있는 정보 가져오기 - 내 서재
+        String mybrary = savenick_info.getString(App.User_ID + "_MyBrary", "");
 
         if (!(mybrary.equals(""))) {
 
@@ -323,6 +332,10 @@ public class Home_02 extends AppCompatActivity {
                 App.home_02_02_ArrayList.add(mybrary_map.get(App.User_ID + "_MyBrary_" + i));
 
             }
+
+            //내 서재 게시글 수 갱신
+            String a = String.valueOf(App.home_02_02_ArrayList.size());
+            home_02_book_count.setText(a);
 
             //---------------------------리싸이클러뷰---------------------------------
             RecyclerView mRecyclerView;
