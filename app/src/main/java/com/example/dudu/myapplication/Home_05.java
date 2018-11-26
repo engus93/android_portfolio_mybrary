@@ -190,7 +190,7 @@ public class Home_05 extends AppCompatActivity {
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        final Home_05_Adapter myAdapter = new Home_05_Adapter(getApplicationContext(),Search_01_Adapter.heart_book_ArrayList);
+        final Home_05_Adapter myAdapter = new Home_05_Adapter(getApplicationContext(),App.heart_book_ArrayList);
 
         mRecyclerView.setAdapter(myAdapter);
 

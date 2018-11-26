@@ -23,7 +23,7 @@ public class Home_00_my_info_03 extends AppCompatActivity {
 
         my_info_talk = (EditText) findViewById(R.id.my_info_03_talk_ET);
 
-        //닉네임 수정 -> 닉네임 수정 완료
+        //닉네임 수정 -> 대화명 수정 완료
         bt_01 = findViewById(R.id.my_info_03_talk_B);
         bt_01.setOnClickListener(new View.OnClickListener() {
 
@@ -32,7 +32,7 @@ public class Home_00_my_info_03 extends AppCompatActivity {
 
 
                 //쉐어드 생성
-                SharedPreferences savenick_info = getSharedPreferences("member_info", MODE_PRIVATE);
+                SharedPreferences savenick_info = getSharedPreferences("member_info_03", MODE_PRIVATE);
                 SharedPreferences.Editor save = savenick_info.edit();
 
                 //해쉬맵 생성

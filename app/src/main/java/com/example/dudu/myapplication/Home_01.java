@@ -218,7 +218,7 @@ public class Home_01 extends AppCompatActivity {
         super.onResume();
 
         //쉐어드 생성
-        SharedPreferences savenick_info = getSharedPreferences("member_info", MODE_PRIVATE);
+        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
 
         //쉐어드 안에 있는 정보 가져오기 - 프사
         String profile = savenick_info.getString(App.User_ID + "_user_profile", "");

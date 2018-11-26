@@ -8,7 +8,7 @@
 
 
     <ImageButton
-        android:id="@+id/search_back_B2"
+        android:id="@+id/search_02_back_B"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginTop="5dp"
@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/back" />
 
-    <EditText
+    <TextView
         android:id="@+id/textView39"
         android:layout_width="0dp"
         android:layout_height="35dp"
@@ -31,10 +31,11 @@
         android:layout_marginEnd="5dp"
         android:layout_weight="7"
         android:background="@null"
-        android:inputType="none"
+        android:gravity="center_vertical"
         android:text="책 검색"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/search_back_B2"
+        app:layout_constraintStart_toEndOf="@+id/search_02_back_B"
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.Guideline
@@ -101,7 +102,7 @@
                 app:layout_constraintGuide_percent="0.1" />
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/search_02_book"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -118,10 +119,10 @@
                 android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+                app:layout_constraintTop_toBottomOf="@+id/search_02_book" />
 
             <TextView
-                android:id="@+id/textView18"
+                android:id="@+id/search_02_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -134,31 +135,19 @@
                 app:layout_constraintTop_toBottomOf="@+id/line_01" />
 
             <TextView
-                android:id="@+id/textView20"
+                android:id="@+id/search_02_author"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="이국종"
                 android:textAlignment="center"
-                app:layout_constraintEnd_toEndOf="@+id/imageView2"
+                app:layout_constraintEnd_toEndOf="@+id/search_02_book"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="@+id/imageView2"
-                app:layout_constraintTop_toBottomOf="@+id/textView18" />
+                app:layout_constraintStart_toStartOf="@+id/search_02_book"
+                app:layout_constraintTop_toBottomOf="@+id/search_02_name" />
 
             <TextView
-                android:id="@+id/textView22"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="13,500"
-                android:textAlignment="center"
-                app:layout_constraintEnd_toEndOf="@+id/imageView2"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="@+id/imageView2"
-                app:layout_constraintTop_toBottomOf="@+id/textView25" />
-
-            <TextView
-                android:id="@+id/textView21"
+                android:id="@+id/search_02_publisher"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -167,10 +156,10 @@
                 app:layout_constraintEnd_toStartOf="@+id/guideline21"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/guideline20"
-                app:layout_constraintTop_toBottomOf="@+id/textView20" />
+                app:layout_constraintTop_toBottomOf="@+id/search_02_author" />
 
             <TextView
-                android:id="@+id/textView25"
+                android:id="@+id/search_02__date"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -179,30 +168,44 @@
                 app:layout_constraintEnd_toStartOf="@+id/guideline21"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/guideline20"
-                app:layout_constraintTop_toBottomOf="@+id/textView21" />
+                app:layout_constraintTop_toBottomOf="@+id/search_02_publisher" />
+
+            <TextView
+                android:id="@+id/search_02_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="13,500"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="@+id/search_02_book"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/search_02_book"
+                app:layout_constraintTop_toBottomOf="@+id/search_02__date" />
 
             <Button
-                android:id="@+id/button5"
+                android:id="@+id/search_02_heart_B"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/all_stroke"
                 android:text="찜하기"
-                app:layout_constraintBottom_toBottomOf="@+id/button6"
-                app:layout_constraintEnd_toStartOf="@+id/button6"
+                app:layout_constraintBottom_toBottomOf="@+id/search_02_mybrary_B"
+                app:layout_constraintEnd_toStartOf="@+id/search_02_mybrary_B"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/guideline20"
-                app:layout_constraintTop_toTopOf="@+id/button6" />
+                app:layout_constraintTop_toTopOf="@+id/search_02_mybrary_B" />
 
             <Button
-                android:id="@+id/button6"
-                android:layout_width="wrap_content"
+                android:id="@+id/search_02_mybrary_B"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/all_stroke"
-                android:text="내 서재에 등록"
+                android:text="내 서재에서 쓰기"
+                android:textSize="12sp"
                 app:layout_constraintEnd_toStartOf="@+id/guideline21"
-                app:layout_constraintStart_toEndOf="@+id/button5"
-                app:layout_constraintTop_toBottomOf="@+id/textView22" />
+                app:layout_constraintStart_toEndOf="@+id/search_02_heart_B"
+                app:layout_constraintTop_toBottomOf="@+id/search_02_price" />
 
             <View
                 android:id="@+id/line_02"
@@ -211,7 +214,7 @@
                 android:layout_marginTop="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button6" />
+                app:layout_constraintTop_toBottomOf="@+id/search_02_mybrary_B" />
 
             <TextView
                 android:id="@+id/textView26"
@@ -224,7 +227,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/line_02" />
 
             <TextView
-                android:id="@+id/textView27"
+                android:id="@+id/search_02_summary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -243,10 +246,10 @@
                 android:text="저자"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline17"
-                app:layout_constraintTop_toBottomOf="@+id/textView27" />
+                app:layout_constraintTop_toBottomOf="@+id/search_02_summary" />
 
             <TextView
-                android:id="@+id/textView29"
+                android:id="@+id/search_02_author_summary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -265,10 +268,10 @@
                 android:text="목차"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline17"
-                app:layout_constraintTop_toBottomOf="@+id/textView29" />
+                app:layout_constraintTop_toBottomOf="@+id/search_02_author_summary" />
 
             <TextView
-                android:id="@+id/textView31"
+                android:id="@+id/search_02_tile_list"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -287,10 +290,10 @@
                 android:text="출판사 책 소개"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline17"
-                app:layout_constraintTop_toBottomOf="@+id/textView31" />
+                app:layout_constraintTop_toBottomOf="@+id/search_02_tile_list" />
 
             <TextView
-                android:id="@+id/textView33"
+                android:id="@+id/search_02_publisher_main"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -302,7 +305,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView32" />
 
             <Button
-                android:id="@+id/button8"
+                android:id="@+id/search_02_Top_B"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -314,7 +317,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline19"
                 app:layout_constraintStart_toStartOf="@+id/guideline17"
-                app:layout_constraintTop_toBottomOf="@+id/textView33" />
+                app:layout_constraintTop_toBottomOf="@+id/search_02_publisher_main" />
 
 
         </android.support.constraint.ConstraintLayout>

@@ -2,6 +2,7 @@ package com.example.dudu.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,14 +18,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.MyViewHolder>  {
 
     Context context;
     boolean book_check;
 
-    private ArrayList<Search_01_ArrayList> search_book_ArrayList;
-    static ArrayList<Home_05_ArrayList> heart_book_ArrayList = new ArrayList<>();
+    static ArrayList<Search_01_ArrayList> search_book_ArrayList;
+
 
     Search_01_Adapter(Context context,ArrayList<Search_01_ArrayList> searchInfoArrayList){
         this.context = context;
@@ -59,20 +63,13 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
             }
         });
 
-        holder.heart_bt.setOnClickListener(new View.OnClickListener()
-        {
+        holder.heart_bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-//                switch (v.getId()) {
-//                    case R.id.search_heart_B:
-//                        holder.heart_bt.setSelected(!holder.heart_bt.isSelected());
-//                        break;
-//                }
+                for (int i = 0; i < App.heart_book_ArrayList.size(); i++) {
 
-                for (int i = 0; i < heart_book_ArrayList.size(); i++) {
-
-                    String name = heart_book_ArrayList.get(i).heart_name;
+                    String name = App.heart_book_ArrayList.get(i).heart_name;
 
                     if (!name.equals(selItem)) {
                         book_check = true;
@@ -92,8 +89,7 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
                 }
 
 
-
-                    if (book_check || heart_book_ArrayList.size() == 0) {
+                    if (book_check || App.heart_book_ArrayList.size() == 0) {
 
                         //키보드 내리기
                         if (v != null) {
@@ -107,12 +103,11 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
                             e.printStackTrace();
                         }
 
+                        Log.d("체크", "찜");
 
-                            heart_book_ArrayList.add(new Home_05_ArrayList(search_book_ArrayList.get(position).drawableId, search_book_ArrayList.get(position).name, search_book_ArrayList.get(position).author, search_book_ArrayList.get(position).price, (float) search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02));
+                        App.heart_book_ArrayList.add(new Home_05_ArrayList(search_book_ArrayList.get(position).drawableId, search_book_ArrayList.get(position).name, search_book_ArrayList.get(position).author, search_book_ArrayList.get(position).price, (float) search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02));
 
                             Toast.makeText(context, selItem + "가 찜목록에 추가 되었습니다.", Toast.LENGTH_SHORT).show();
-//                    Intent intent1 = new Intent();
-//                    intent1.putExtra("search_book", heart_book_ArrayList.get(position).toString());
 
                     } else {
                         Log.d("체크", "체크 false 02");
@@ -136,6 +131,20 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
 
                 }
         });
+
+        holder.click_item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Context context = view.getContext();
+//                Toast.makeText(context, selItem, Toast.LENGTH_SHORT).show();
+                Intent intent1 = new Intent(context, Search_02.class);
+                intent1.putExtra("position", position);
+                context.startActivity(intent1);
+
+            }
+        });
+
 
     }
 

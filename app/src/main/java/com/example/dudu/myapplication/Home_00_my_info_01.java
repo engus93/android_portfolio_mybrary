@@ -31,7 +31,7 @@ public class Home_00_my_info_01 extends AppCompatActivity {
             public void onClick(View view) {
 
                 //쉐어드 생성
-                SharedPreferences savenick_info = getSharedPreferences("member_info", MODE_PRIVATE);
+                SharedPreferences savenick_info = getSharedPreferences("member_info_01", MODE_PRIVATE);
                 SharedPreferences.Editor save = savenick_info.edit();
 
                 //해쉬맵 생성

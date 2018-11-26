@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -28,14 +29,14 @@ public class Search_01 extends AppCompatActivity {
             }
         });
 
-
-
-
     }
 
     protected void onResume() {
 
         super.onResume();
+
+
+        Log.d("체크", "찜 후");
 
         //리싸이클러뷰
 
@@ -49,7 +50,7 @@ public class Search_01 extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         final ArrayList<Search_01_ArrayList> search_book_ArrayList = new ArrayList<>();
-        final Search_01_Adapter myAdapter = new Search_01_Adapter(getApplicationContext(),search_book_ArrayList);
+        final Search_01_Adapter myAdapter = new Search_01_Adapter(Search_01.this, search_book_ArrayList);
 
         search_book_ArrayList.add(new Search_01_ArrayList(R.drawable.book_01, "골든아워 1", "이국종","15,600원", 1.5));
         search_book_ArrayList.add(new Search_01_ArrayList(R.drawable.book_02,  "그래서 하고 싶은 말이 뭔데?", "다케우치 가오루", "158,00원", 3.0));
