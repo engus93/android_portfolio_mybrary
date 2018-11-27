@@ -1,6 +1,7 @@
 package com.example.dudu.myapplication;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -223,6 +224,8 @@ public class Home_00_my_info extends AppCompatActivity {
                             } else if (pos == 1) {
                                 selectGallery();
                             }
+
+
                         }
 
                     }
@@ -295,6 +298,7 @@ public class Home_00_my_info extends AppCompatActivity {
         } else {
             exifDegree = 0;
         }
+
         iv_view.setImageBitmap(rotate(bitmap, exifDegree));//이미지 뷰에 비트맵 넣기
 
         //쉐어드 생성
@@ -326,6 +330,17 @@ public class Home_00_my_info extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_TAKE_ALBUM);
     }
 
+    private void galleryAddPic(){
+        Log.i("galleryAddPic", "Call");
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        // 해당 경로에 있는 파일을 객체화(새로 파일을 만든다는 것으로 이해하면 안 됨)
+        File f = new File(currentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        sendBroadcast(mediaScanIntent);
+        Toast.makeText(this, "사진이 앨범에 저장되었습니다.", Toast.LENGTH_SHORT).show();
+    }
+
     //선택한 데이터 처리 1
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -336,10 +351,55 @@ public class Home_00_my_info extends AppCompatActivity {
             switch (requestCode) {
 
                 case REQUEST_TAKE_ALBUM:
-                    sendPicture(data.getData()); //갤러리에서 가져오기
+//                    sendPicture(data.getData()); //갤러리에서 가져오기
+
+                    if (resultCode == Activity.RESULT_OK) {
+                        if (data.getData() != null) {
+                            sendPicture(data.getData());
+                            imageUri = data.getData();
+                            String RealPthImage = getRealPathFromURI(imageUri);
+                            imageUri = Uri.parse(RealPthImage);
+
+                            //쉐어드 생성
+                            SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
+                            SharedPreferences.Editor save = savenick_info.edit();
+
+                            //해쉬맵 생성
+                            HashMap<String, String> profile_map = new HashMap<>();
+
+                            //정보 삽입
+                            String user_profile = imageUri.toString();
+
+                            //정보 -> 해쉬맵에 삽입
+                            profile_map.put(App.User_ID + "_user_profile", user_profile);
+
+                            //해쉬맵(Gson 변환) -> 쉐어드 삽입
+                            save.putString(App.User_ID + "_user_profile", App.gson.toJson(profile_map));
+
+                            //저장
+                            save.apply();
+                        }
+                    }
+
                     break;
+
                 case REQUEST_TAKE_PHOTO:
                     getPictureForPhoto(); //카메라에서 가져오기
+
+                    if (resultCode == Activity.RESULT_OK) {
+                        try {
+                            Log.i("REQUEST_TAKE_PHOTO", "OK");
+                            galleryAddPic();
+
+                            iv_view.setImageURI(imageUri);
+
+                        } catch (Exception e) {
+                            Log.e("REQUEST_TAKE_PHOTO", e.toString());
+                        }
+                    } else {
+                        Toast.makeText(Home_00_my_info.this, "사진찍기를 취소하였습니다.", Toast.LENGTH_SHORT).show();
+                    }
+
                     break;
                 default:
                     break;
@@ -364,24 +424,7 @@ public class Home_00_my_info extends AppCompatActivity {
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//경로를 통해 비트맵으로 전환
         iv_view.setImageBitmap(rotate(bitmap, exifDegree));//이미지 뷰에 비트맵 넣기
 
-        //쉐어드 생성
-        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
-        SharedPreferences.Editor save = savenick_info.edit();
 
-        //해쉬맵 생성
-        HashMap<String, String> profile_map = new HashMap<>();
-
-        //정보 삽입
-        String user_profile = imageUri.toString();
-
-        //정보 -> 해쉬맵에 삽입
-        profile_map.put(App.User_ID + "_user_profile", user_profile);
-
-        //해쉬맵(Gson 변환) -> 쉐어드 삽입
-        save.putString(App.User_ID + "_user_profile", App.gson.toJson(profile_map));
-
-        //저장
-        save.apply();
 
     }
 

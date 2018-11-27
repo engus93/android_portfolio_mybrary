@@ -449,6 +449,7 @@ public class Home_02_01 extends AppCompatActivity {
 
                     if (resultCode == Activity.RESULT_OK) {
                         if (data.getData() != null) {
+                            System.out.println(imageUri);
                             sendPicture(data.getData());
                             imageUri = data.getData();
                             String RealPthImage = getRealPathFromURI(imageUri);
