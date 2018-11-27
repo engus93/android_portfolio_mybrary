@@ -35,6 +35,7 @@ public class Search_01 extends AppCompatActivity {
 
         super.onResume();
 
+        App.heart_sort(); //정렬
 
         Log.d("체크", "찜 후");
 

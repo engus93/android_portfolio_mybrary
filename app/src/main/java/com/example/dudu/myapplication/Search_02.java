@@ -3,6 +3,7 @@ package com.example.dudu.myapplication;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -32,8 +33,6 @@ public class Search_02 extends AppCompatActivity {
         findViewById(R.id.search_02_heart_B).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                System.out.println(App.heart_book_ArrayList.size());
 
                 for (int i = 0; i < App.heart_book_ArrayList.size(); i++) {
 
@@ -74,7 +73,7 @@ public class Search_02 extends AppCompatActivity {
 
                     App.heart_book_ArrayList.add(new Home_05_ArrayList(Search_01_Adapter.search_book_ArrayList.get(position).drawableId, Search_01_Adapter.search_book_ArrayList.get(position).name, Search_01_Adapter.search_book_ArrayList.get(position).author, Search_01_Adapter.search_book_ArrayList.get(position).price, (float) Search_01_Adapter.search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02));
 
-//                    ------------------------------------------------쉐어드
+//                    ------------------------------------------------쉐어드---------------------------------------
 
                     //쉐어드 생성
                     SharedPreferences saveMember_info = getSharedPreferences("Heart", MODE_PRIVATE);
@@ -82,8 +81,6 @@ public class Search_02 extends AppCompatActivity {
 
                     //해쉬맵 생성
                     HashMap<String, Home_05_ArrayList> heart_map = new HashMap<>();
-
-                    App.heart_sort(); //정렬
 
                     //정보 -> 해쉬맵에 삽입
                     for(int i = 0; i < App.heart_book_ArrayList.size(); i++){
@@ -101,7 +98,6 @@ public class Search_02 extends AppCompatActivity {
                     save.apply();
 
                     Toast.makeText(Search_02.this, search_02_name.getText().toString() + "가 찜목록에 추가 되었습니다.", Toast.LENGTH_SHORT).show();
-
 
                 } else {
                     Log.d("체크", "체크 false 02");
@@ -129,6 +125,17 @@ public class Search_02 extends AppCompatActivity {
 
 
 
+        findViewById(R.id.search_02_Go_B).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=168915737"));
+                startActivity(intent1);
+            }
+        });
+
+
+
         //뒤로 가기
         findViewById(R.id.search_02_back_B).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,5 +148,7 @@ public class Search_02 extends AppCompatActivity {
 
 
     }
+
+
 
 }

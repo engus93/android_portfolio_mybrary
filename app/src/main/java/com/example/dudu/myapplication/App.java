@@ -63,8 +63,6 @@ public class App extends Application {
 
     static void heart_sort(){
 
-        if (App.heart_book_ArrayList.size() > 1) {
-
 
             App.list_01.clear();
 
@@ -76,7 +74,7 @@ public class App extends Application {
 
             App.heart_book_ArrayList.clear();
 
-            for (int i = 0; i < App.list.size(); i++) {
+            for (int i = 0; i < App.list_01.size(); i++) {
 
                 Log.d("체크", "잘 넣음");
 
@@ -84,7 +82,6 @@ public class App extends Application {
 
             }
 
-        }
 
     }
 }

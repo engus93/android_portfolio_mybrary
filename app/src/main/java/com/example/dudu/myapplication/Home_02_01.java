@@ -25,6 +25,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -133,10 +134,6 @@ public class Home_02_01 extends AppCompatActivity {
                                 if (home_02_01_book_name.getText().toString().length() <= 0) {
 
                                     MainActivity.showToast(Home_02_01.this, "제목을 입력해주세요.");
-
-                                } else if (home_02_01_book_author.getText().toString().length() <= 0) {
-
-                                    MainActivity.showToast(Home_02_01.this, "저자를 입력해주세요.");
 
                                 } else if (home_02_01_book_main.getText().toString().length() <= 0) {
 
@@ -309,6 +306,7 @@ public class Home_02_01 extends AppCompatActivity {
         final List<String> ListItems = new ArrayList<>();
         ListItems.add("사진 찍기");
         ListItems.add("앨범 선택");
+        ListItems.add("검색해서 가져오기");
         final CharSequence[] items = ListItems.toArray(new String[ListItems.size()]);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -321,6 +319,12 @@ public class Home_02_01 extends AppCompatActivity {
                             selectPhoto();
                         } else if (pos == 1) {
                             selectGallery();
+                        }else if (pos == 2) {
+
+                            //검색해서 가져오기 (틀만 구현)
+                            Toast.makeText(Home_02_01.this, "검색하러 가즈아ㅏㅏ", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(Home_02_01.this, Search_01.class);
+                            startActivityForResult(intent, 4747);
                         }
                     }
 

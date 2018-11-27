@@ -352,24 +352,6 @@ public class Home_02 extends AppCompatActivity {
 
                 App.mybrary_sort();
 
-//                App.list.clear();
-//
-//                for (int i = App.home_02_02_ArrayList.size(); 0 < i; i--) {
-//
-//                    App.list.add(App.home_02_02_ArrayList.get(i - 1));
-//
-//                }
-//
-//                App.home_02_02_ArrayList.clear();
-//
-//                for (int i = 0; i < App.list.size(); i++) {
-//
-//                    Log.d("체크", "잘 넣음");
-//
-//                    App.home_02_02_ArrayList.add(App.list.get(i));
-//
-//                }
-
             }
 
             Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(),App.home_02_02_ArrayList);

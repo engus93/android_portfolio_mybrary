@@ -3,6 +3,7 @@ package com.example.dudu.myapplication;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -15,10 +16,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Home_05 extends AppCompatActivity {
@@ -179,7 +182,35 @@ public class Home_05 extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        //         리싸이클러뷰
+        //쉐어드 생성
+        SharedPreferences savenick_info = getSharedPreferences("Heart", MODE_PRIVATE);
+
+        //쉐어드 안에 있는 정보 가져오기 - 내 찜목록
+        String heart = savenick_info.getString(App.User_ID + "_Heart", "");
+
+        if (!(heart.equals(""))) {
+
+            Log.d("체크", "잘 불러옴");
+
+            //해쉬맵 생성
+            HashMap<String, Home_05_ArrayList> heart_map = new HashMap<>();
+
+            //해쉬맵에 삽입
+            heart_map = App.gson.fromJson(heart, App.collectionTypeHeart);
+
+            App.heart_book_ArrayList.clear();
+
+            for (int i = 0; i < heart_map.size(); i++) {
+
+                Log.d("체크", "잘 넣음");
+
+                App.heart_book_ArrayList.add(heart_map.get(App.User_ID + "_Heart_" + i));
+
+            }
+
+        }
+
+            //         리싸이클러뷰
 
         final RecyclerView mRecyclerView;
         RecyclerView.LayoutManager mLayoutManager;
@@ -189,6 +220,8 @@ public class Home_05 extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+//        App.heart_sort(); //정렬
 
         final Home_05_Adapter myAdapter = new Home_05_Adapter(getApplicationContext(),App.heart_book_ArrayList);
 

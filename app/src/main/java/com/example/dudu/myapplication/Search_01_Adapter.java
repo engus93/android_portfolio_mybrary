@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.example.dudu.myapplication.MainActivity.toast;
 
 public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.MyViewHolder>  {
 
@@ -89,47 +90,73 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
                 }
 
 
-                    if (book_check || App.heart_book_ArrayList.size() == 0) {
+                if (book_check || App.heart_book_ArrayList.size() == 0) {
 
-                        //키보드 내리기
-                        if (v != null) {
-                            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                        }
+                    //키보드 내리기
+                    if (v != null) {
+                        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    }
 
-                        try {
-                            Thread.sleep(200);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
-                        Log.d("체크", "찜");
+                    Log.d("체크", "찜");
 
-                        App.heart_book_ArrayList.add(new Home_05_ArrayList(search_book_ArrayList.get(position).drawableId, search_book_ArrayList.get(position).name, search_book_ArrayList.get(position).author, search_book_ArrayList.get(position).price, (float) search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02));
+                    App.heart_book_ArrayList.add(new Home_05_ArrayList(search_book_ArrayList.get(position).drawableId, search_book_ArrayList.get(position).name, search_book_ArrayList.get(position).author, search_book_ArrayList.get(position).price, (float) search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02));
 
-                            Toast.makeText(context, selItem + "가 찜목록에 추가 되었습니다.", Toast.LENGTH_SHORT).show();
+                    showToast(context, selItem + "가 찜목록에 추가 되었습니다.");
 
-                    } else {
-                        Log.d("체크", "체크 false 02");
-                        //키보드 내리기
-                        if (v != null) {
-                            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                        }
+//                    ------------------------------------------------쉐어드---------------------------------------
 
-                        try {
-                            Thread.sleep(200);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                    //쉐어드 생성
+                    SharedPreferences saveMember_info = context.getSharedPreferences("Heart", MODE_PRIVATE);
+                    SharedPreferences.Editor save = saveMember_info.edit();
 
-                        Toast.makeText(context, selItem + "가 이미 찜목록에 있습니다.", Toast.LENGTH_SHORT).show();
+                    //해쉬맵 생성
+                    HashMap<String, Home_05_ArrayList> heart_map = new HashMap<>();
 
-                        book_check = true;
+                    //정보 -> 해쉬맵에 삽입
+                    for (int i = 0; i < App.heart_book_ArrayList.size(); i++) {
+
+                        heart_map.put(App.User_ID + "_Heart_" + i, App.heart_book_ArrayList.get(i));
 
                     }
 
+                    save.clear();
+
+                    //해쉬맵(Gson 변환) -> 쉐어드 삽입
+                    save.putString(App.User_ID + "_Heart", App.gson.toJson(heart_map));
+
+                    //저장
+                    save.apply();
+
+                    showToast(context, selItem + "가 찜목록에 추가 되었습니다.");
+
+                } else {
+                    Log.d("체크", "체크 false 02");
+                    //키보드 내리기
+                    if (v != null) {
+                        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    }
+
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    showToast(context, selItem + "가 이미 찜목록에 있습니다.");
+                    book_check = true;
+
                 }
+
+
+            }
         });
 
         holder.click_item.setOnClickListener(new View.OnClickListener() {
@@ -173,6 +200,17 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
             click_item = view.findViewById(R.id.search_cardview);
             heart_bt = view.findViewById(R.id.search_heart_B);
         }
+    }
+
+    //토스트 메세지 중복 방지
+    public void showToast(Context context, String message) {
+        if (toast == null) {
+            toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        } else {
+            toast.cancel();
+            toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        }
+        toast.show();
     }
 
 }

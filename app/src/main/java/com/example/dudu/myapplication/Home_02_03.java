@@ -73,40 +73,51 @@ public class Home_02_03 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                App.home_02_02_ArrayList.set(position,new Home_02_02_ArrayList(App.home_02_02_ArrayList.get(position).getBook(), home_02_03_book_name.getText().toString(), home_02_03_book_author.getText().toString(), home_02_03_book_date.getText().toString(), home_02_03_book_main.getText().toString()));
+                if (home_02_03_book_name.getText().toString().length() <= 0) {
 
-                App.mybrary_sort();
+                    MainActivity.showToast(Home_02_03.this, "제목을 입력해주세요.");
 
-                //쉐어드 생성
-                SharedPreferences saveMember_info = getSharedPreferences("mybrary", MODE_PRIVATE);
-                SharedPreferences.Editor save = saveMember_info.edit();
+                } else if (home_02_03_book_main.getText().toString().length() <= 0) {
 
-                //해쉬맵 생성
-                HashMap<String, Home_02_02_ArrayList> mybrary_map = new HashMap<>();
+                        MainActivity.showToast(Home_02_03.this, "내용를 입력해주세요.");
 
-                //정보 -> 해쉬맵에 삽입
-                for(int i = 0; i < App.home_02_02_ArrayList.size(); i++){
+                    }else {
 
-                    mybrary_map.put(App.User_ID + "_MyBrary_" + i , App.home_02_02_ArrayList.get(i));
+                    App.home_02_02_ArrayList.set(position, new Home_02_02_ArrayList(App.home_02_02_ArrayList.get(position).getBook(), home_02_03_book_name.getText().toString(), home_02_03_book_author.getText().toString(), home_02_03_book_date.getText().toString(), home_02_03_book_main.getText().toString()));
+
+                    App.mybrary_sort();
+
+                    //쉐어드 생성
+                    SharedPreferences saveMember_info = getSharedPreferences("mybrary", MODE_PRIVATE);
+                    SharedPreferences.Editor save = saveMember_info.edit();
+
+                    //해쉬맵 생성
+                    HashMap<String, Home_02_02_ArrayList> mybrary_map = new HashMap<>();
+
+                    //정보 -> 해쉬맵에 삽입
+                    for (int i = 0; i < App.home_02_02_ArrayList.size(); i++) {
+
+                        mybrary_map.put(App.User_ID + "_MyBrary_" + i, App.home_02_02_ArrayList.get(i));
+
+                    }
+
+                    //쉐어드 초기화
+                    save.clear();
+
+                    //해쉬맵(Gson 변환) -> 쉐어드 삽입
+                    save.putString(App.User_ID + "_MyBrary", App.gson.toJson(mybrary_map));
+
+                    //저장
+                    save.apply();
+
+                    MainActivity.showToast(Home_02_03.this, "수정 되었습니다.");
+
+                    //종료
+                    Intent intent1 = new Intent(Home_02_03.this, Home_02.class);
+                    intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(intent1);
 
                 }
-
-                //쉐어드 초기화
-                save.clear();
-
-                //해쉬맵(Gson 변환) -> 쉐어드 삽입
-                save.putString(App.User_ID + "_MyBrary", App.gson.toJson(mybrary_map));
-
-                //저장
-                save.apply();
-
-                MainActivity.showToast(Home_02_03.this, "수정 되었습니다.");
-
-                //종료
-                Intent intent1 = new Intent(Home_02_03.this, Home_02.class);
-                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent1);
-
             }
         });
 

@@ -1,6 +1,7 @@
 package com.example.dudu.myapplication;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_Heart_ViewHolder>  {
 
@@ -36,8 +40,6 @@ public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_H
     @Override
     public void onBindViewHolder(final Home_Heart_ViewHolder holder, final int position) {
 
-        final String selItem = heart_book_ArrayList.get(position).heart_name;
-
         holder.heart_book_image.setImageResource(heart_book_ArrayList.get(position).heart_book);
         holder.heart_book_name.setText(heart_book_ArrayList.get(position).heart_name);
         holder.heart_book_author.setText(heart_book_ArrayList.get(position).heart_author);
@@ -54,6 +56,8 @@ public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_H
                         break;
                 }
 
+                Toast.makeText(context, heart_book_ArrayList.get(position).heart_name + "가 찜목록에 삭제 되었습니다.", Toast.LENGTH_SHORT).show();
+
                 //어댑터에서 삭제
                 heart_book_ArrayList.remove(position);
 
@@ -61,7 +65,29 @@ public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_H
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, heart_book_ArrayList.size());
 
-                Toast.makeText(context, selItem + "가 찜목록에 삭제 되었습니다.", Toast.LENGTH_SHORT).show();
+                //---------------------------------쉐어드-----------------------------------------
+
+                //쉐어드 생성
+                SharedPreferences saveMember_info = context.getSharedPreferences("Heart", MODE_PRIVATE);
+                SharedPreferences.Editor save = saveMember_info.edit();
+
+                //해쉬맵 생성
+                HashMap<String, Home_05_ArrayList> heart_map = new HashMap<>();
+
+                //정보 -> 해쉬맵에 삽입
+                for (int i = 0; i < App.heart_book_ArrayList.size(); i++) {
+
+                    heart_map.put(App.User_ID + "_Heart_" + i, App.heart_book_ArrayList.get(i));
+
+                }
+
+                save.clear();
+
+                //해쉬맵(Gson 변환) -> 쉐어드 삽입
+                save.putString(App.User_ID + "_Heart", App.gson.toJson(heart_map));
+
+                //저장
+                save.apply();
 
             }
 
