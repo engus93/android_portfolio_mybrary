@@ -226,16 +226,6 @@ public class Home_02 extends AppCompatActivity {
 
         //--------------------------------------쉐어드---------------------------------------------------
 
-
-
-
-
-
-
-
-
-
-
         //쉐어드 생성
         SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
 
@@ -286,7 +276,7 @@ public class Home_02 extends AppCompatActivity {
         }
 
         //쉐어드 생성
-        savenick_info = getSharedPreferences("member_info_02", MODE_PRIVATE);
+        savenick_info = getSharedPreferences("member_info_03", MODE_PRIVATE);
 
         //쉐어드 안에 있는 정보 가져오기 - 대화명
         String talk = savenick_info.getString(App.User_ID + "_user_talk", "");
@@ -350,8 +340,8 @@ public class Home_02 extends AppCompatActivity {
 
             if (!(mybrary.equals(""))) {
 
+                //정렬
                 App.mybrary_sort();
-
             }
 
             Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(),App.home_02_02_ArrayList);

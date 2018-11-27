@@ -1,5 +1,7 @@
 package com.example.dudu.myapplication;
 
+import android.graphics.drawable.Drawable;
+
 public class Search_01_ArrayList {
     public int drawableId;
     public String name;
@@ -20,6 +22,7 @@ public class Search_01_ArrayList {
     }
 
     public void setDrawableId(int drawableId) {
+
         this.drawableId = drawableId;
     }
 

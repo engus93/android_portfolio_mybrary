@@ -56,6 +56,9 @@ public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_H
                         break;
                 }
 
+//                찜목록 정렬
+//                App.heart_sort();
+
                 Toast.makeText(context, heart_book_ArrayList.get(position).heart_name + "가 찜목록에 삭제 되었습니다.", Toast.LENGTH_SHORT).show();
 
                 //어댑터에서 삭제
@@ -88,6 +91,9 @@ public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_H
 
                 //저장
                 save.apply();
+
+                //찜목록 정렬
+//                App.heart_sort();
 
             }
 

@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,15 +21,42 @@ public class Search_02 extends AppCompatActivity {
 
     Context context;
 
+    //북 세팅
+    ImageView search_02_book;
+    TextView search_02_name;
+    TextView search_02_author;
+    TextView search_02_publisher;
+    TextView search_02_date;
+    TextView search_02_price;
+
     protected void onCreate(Bundle savedInstancState) {
         super.onCreate(savedInstancState);
         setContentView(R.layout.search_02);
+
+        //북 세팅
+        search_02_book = findViewById(R.id.search_02_book);
+        search_02_name = findViewById(R.id.search_02_name);
+        search_02_author = findViewById(R.id.search_02_author);
+        search_02_publisher = findViewById(R.id.search_02_publisher);
+        search_02_date = findViewById(R.id.search_02_date);
+        search_02_price = findViewById(R.id.search_02_price);
 
         Intent intent1 = getIntent();
 
         final int position = intent1.getIntExtra("position",-1);
 
-        final TextView search_02_name = findViewById(R.id.search_02_name);
+        search_02_name = findViewById(R.id.search_02_name);
+
+        System.out.println(position);
+
+        if(!(position == -1)) {
+            search_02_book.setImageResource(App.search_book_ArrayList.get(position).getDrawableId());
+            search_02_name.setText(App.search_book_ArrayList.get(position).getName());
+            search_02_author.setText(App.search_book_ArrayList.get(position).getAuthor());
+            search_02_publisher = findViewById(R.id.search_02_publisher);
+            search_02_date = findViewById(R.id.search_02_date);
+            search_02_price.setText(App.search_book_ArrayList.get(position).getPrice());
+        }
 
         findViewById(R.id.search_02_heart_B).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +99,7 @@ public class Search_02 extends AppCompatActivity {
 
                     Log.d("체크", "찜");
 
-                    App.heart_book_ArrayList.add(new Home_05_ArrayList(Search_01_Adapter.search_book_ArrayList.get(position).drawableId, Search_01_Adapter.search_book_ArrayList.get(position).name, Search_01_Adapter.search_book_ArrayList.get(position).author, Search_01_Adapter.search_book_ArrayList.get(position).price, (float) Search_01_Adapter.search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02));
+                    App.heart_book_ArrayList.add(new Home_05_ArrayList(App.search_book_ArrayList.get(position).drawableId, App.search_book_ArrayList.get(position).name, App.search_book_ArrayList.get(position).author, App.search_book_ArrayList.get(position).price, (float) App.search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02));
 
 //                    ------------------------------------------------쉐어드---------------------------------------
 
@@ -129,7 +157,8 @@ public class Search_02 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=168915737"));
+                Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://book.naver.com/search/search.nhn?sm=sta_hty.book&sug=&where=nexearch&query=" + App.search_book_ArrayList.get(position).name));
+//                Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://book.naver.com/search/search.nhn?sm=sta_hty.book&sug=&where=nexearch&query=" + App.search_book_ArrayList.get(position).name));
                 startActivity(intent1);
             }
         });

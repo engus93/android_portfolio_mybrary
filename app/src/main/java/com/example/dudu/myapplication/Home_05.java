@@ -188,6 +188,9 @@ public class Home_05 extends AppCompatActivity {
         //쉐어드 안에 있는 정보 가져오기 - 내 찜목록
         String heart = savenick_info.getString(App.User_ID + "_Heart", "");
 
+//        //찜목록 정렬
+//        App.heart_sort();
+
         if (!(heart.equals(""))) {
 
             Log.d("체크", "잘 불러옴");
@@ -220,8 +223,6 @@ public class Home_05 extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
-
-//        App.heart_sort(); //정렬
 
         final Home_05_Adapter myAdapter = new Home_05_Adapter(getApplicationContext(),App.heart_book_ArrayList);
 

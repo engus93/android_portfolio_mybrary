@@ -28,12 +28,12 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
     Context context;
     boolean book_check;
 
-    static ArrayList<Search_01_ArrayList> search_book_ArrayList;
+    ArrayList<Search_01_ArrayList> search_book_Array;
 
 
     Search_01_Adapter(Context context,ArrayList<Search_01_ArrayList> searchInfoArrayList){
         this.context = context;
-        this.search_book_ArrayList = searchInfoArrayList;
+        this.search_book_Array = searchInfoArrayList;
     }
 
     @Override
@@ -47,13 +47,13 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
-        final String selItem = search_book_ArrayList.get(position).name;
+        final String selItem = search_book_Array.get(position).name;
 
-        holder.book_image.setImageResource(search_book_ArrayList.get(position).drawableId);
-        holder.book_name.setText(search_book_ArrayList.get(position).name);
-        holder.book_author.setText(search_book_ArrayList.get(position).author);
-        holder.book_price.setText(search_book_ArrayList.get(position).price);
-        holder.book_star.setRating((float) search_book_ArrayList.get(position).star);
+        holder.book_image.setImageResource(search_book_Array.get(position).drawableId);
+        holder.book_name.setText(search_book_Array.get(position).name);
+        holder.book_author.setText(search_book_Array.get(position).author);
+        holder.book_price.setText(search_book_Array.get(position).price);
+        holder.book_star.setRating((float) search_book_Array.get(position).star);
 
 
         holder.click_item.setOnClickListener(new View.OnClickListener(){
@@ -106,7 +106,7 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
 
                     Log.d("체크", "찜");
 
-                    App.heart_book_ArrayList.add(new Home_05_ArrayList(search_book_ArrayList.get(position).drawableId, search_book_ArrayList.get(position).name, search_book_ArrayList.get(position).author, search_book_ArrayList.get(position).price, (float) search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02));
+                    App.heart_book_ArrayList.add(new Home_05_ArrayList(search_book_Array.get(position).drawableId, search_book_Array.get(position).name, search_book_Array.get(position).author, search_book_Array.get(position).price, (float) search_book_Array.get(position).star, R.drawable.home_05_heart_02));
 
                     showToast(context, selItem + "가 찜목록에 추가 되었습니다.");
 
@@ -177,7 +177,7 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
 
     @Override
     public int getItemCount() {
-        return search_book_ArrayList.size();
+        return search_book_Array.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {

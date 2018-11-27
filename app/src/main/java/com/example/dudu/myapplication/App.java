@@ -30,7 +30,7 @@ public class App extends Application {
 
     static Type collectionTypeString = new TypeToken<HashMap<String,String>>(){}.getType();
 
-
+    static ArrayList<Search_01_ArrayList> search_book_ArrayList = new ArrayList<>();    //검색용 어레이 리스트
 
     @Override
     public void onCreate() {
