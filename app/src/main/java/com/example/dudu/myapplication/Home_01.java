@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,6 +20,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,12 +45,16 @@ public class Home_01 extends AppCompatActivity {
     int REQ_CALL_SELECT = 1300;
     int REQ_SMS_SELECT = 1400;
 
+    private FirebaseAuth mAuth; //FireBase 인증
+
     private long backPressedTime = 0;   //뒤로가기 2초 세기
 
     protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_01);
+
+        mAuth = FirebaseAuth.getInstance(); //파베 객체선언
 
         //메뉴 1 - > 메뉴 2
         home_01_menu_02_b = findViewById(R.id.home_01_menu_02_B);
@@ -196,6 +208,9 @@ public class Home_01 extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+
+                                FirebaseAuth.getInstance().signOut();
+
                                 Intent intent1 = new Intent(Home_01.this, MainActivity.class);
                                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -312,7 +327,8 @@ public class Home_01 extends AppCompatActivity {
         builder.show();
     }
 
-}
+    }
+
 
 
 ////왼쪽 상단 메뉴 프로필 사진 변경

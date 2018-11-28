@@ -357,11 +357,11 @@ public class Home_00_my_info extends AppCompatActivity {
             switch (requestCode) {
 
                 case REQUEST_TAKE_ALBUM:
-//                    sendPicture(data.getData()); //갤러리에서 가져오기
+                    sendPicture(data.getData()); //갤러리에서 가져오기
 
                     if (resultCode == Activity.RESULT_OK) {
                         if (data.getData() != null) {
-                            sendPicture(data.getData());
+//                            sendPicture(data.getData());
                             imageUri = data.getData();
                             String RealPthImage = getRealPathFromURI(imageUri);
                             imageUri = Uri.parse(RealPthImage);
@@ -397,6 +397,7 @@ public class Home_00_my_info extends AppCompatActivity {
                         try {
                             Log.i("REQUEST_TAKE_PHOTO", "OK");
                             galleryAddPic();
+
 
                             iv_view.setImageURI(imageUri);
 

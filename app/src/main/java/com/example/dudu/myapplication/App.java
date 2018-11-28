@@ -8,6 +8,8 @@ import android.net.NetworkInfo;
 import android.util.Log;
 import android.webkit.WebView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -38,6 +40,9 @@ public class App extends Application {
     static Type collectionTypeString = new TypeToken<HashMap<String,String>>(){}.getType(); //일반 스트링 타입 분류
 
     static ArrayList<Search_01_ArrayList> search_book_ArrayList = new ArrayList<>();    //검색용 어레이 리스트
+
+//    static FirebaseDatabase FB = FirebaseDatabase.getInstance();
+//    static DatabaseReference FB_DB = FB.getReference();
 
     @Override
     public void onCreate() {

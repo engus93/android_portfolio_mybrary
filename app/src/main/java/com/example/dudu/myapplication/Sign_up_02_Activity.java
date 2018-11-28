@@ -15,13 +15,14 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class Sign_up_02_Activity extends AppCompatActivity {
 
@@ -29,7 +30,6 @@ public class Sign_up_02_Activity extends AppCompatActivity {
     EditText user_id;
     EditText user_password_01;
     EditText user_password_02;
-    EditText user_e_mail;
     EditText user_name;
     EditText user_birth_day;
 
@@ -40,10 +40,11 @@ public class Sign_up_02_Activity extends AppCompatActivity {
     CheckBox user_sign_up_check;
     RadioButton user_male;
     RadioButton user_female;
+
     // 파이어베이스 인증 객체 생성
     private FirebaseAuth firebaseAuth;
 
-
+    private DatabaseReference mDatabase;
 
     protected void onCreate(Bundle savedinstanesState) {
 
@@ -52,6 +53,11 @@ public class Sign_up_02_Activity extends AppCompatActivity {
 
         // 파이어베이스 인증 객체 선언
         firebaseAuth = FirebaseAuth.getInstance();
+
+        //파이어베이스 데이터베이스 선언
+//        mDatabase = FirebaseDatabase.getInstance().getReference();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users");
 
         user_id = findViewById(R.id.user_id_in);
         user_password_01 = findViewById(R.id.user_password_in_01);
@@ -153,6 +159,8 @@ public class Sign_up_02_Activity extends AppCompatActivity {
 
                     //파이어베이스 계정 생성
                     createUser(user_id.getText().toString(), user_password_01.getText().toString());
+
+
 
                 }
             }

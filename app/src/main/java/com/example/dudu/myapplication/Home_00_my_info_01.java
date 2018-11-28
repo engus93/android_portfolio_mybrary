@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+
 import java.util.HashMap;
 
 public class Home_00_my_info_01 extends AppCompatActivity {
@@ -16,6 +19,10 @@ public class Home_00_my_info_01 extends AppCompatActivity {
     Button bt_01;
     ImageButton my_info_01_back_B;
     EditText my_info_nick;
+
+    // 파이어베이스 인증 객체 생성
+    private FirebaseAuth firebaseAuth;
+    private DatabaseReference mDatabase;
 
     protected void onCreate(Bundle savedIstancesState) {
         super.onCreate(savedIstancesState);
