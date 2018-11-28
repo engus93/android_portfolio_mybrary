@@ -5,15 +5,23 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Patterns;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
-import java.util.HashMap;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class Sign_up_02_Activity extends AppCompatActivity {
 
@@ -25,24 +33,33 @@ public class Sign_up_02_Activity extends AppCompatActivity {
     EditText user_name;
     EditText user_birth_day;
 
-    //아이디 체크 불린
-    boolean id_check_boolean;
+    boolean check;  //아이디 체크 불린
 
     ImageButton sign_up_02_back_IB;
     Button sign_up_02_sign_in_01_B;
     CheckBox user_sign_up_check;
+    RadioButton user_male;
+    RadioButton user_female;
+    // 파이어베이스 인증 객체 생성
+    private FirebaseAuth firebaseAuth;
+
+
 
     protected void onCreate(Bundle savedinstanesState) {
 
         super.onCreate(savedinstanesState);
         setContentView(R.layout.sign_up_02);
 
+        // 파이어베이스 인증 객체 선언
+        firebaseAuth = FirebaseAuth.getInstance();
+
         user_id = findViewById(R.id.user_id_in);
         user_password_01 = findViewById(R.id.user_password_in_01);
         user_password_02 = findViewById(R.id.user_password_in_02);
-        user_e_mail = findViewById(R.id.user_e_mail_in);
         user_name = findViewById(R.id.user_name_in);
         user_birth_day = findViewById(R.id.user_date_in);
+        user_male = findViewById(R.id.user_male_radio);
+        user_female = findViewById(R.id.user_female_radio);
 
         //뒤로가기
         sign_up_02_back_IB = findViewById(R.id.search_back_B);
@@ -84,15 +101,11 @@ public class Sign_up_02_Activity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                if (user_id.getText().toString().length() <= 0) {
+                if (user_id.getText().toString().length() <= 0 && Patterns.EMAIL_ADDRESS.matcher(user_id.getText().toString()).matches()) {
 
                     MainActivity.showToast(Sign_up_02_Activity.this, "아이디를 입력해주세요.");
 
-                } else if (!id_check_boolean) {
-
-                    MainActivity.showToast(Sign_up_02_Activity.this, "아이디 중복 체크를 해주세요.");
-
-                } else if (user_password_01.getText().toString().length() <= 0) {
+                } else if (user_password_01.getText().toString().length() <= 0 && App.PASSWORD_PATTERN.matcher(user_password_01.getText().toString()).matches()) {
 
                     MainActivity.showToast(Sign_up_02_Activity.this, "패스워드를 확인해주세요.");
 
@@ -104,74 +117,75 @@ public class Sign_up_02_Activity extends AppCompatActivity {
 
                     MainActivity.showToast(Sign_up_02_Activity.this, "패스워드를 확인해주세요.");
 
-                } else if (user_e_mail.getText().toString().length() <= 0) {
+                } else if (!(user_birth_day.getText().toString().length() == 8)) {
 
-                    MainActivity.showToast(Sign_up_02_Activity.this, "이메일을 입력해주세요.");
+                    MainActivity.showToast(Sign_up_02_Activity.this, "생년월일 8자리를 입력해주세요.");
 
-                } else if (user_birth_day.getText().toString().length() <= 0) {
+                } else if (!(user_male.isChecked()) && !(user_female.isChecked())) {
 
-                    MainActivity.showToast(Sign_up_02_Activity.this, "생일을 입력해주세요.");
+                    MainActivity.showToast(Sign_up_02_Activity.this, "성별을 체크해주세요.");
 
-                } else {
+                } else if (!(user_sign_up_check.isChecked())) {
 
-                    //쉐어드 생성
-                    SharedPreferences saveMember_info = getSharedPreferences("member_info", MODE_PRIVATE);
-                    SharedPreferences.Editor save = saveMember_info.edit();
+                    MainActivity.showToast(Sign_up_02_Activity.this, "약관에 동의 해주세요.");
 
-                    //해쉬맵 생성
-                    HashMap<String, Member_ArrayList> member_map = new HashMap<>();
+                } else{
 
-                    //정보 삽입
-                    Member_ArrayList user_info = new Member_ArrayList(user_id.getText().toString(), user_password_01.getText().toString(), user_e_mail.getText().toString(),
-                            user_name.getText().toString(), user_birth_day.getText().toString());
+//                    //쉐어드 생성
+//                    SharedPreferences saveMember_info = getSharedPreferences("member_info", MODE_PRIVATE);
+//                    SharedPreferences.Editor save = saveMember_info.edit();
+//
+//                    //해쉬맵 생성
+//                    HashMap<String, Member_ArrayList> member_map = new HashMap<>();
+//
+//                    //정보 삽입
+//                    Member_ArrayList user_info = new Member_ArrayList(user_id.getText().toString(), user_password_01.getText().toString(),
+//                            user_name.getText().toString(), user_birth_day.getText().toString());
+//
+//                    //정보 -> 해쉬맵에 삽입
+//                    member_map.put(user_info.getMember_id(), user_info);
+//
+//                    //해쉬맵(Gson 변환) -> 쉐어드 삽입
+//                    save.putString(user_info.getMember_id(), App.gson.toJson(member_map));
+//
+//                    //저장
+//                    save.apply();
 
-                    //정보 -> 해쉬맵에 삽입
-                    member_map.put(user_info.getMember_id(), user_info);
-
-                    //해쉬맵(Gson 변환) -> 쉐어드 삽입
-                    save.putString(user_info.getMember_id(), App.gson.toJson(member_map));
-
-                    //저장
-                    save.apply();
-
-                    //화면 이동
-                    MainActivity.showToast(Sign_up_02_Activity.this, "회원 가입 완료");
-                    Intent intent1 = new Intent(Sign_up_02_Activity.this, MainActivity.class);
-                    intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    startActivity(intent1);
+                    //파이어베이스 계정 생성
+                    createUser(user_id.getText().toString(), user_password_01.getText().toString());
 
                 }
             }
 
         });
 
-        //아이디 중복 체크
-        findViewById(R.id.user_id_check).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                //쉐어드 생성
-                SharedPreferences saveMember_info = getSharedPreferences("member_info", MODE_PRIVATE);
-
-                //쉐어드 안에 있는 정보 가져오기
-                String id_check = saveMember_info.getString(user_id.getText().toString(), "");
-
-                if(id_check.equals("")){
-
-                    id_check_boolean = true;
-
-                    MainActivity.showToast(Sign_up_02_Activity.this, "사용 가능한 아이디 입니다.");
-
-                }else{
-
-                    id_check_boolean = false;
-
-                    MainActivity.showToast(Sign_up_02_Activity.this, "사용 불가능한 아이디 입니다.");
-
-                }
-
-            }
-        });
+//        //아이디 중복 체크
+//        findViewById(R.id.user_id_check).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                //쉐어드 생성
+//                SharedPreferences saveMember_info = getSharedPreferences("member_info", MODE_PRIVATE);
+//
+//                //쉐어드 안에 있는 정보 가져오기
+//                String id_check = saveMember_info.getString(user_id.getText().toString(), "");
+//
+//                if(id_check.equals("")){
+//
+//                    id_check_boolean = true;
+//
+//                    MainActivity.showToast(Sign_up_02_Activity.this, "사용 가능한 아이디 입니다.");
+//
+//                }else{
+//
+//                    id_check_boolean = false;
+//
+//                    MainActivity.showToast(Sign_up_02_Activity.this, "사용 불가능한 아이디 입니다.");
+//
+//                }
+//
+//            }
+//        });
 
         //약관 동의
         user_sign_up_check = findViewById(R.id.user_sign_up_check);
@@ -193,6 +207,31 @@ public class Sign_up_02_Activity extends AppCompatActivity {
 
 
     }
+
+    // 회원가입
+    private void createUser(String email, String password) {
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // 회원가입 성공
+                            Toast.makeText(Sign_up_02_Activity.this, "회원가입 완료", Toast.LENGTH_SHORT).show();
+
+                            //화면 이동
+                            MainActivity.showToast(Sign_up_02_Activity.this, "회원 가입 완료");
+                            Intent intent1 = new Intent(Sign_up_02_Activity.this, MainActivity.class);
+                            intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            startActivity(intent1);
+                        } else {
+                            // 회원가입 실패
+                            Toast.makeText(Sign_up_02_Activity.this, "회원가입 실패", Toast.LENGTH_SHORT).show();
+                            check = false;
+                        }
+                    }
+                });
+    }
+
 }
 
 

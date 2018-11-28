@@ -110,9 +110,9 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
                     android:layout_weight="5"
-                    android:hint="\t\t아이디"
-                    android:inputType="text"
-                    android:maxLength="15"
+                    android:hint="\t\t이메일 주소"
+                    android:inputType="textEmailAddress"
+                    android:maxLength="30"
                     android:maxLines="1"
                     android:privateImeOptions="defaultInputmode=english"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -156,10 +156,10 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="5"
-                android:hint="\t\t비밀번호 (6자리 ~ 15자리)"
-                android:maxLines="1"
+                android:hint="\t\t비밀번호 (6자리 ~ 16자리)"
                 android:inputType="textPassword"
-                android:maxLength="15"
+                android:maxLength="16"
+                android:maxLines="1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -184,27 +184,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:layout_editor_absoluteY="230dp" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <EditText
-                android:id="@+id/user_e_mail_in"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="5"
-                android:hint="\t\t이메일 주소"
-                android:maxLines="1"
-                android:inputType="textEmailAddress"
-                android:maxLength="20"
-                android:textAlignment="textStart"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:layout_editor_absoluteY="296dp" />
 
             <Space
                 android:layout_width="match_parent"
@@ -264,6 +243,7 @@
                 android:textSize="16sp" />
 
             <RadioGroup
+                android:id="@+id/user_radio"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">

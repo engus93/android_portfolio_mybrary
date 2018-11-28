@@ -4,19 +4,15 @@ public class Member_ArrayList {
 
     String member_id;
     String member_password_01;
-    String member_e_mail;
     String member_name;
     String member_birthday;
-//    String member_sex;
 
-    public Member_ArrayList(String member_id, String member_password_01, String member_e_mail,String member_name,String member_birthday){
+    public Member_ArrayList(String member_id, String member_password_01,String member_name,String member_birthday){
 
         this.member_id = member_id;
         this.member_password_01 = member_password_01;
-        this.member_e_mail = member_e_mail;
         this.member_name = member_name;
         this.member_birthday= member_birthday;
-//        this.member_sex = member_sex;
 
     }
 
@@ -34,14 +30,6 @@ public class Member_ArrayList {
 
     public void setMember_password_01(String member_password_01) {
         this.member_password_01 = member_password_01;
-    }
-
-    public String getMember_e_mail() {
-        return member_e_mail;
-    }
-
-    public void setMember_e_mail(String member_e_mail) {
-        this.member_e_mail = member_e_mail;
     }
 
     public String getMember_name() {

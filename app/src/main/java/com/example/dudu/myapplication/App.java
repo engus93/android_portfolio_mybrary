@@ -1,8 +1,12 @@
 package com.example.dudu.myapplication;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
+import android.webkit.WebView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -10,10 +14,14 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 public class App extends Application {
 
     static String User_ID; //현재 로그인 아이디
+
+    // 비밀번호 정규식
+    static Pattern PASSWORD_PATTERN = Pattern.compile("^[a-zA-Z0-9!@.#$%^&*?_~]{6,15}$");
 
     static Gson gson = new Gson();  //Gson 선언
     static Type collectionTypeMember = new TypeToken<HashMap<String,Member_ArrayList>>(){}.getType();   //회원 가입 타입 분류
@@ -83,4 +91,5 @@ public class App extends Application {
 
 
     }
+
 }

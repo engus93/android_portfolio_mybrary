@@ -12,10 +12,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Sign_in_02_Activity extends AppCompatActivity {
+public class Sign_in_02_Activity extends AppCompatActivity{
 
     Button sign_in_02_home; //로그인 ->  버튼
     ImageButton sign_in_02_back;    // 뒤로가기 버튼
@@ -40,6 +39,17 @@ public class Sign_in_02_Activity extends AppCompatActivity {
                 finish();
             }
 
+        });
+
+        //구글 로그인 버튼
+        findViewById(R.id.sign_in_02_google_B).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                //로그인 넣기
+
+
+            }
         });
 
         //로그인 -> 메인화면 버튼
@@ -122,9 +132,8 @@ public class Sign_in_02_Activity extends AppCompatActivity {
 
         });
 
-
-
     }
+
 
 
 }
