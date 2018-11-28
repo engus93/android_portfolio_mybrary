@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "681315769134",
+    "firebase_url": "https://mybrary-4084f.firebaseio.com",
+    "project_id": "mybrary-4084f",
+    "storage_bucket": "mybrary-4084f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:681315769134:android:a737f290024af2cb",
+        "android_client_info": {
+          "package_name": "com.example.dudu.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "681315769134-8q4bp8lmtqh7pn7oubk7s1t63tmqi9g1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dudu.myapplication",
+            "certificate_hash": "c311961013f02a191b3ac352842cad4d527a84f7"
+          }
+        },
+        {
+          "client_id": "681315769134-vpb9ho8kp62u2np7joh321c96vmaqgud.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIoW2wgZIzLu6MFROLm_ZRmu1oNRi-AOQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "681315769134-vpb9ho8kp62u2np7joh321c96vmaqgud.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

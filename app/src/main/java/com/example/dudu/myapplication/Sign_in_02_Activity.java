@@ -48,12 +48,6 @@ public class Sign_in_02_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-//                Intent intent1 = new Intent(Sign_in_02_Activity.this, Home_01.class);
-//                MainActivity.showToast(Sign_in_02_Activity.this, "로그인");
-//                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                startActivity(intent1);
-
                 //키보드 내리기
                 if (view != null) {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);

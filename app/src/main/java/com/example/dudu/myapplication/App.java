@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.facebook.stetho.Stetho;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -16,8 +15,8 @@ public class App extends Application {
 
     static String User_ID; //현재 로그인 아이디
 
-    static Gson gson = new Gson();
-    static Type collectionTypeMember = new TypeToken<HashMap<String,Member_ArrayList>>(){}.getType();
+    static Gson gson = new Gson();  //Gson 선언
+    static Type collectionTypeMember = new TypeToken<HashMap<String,Member_ArrayList>>(){}.getType();   //회원 가입 타입 분류
 
 
     static ArrayList<Home_02_02_ArrayList> list = new ArrayList<>();    //교체용
@@ -28,14 +27,14 @@ public class App extends Application {
     static ArrayList<Home_05_ArrayList> heart_book_ArrayList = new ArrayList<>();   //찜목록
     static Type collectionTypeHeart = new TypeToken<HashMap<String,Home_05_ArrayList>>(){}.getType();   //찜목록 타입 분류
 
-    static Type collectionTypeString = new TypeToken<HashMap<String,String>>(){}.getType();
+    static Type collectionTypeString = new TypeToken<HashMap<String,String>>(){}.getType(); //일반 스트링 타입 분류
 
     static ArrayList<Search_01_ArrayList> search_book_ArrayList = new ArrayList<>();    //검색용 어레이 리스트
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Stetho.initializeWithDefaults(this);
+//        Stetho.initializeWithDefaults(this);
 
     }
 

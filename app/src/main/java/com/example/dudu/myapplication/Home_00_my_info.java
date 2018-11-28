@@ -378,6 +378,7 @@ public class Home_00_my_info extends AppCompatActivity {
 
                             //저장
                             save.apply();
+
                         }
                     }
 
