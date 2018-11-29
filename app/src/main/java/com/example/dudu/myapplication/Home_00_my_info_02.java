@@ -9,6 +9,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.HashMap;
 
 public class Home_00_my_info_02 extends AppCompatActivity {
@@ -31,24 +36,39 @@ public class Home_00_my_info_02 extends AppCompatActivity {
             public void onClick(View view) {
 
 
-                //쉐어드 생성
-                SharedPreferences savenick_info = getSharedPreferences("member_info_02", MODE_PRIVATE);
-                SharedPreferences.Editor save = savenick_info.edit();
+//                //쉐어드 생성
+//                SharedPreferences savenick_info = getSharedPreferences("member_info_02", MODE_PRIVATE);
+//                SharedPreferences.Editor save = savenick_info.edit();
+//
+//                //해쉬맵 생성
+//                HashMap<String, String> user_map = new HashMap<>();
+//
+//                //정보 삽입
+//                String user_like = my_info_genre.getText().toString();
+//
+//                //정보 -> 해쉬맵에 삽입
+//                user_map.put(App.User_ID + "_user_like", user_like);
+//
+//                //해쉬맵(Gson 변환) -> 쉐어드 삽입
+//                save.putString(App.User_ID + "_user_like", App.gson.toJson(user_map));
+//
+//                //저장
+//                save.apply();
 
-                //해쉬맵 생성
-                HashMap<String, String> user_map = new HashMap<>();
+                //파이어베이스 데이터베이스 선언
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("User_Info");
+
+                //해당 UID 캐치
+                FirebaseUser user;
+                user = FirebaseAuth.getInstance().getCurrentUser();
+                String uid = user.getUid();
 
                 //정보 삽입
                 String user_like = my_info_genre.getText().toString();
 
-                //정보 -> 해쉬맵에 삽입
-                user_map.put(App.User_ID + "_user_like", user_like);
-
-                //해쉬맵(Gson 변환) -> 쉐어드 삽입
-                save.putString(App.User_ID + "_user_like", App.gson.toJson(user_map));
-
-                //저장
-                save.apply();
+                //파이어베이스에 저장
+                myRef.child(uid).child("user_info").child("user_like").setValue(user_like);
 
                 Intent intent1 = new Intent(Home_00_my_info_02.this, Home_00_my_info.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

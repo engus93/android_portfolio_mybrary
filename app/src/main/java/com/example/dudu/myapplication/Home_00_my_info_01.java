@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -31,14 +32,27 @@ public class Home_00_my_info_01 extends AppCompatActivity {
 
         my_info_nick = findViewById(R.id.my_info_01_nick_ET);
 
-        final DatabaseReference myRef = database.getReference("massage");
-
         //닉네임 수정 -> 닉네임 수정 완료
         bt_01 = findViewById(R.id.my_info_01_nick_B);
         bt_01.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
+
+                //파이어베이스 데이터베이스 선언
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("User_Info");
+
+                //해당 UID 캐치
+                FirebaseUser user;
+                user = FirebaseAuth.getInstance().getCurrentUser();
+                String uid = user.getUid();
+
+                //정보 삽입
+                String user_nick = my_info_nick.getText().toString();
+
+                //파이어베이스에 저장
+                myRef.child(uid).child("user_info").child("user_nick").setValue(user_nick);
 
 //                //쉐어드 생성
 //                SharedPreferences savenick_info = getSharedPreferences("member_info_01", MODE_PRIVATE);

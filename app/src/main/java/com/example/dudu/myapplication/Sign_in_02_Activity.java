@@ -96,9 +96,6 @@ public class Sign_in_02_Activity extends AppCompatActivity{
 
 //      ----------------------------------------------------------------------------
 
-
-
-
         //뒤로가기 버튼
         sign_in_02_back = findViewById(R.id.search_back_B);
         sign_in_02_back.setOnClickListener(new View.OnClickListener() {

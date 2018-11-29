@@ -239,7 +239,7 @@ public class Sign_up_02_Activity extends AppCompatActivity {
                                     user_name.getText().toString(), user_birth_day.getText().toString(), user_sex);
 
                             //파이어베이스에 저장
-                            myRef.child(uid).setValue(user_info);
+                            myRef.child(uid).child("user_info").setValue(user_info);
 
                             //화면 이동
                             MainActivity.showToast(Sign_up_02_Activity.this, "회원 가입 완료");

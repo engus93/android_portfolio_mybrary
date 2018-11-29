@@ -22,7 +22,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -31,16 +30,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,16 +58,23 @@ public class Home_00_my_info extends AppCompatActivity {
     private static final int REQUEST_TAKE_PHOTO = 1112;
     private static final int REQUEST_TAKE_ALBUM = 1113;
 
-    private String currentPhotoPath;//실제 사진 파일 경로
+    //파이어베이스
+    private FirebaseAuth firebaseAuth;  //파이어베이스 인증
+    private FirebaseStorage storage;
+
+    //사진 저장
+    private String currentPhotoPath;    //실제 사진 파일 경로
 
     Uri imageUri;
     Bitmap bitmap_pic;  //사진 비트맵 저장
     String string_pic;  //사진 스트링 변환
 
-
     protected void onCreate(Bundle savedIstancesState) {
         super.onCreate(savedIstancesState);
         setContentView(R.layout.home_00_my_info);
+
+        firebaseAuth = FirebaseAuth.getInstance();  //파베 인증 객체
+        storage = FirebaseStorage.getInstance();    //스토리지 객체
 
         iv_view = (ImageView) findViewById(R.id.my_info_profile);   //프로필 사진
 
@@ -336,6 +342,9 @@ public class Home_00_my_info extends AppCompatActivity {
         //저장
         save.apply();
 
+        //파이어 베이스 업로드
+        upload(currentPhotoPath);
+
     }
 
     //갤러리에서 가져오기
@@ -393,6 +402,7 @@ public class Home_00_my_info extends AppCompatActivity {
                             galleryAddPic();
 
                             getPictureForPhoto(); //카메라에서 가져오기
+
                         } catch (Exception e) {
                             Log.e("REQUEST_TAKE_PHOTO", e.toString());
                         }
@@ -405,6 +415,9 @@ public class Home_00_my_info extends AppCompatActivity {
                 default:
                     break;
             }
+
+
+
 
         }
     }
@@ -428,6 +441,8 @@ public class Home_00_my_info extends AppCompatActivity {
         string_pic = App.getBase64String(bitmap_pic);   //비트맵 스트링 변환
 
         iv_view.setImageBitmap(bitmap_pic);//이미지 뷰에 비트맵 넣기
+
+        upload(imagePath);
 
     }
 
@@ -528,5 +543,44 @@ public class Home_00_my_info extends AppCompatActivity {
         }
 
     }
+
+    public void upload(String uri){
+
+        StorageReference storageRef = storage.getReference();
+
+        Uri file = Uri.fromFile(new File(uri));
+        final StorageReference riversRef = storageRef.child("images/"+file.getLastPathSegment());
+        UploadTask uploadTask = riversRef.putFile(file);
+
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+
+                // Continue with the task to get the download URL
+                return riversRef.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+
+                    String uploaded_image_url = downloadUri.toString();
+
+
+                } else {
+                    Toast.makeText(Home_00_my_info.this, "업로드 실패", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+
+    }
+
+
 
 }
