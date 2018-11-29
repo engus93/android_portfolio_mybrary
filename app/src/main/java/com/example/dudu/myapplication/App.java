@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
 
+import com.facebook.stetho.Stetho;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -44,7 +45,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-//        Stetho.initializeWithDefaults(this);
+        Stetho.initializeWithDefaults(this);
 
     }
 

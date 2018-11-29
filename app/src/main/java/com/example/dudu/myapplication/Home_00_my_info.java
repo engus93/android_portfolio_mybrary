@@ -392,8 +392,6 @@ public class Home_00_my_info extends AppCompatActivity {
                             Log.i("REQUEST_TAKE_PHOTO", "OK");
                             galleryAddPic();
 
-//                            iv_view.setImageURI(imageUri);
-
                             getPictureForPhoto(); //카메라에서 가져오기
                         } catch (Exception e) {
                             Log.e("REQUEST_TAKE_PHOTO", e.toString());

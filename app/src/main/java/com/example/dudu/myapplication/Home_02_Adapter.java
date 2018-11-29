@@ -2,9 +2,12 @@ package com.example.dudu.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -48,11 +51,14 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
 
         Log.d("체크", home_02_02_Array.get(position).book);
 
+        //기본이미지일 경우
         if(home_02_02_Array.get(position).book.equals("null")){
             holder.book_image.setImageResource(R.drawable.home_02_default);
-        }else{
-            holder.book_image.setImageURI(Uri.parse(home_02_02_Array.get(position).book ));
+        }else{  //비트맵일 경우
+            Bitmap bitmap_pic = App.getBitmap(home_02_02_Array.get(position).book);
+            holder.book_image.setImageBitmap(bitmap_pic);
         }
+
         holder.book_name.setText(home_02_02_Array.get(position).name);
         holder.book_author.setText(home_02_02_Array.get(position).author);
         holder.book_finish.setText(home_02_02_Array.get(position).finish);
@@ -112,6 +118,15 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
 
         }
 
+    }
+
+    //스트링 -> 비트맵 전환
+    static Bitmap getBitmap(String zz) {
+
+        byte[] decodedByteArray = Base64.decode(zz, Base64.NO_WRAP);
+        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+
+        return decodedBitmap;
     }
 
 }

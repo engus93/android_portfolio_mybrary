@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -23,12 +24,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.HashMap;
+
 public class Sign_in_02_Activity extends AppCompatActivity{
 
     Button sign_in_02_home; //로그인 ->  버튼
     ImageButton sign_in_02_back;    // 뒤로가기 버튼
     EditText sign_in_02_id; //아이디
     EditText sign_in_02_password;   //패스워드
+    CheckBox auto_login;    //자동 로그인
 
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -43,6 +47,36 @@ public class Sign_in_02_Activity extends AppCompatActivity{
 
         super.onCreate(savedInstancesState);
         setContentView(R.layout.sign_in_02);
+
+//        --------------------------- 자동 로그인 --------------------------------
+
+        //로그인 입력 값
+        sign_in_02_id = findViewById(R.id.sign_in_02_id);
+        sign_in_02_password = findViewById(R.id.sign_in_02_password);
+        auto_login = findViewById(R.id.sign_02_auto);
+
+        //쉐어드 생성
+        SharedPreferences savenick_info = getSharedPreferences("member_login", MODE_PRIVATE);
+
+        //쉐어드 안에 있는 정보 가져오기 - 자동로그인
+        String login = savenick_info.getString("user_login", "");
+
+        if (savenick_info.getBoolean("user_auto", false)) {
+
+            Log.d("체크", "프사 수정");
+
+            //해쉬맵 생성
+            HashMap<String, String> user_map = new HashMap<>();
+
+            //해쉬맵에 삽입
+//            user_map = App.gson.fromJson(login, App.collectionTypeString);
+
+            //글씨 삽입
+            sign_in_02_id.setText(savenick_info.getString("user_login", ""));
+            sign_in_02_password.setText(savenick_info.getString("user_pass", ""));
+            auto_login.setChecked(true);
+
+        }
 
 
 //        ---------------------------구글 로그인---------------------------------
@@ -63,9 +97,7 @@ public class Sign_in_02_Activity extends AppCompatActivity{
 //      ----------------------------------------------------------------------------
 
 
-        //로그인 입력 값
-        sign_in_02_id = findViewById(R.id.sign_in_02_id);
-        sign_in_02_password = findViewById(R.id.sign_in_02_password);
+
 
         //뒤로가기 버튼
         sign_in_02_back = findViewById(R.id.search_back_B);
@@ -121,9 +153,8 @@ public class Sign_in_02_Activity extends AppCompatActivity{
 
                     loginUser(sign_in_02_id.getText().toString(),sign_in_02_password.getText().toString());
 
-//                    //쉐어드 생성
-//                    SharedPreferences saveMember_info = getSharedPreferences("member_info", MODE_PRIVATE);
-//
+
+
 //                    //쉐어드 안에 있는 정보 가져오기
 //                    String check = saveMember_info.getString(sign_in_02_id.getText().toString(), "");
 //
@@ -225,6 +256,33 @@ public class Sign_in_02_Activity extends AppCompatActivity{
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+
+                    if(auto_login.isChecked()) {
+                        //쉐어드 생성
+                        SharedPreferences saveMember_info = getSharedPreferences("member_login", MODE_PRIVATE);
+                        SharedPreferences.Editor save = saveMember_info.edit();
+
+                        //해쉬맵 생성
+                        HashMap<String, String> user_map = new HashMap<>();
+
+                        //해쉬맵(Gson 변환) -> 쉐어드 삽입
+                        save.putString("user_login", sign_in_02_id.getText().toString());
+                        save.putString("user_pass", sign_in_02_password.getText().toString());
+                        save.putBoolean("user_auto", auto_login.isChecked());
+
+                        //저장
+                        save.apply();
+                    }else{
+                        //쉐어드 생성
+                        SharedPreferences saveMember_info = getSharedPreferences("member_login", MODE_PRIVATE);
+                        SharedPreferences.Editor save = saveMember_info.edit();
+
+                        save.clear();
+
+                        //저장
+                        save.apply();
+                    }
+
                     // 로그인 성공
                     Intent intent1 = new Intent(Sign_in_02_Activity.this, Home_01.class);
                     MainActivity.showToast(Sign_in_02_Activity.this, "로그인");

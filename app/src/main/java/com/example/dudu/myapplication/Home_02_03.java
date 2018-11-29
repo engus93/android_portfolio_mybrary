@@ -3,6 +3,7 @@ package com.example.dudu.myapplication;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -51,8 +52,9 @@ public class Home_02_03 extends AppCompatActivity {
 
             if(App.home_02_02_ArrayList.get(position).book.equals("null")){
                 home_02_03_book_image.setImageResource(R.drawable.home_02_default);
-            }else{
-                home_02_03_book_image.setImageURI(Uri.parse(App.home_02_02_ArrayList.get(position).getBook()));
+            }else{//비트맵일 경우
+                Bitmap bitmap_pic = App.getBitmap(App.home_02_02_ArrayList.get(position).book);
+                home_02_03_book_image.setImageBitmap(bitmap_pic);
             }
 
 //            home_02_03_book_image.setImageURI(Uri.parse(App.home_02_02_ArrayList.get(position).getBook()));

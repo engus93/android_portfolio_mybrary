@@ -163,7 +163,7 @@ public class Home_02_01 extends AppCompatActivity {
                                     }else{
                                         Log.d("체크", "잘");
                                         //정보 삽입
-                                        App.home_02_02_ArrayList.add(new Home_02_02_ArrayList(imageUri.toString(), home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
+                                        App.home_02_02_ArrayList.add(new Home_02_02_ArrayList(string_pic, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
                                     }
 
                                     //정보 -> 해쉬맵에 삽입
@@ -185,8 +185,6 @@ public class Home_02_01 extends AppCompatActivity {
                                         intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                         MainActivity.showToast(Home_02_01.this, "작성 되었습니다.");
                                         startActivity(intent1);
-
-
 
                                         return;
                                 }
@@ -353,7 +351,7 @@ public class Home_02_01 extends AppCompatActivity {
 
                 }
                 if (photoFile != null) {
-                    imageUri = FileProvider.getUriForFile(this, "com.example.dudu.myapplication", photoFile);
+                    imageUri = FileProvider.getUriForFile(this, getPackageName(), photoFile);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                     startActivityForResult(intent, REQUEST_TAKE_PHOTO);
                 }
@@ -363,23 +361,32 @@ public class Home_02_01 extends AppCompatActivity {
     }
 
     //이미지 파일화 시키기
-
     public File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = timeStamp + ".png";
-        File imageFile = null;
-        File storageDir = new File(Environment.getExternalStorageDirectory() + "/Pictures", "MyBrary");
-
-        if (!storageDir.exists()) {
-            Log.i("currentPhotoPath", storageDir.toString());
-            storageDir.mkdirs();
+        File dir = new File(Environment.getExternalStorageDirectory() +  "/MyBrary/");
+        if (!dir.exists()) {
+            dir.mkdirs();
         }
 
-        imageFile = new File(storageDir, imageFileName);
-        currentPhotoPath = imageFile.getAbsolutePath();
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = timeStamp + ".png";
 
-        return imageFile;
+        File storageDir = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/MyBrary/" + imageFileName);
+        currentPhotoPath = storageDir.getAbsolutePath();
+
+        return storageDir;
+
+    }
+
+    //    사진 가져오기
+    private void galleryAddPic() {
+        Log.i("galleryAddPic", "Call");
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        // 해당 경로에 있는 파일을 객체화(새로 파일을 만든다는 것으로 이해하면 안 됨)
+        File f = new File(currentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        sendBroadcast(mediaScanIntent);
+        Toast.makeText(this, "사진이 앨범에 저장되었습니다.", Toast.LENGTH_SHORT).show();
     }
 
     //찍은 사진 가져오기
@@ -400,8 +407,61 @@ public class Home_02_01 extends AppCompatActivity {
         } else {
             exifDegree = 0;
         }
-        home_02_01_book_image.setImageBitmap(rotate(bitmap, exifDegree));//이미지 뷰에 비트맵 넣기
 
+        bitmap_pic = rotate(bitmap, exifDegree);    //비트맵 회전
+        string_pic = App.getBase64String(bitmap_pic);   //비트맵 스트링 변환
+
+        home_02_01_book_image.setImageBitmap(bitmap_pic);//이미지 뷰에 비트맵 넣기
+    }
+
+    //갤러리에서 가져오기
+    private void selectGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_TAKE_ALBUM);
+    }
+
+    //선택한 데이터 처리 1
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+
+            switch (requestCode) {
+
+                case REQUEST_TAKE_ALBUM:
+
+                    if (resultCode == Activity.RESULT_OK) {
+                        if (data.getData() != null) {
+                            sendPicture(data.getData());
+                        }
+                    }
+                    break;
+
+                case REQUEST_TAKE_PHOTO:
+//                    getPictureForPhoto(); //카메라에서 가져오기
+
+                    if (resultCode == Activity.RESULT_OK) {
+                        try {
+                            Log.i("REQUEST_TAKE_PHOTO", "OK");
+                            galleryAddPic();
+
+                            getPictureForPhoto(); //카메라에서 가져오기
+                        } catch (Exception e) {
+                            Log.e("REQUEST_TAKE_PHOTO", e.toString());
+                        }
+                    } else {
+                        Toast.makeText(Home_02_01.this, "사진찍기를 취소하였습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+
+        }
     }
 
     //선택한 데이터 처리 2
@@ -418,74 +478,12 @@ public class Home_02_01 extends AppCompatActivity {
         int exifDegree = exifOrientationToDegrees(exifOrientation);
 
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//경로를 통해 비트맵으로 전환
-        home_02_01_book_image.setImageBitmap(rotate(bitmap, exifDegree));//이미지 뷰에 비트맵 넣기
 
-    }
+        bitmap_pic = rotate(bitmap, exifDegree);    //비트맵 회전
+        string_pic = App.getBase64String(bitmap_pic);   //비트맵 스트링 변환
 
-    //갤러리에서 가져오기
-    private void selectGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("image/*");
-        startActivityForResult(intent, REQUEST_TAKE_ALBUM);
-    }
+        home_02_01_book_image.setImageBitmap(bitmap_pic);//이미지 뷰에 비트맵 넣기
 
-    private void galleryAddPic(){
-        Log.i("galleryAddPic", "Call");
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        // 해당 경로에 있는 파일을 객체화(새로 파일을 만든다는 것으로 이해하면 안 됨)
-        File f = new File(currentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        sendBroadcast(mediaScanIntent);
-        Toast.makeText(this, "사진이 앨범에 저장되었습니다.", Toast.LENGTH_SHORT).show();
-    }
-
-    //선택한 데이터 처리 1
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-
-            switch (requestCode) {
-
-                case REQUEST_TAKE_ALBUM:
-
-                    if (resultCode == Activity.RESULT_OK) {
-                        if (data.getData() != null) {
-                            System.out.println(imageUri);
-                            sendPicture(data.getData());
-                            imageUri = data.getData();
-                            String RealPthImage = getRealPathFromURI(imageUri);
-                            imageUri = Uri.parse(RealPthImage);
-                        }
-                    }
-                    break;
-
-                case REQUEST_TAKE_PHOTO:
-//                    getPictureForPhoto(); //카메라에서 가져오기
-
-                    if (resultCode == Activity.RESULT_OK) {
-                        try {
-                            Log.i("REQUEST_TAKE_PHOTO", "OK");
-                            galleryAddPic();
-
-                            home_02_01_book_image.setImageURI(imageUri);
-
-                        } catch (Exception e) {
-                            Log.e("REQUEST_TAKE_PHOTO", e.toString());
-                        }
-                    } else {
-                        Toast.makeText(Home_02_01.this, "사진찍기를 취소하였습니다.", Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-
-        }
     }
 
     //이미지 찍은 포커스 대로 가져오기
