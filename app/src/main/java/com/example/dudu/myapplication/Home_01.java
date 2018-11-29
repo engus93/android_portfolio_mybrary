@@ -251,7 +251,11 @@ public class Home_01 extends AppCompatActivity {
 
             //이미지 삽입
             ImageView drower_profile = findViewById(R.id.home_drawer_profile);
-            drower_profile.setImageURI(Uri.parse(profile_map.get(App.User_ID + "_user_profile")));
+//            drower_profile.setImageURI(Uri.parse(profile_map.get(App.User_ID + "_user_profile")));
+
+            //이미지 삽입
+            App.bitmap_pic = App.getBitmap(profile_map.get(App.User_ID + "_user_profile"));
+            drower_profile.setImageBitmap(App.bitmap_pic);
 
         }
 

@@ -13,21 +13,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
-
-import java.util.HashMap;
 
 public class Sign_in_02_Activity extends AppCompatActivity{
 
@@ -125,6 +119,8 @@ public class Sign_in_02_Activity extends AppCompatActivity{
 
                 } else {
 
+                    loginUser(sign_in_02_id.getText().toString(),sign_in_02_password.getText().toString());
+
 //                    //쉐어드 생성
 //                    SharedPreferences saveMember_info = getSharedPreferences("member_info", MODE_PRIVATE);
 //
@@ -147,13 +143,6 @@ public class Sign_in_02_Activity extends AppCompatActivity{
 //                            Log.d("체크", "비번 일치");
 //
 //                            App.User_ID = sign_in_02_id.getText().toString();
-
-                            Intent intent1 = new Intent(Sign_in_02_Activity.this, Home_01.class);
-                            MainActivity.showToast(Sign_in_02_Activity.this, "로그인");
-                            intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent1);
-
 //                        } else {    //비번 불일치
 //
 //                            Log.d("체크", "비번 불일치");
@@ -175,6 +164,9 @@ public class Sign_in_02_Activity extends AppCompatActivity{
             }
 
         });
+
+
+
 
     }
 
@@ -228,5 +220,24 @@ public class Sign_in_02_Activity extends AppCompatActivity{
 //                });
 //    }
 
+    private void loginUser(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // 로그인 성공
+                    Intent intent1 = new Intent(Sign_in_02_Activity.this, Home_01.class);
+                    MainActivity.showToast(Sign_in_02_Activity.this, "로그인");
+                    intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent1);
+
+                } else {
+                    // 로그인 실패
+                    Toast.makeText(Sign_in_02_Activity.this, "아이디나 비밀번호를 확인해주세요.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 
 }

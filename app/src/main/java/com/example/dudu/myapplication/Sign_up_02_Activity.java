@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -33,7 +34,9 @@ public class Sign_up_02_Activity extends AppCompatActivity {
     EditText user_name;
     EditText user_birth_day;
 
+    //회원 가입 부가적 필요
     boolean check;  //아이디 체크 불린
+    String user_sex;
 
     ImageButton sign_up_02_back_IB;
     Button sign_up_02_sign_in_01_B;
@@ -44,8 +47,6 @@ public class Sign_up_02_Activity extends AppCompatActivity {
     // 파이어베이스 인증 객체 생성
     private FirebaseAuth firebaseAuth;
 
-    private DatabaseReference mDatabase;
-
     protected void onCreate(Bundle savedinstanesState) {
 
         super.onCreate(savedinstanesState);
@@ -54,11 +55,7 @@ public class Sign_up_02_Activity extends AppCompatActivity {
         // 파이어베이스 인증 객체 선언
         firebaseAuth = FirebaseAuth.getInstance();
 
-        //파이어베이스 데이터베이스 선언
-//        mDatabase = FirebaseDatabase.getInstance().getReference();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users");
-
+        //Find
         user_id = findViewById(R.id.user_id_in);
         user_password_01 = findViewById(R.id.user_password_in_01);
         user_password_02 = findViewById(R.id.user_password_in_02);
@@ -137,6 +134,12 @@ public class Sign_up_02_Activity extends AppCompatActivity {
 
                 } else{
 
+                    if(user_male.isChecked()){
+                        user_sex = "남자";
+                    }else{
+                        user_sex = "여자";
+                    }
+
 //                    //쉐어드 생성
 //                    SharedPreferences saveMember_info = getSharedPreferences("member_info", MODE_PRIVATE);
 //                    SharedPreferences.Editor save = saveMember_info.edit();
@@ -159,8 +162,6 @@ public class Sign_up_02_Activity extends AppCompatActivity {
 
                     //파이어베이스 계정 생성
                     createUser(user_id.getText().toString(), user_password_01.getText().toString());
-
-
 
                 }
             }
@@ -223,8 +224,22 @@ public class Sign_up_02_Activity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // 회원가입 성공
-                            Toast.makeText(Sign_up_02_Activity.this, "회원가입 완료", Toast.LENGTH_SHORT).show();
+
+                            //파이어베이스 데이터베이스 선언
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            DatabaseReference myRef = database.getReference("User_Info");
+
+                            //해당 UID 캐치
+                            FirebaseUser user;
+                            user = FirebaseAuth.getInstance().getCurrentUser();
+                            String uid = user.getUid();
+
+                            //정보 삽입
+                            Member_ArrayList user_info = new Member_ArrayList(user_id.getText().toString(), user_password_01.getText().toString(),
+                                    user_name.getText().toString(), user_birth_day.getText().toString(), user_sex);
+
+                            //파이어베이스에 저장
+                            myRef.child(uid).setValue(user_info);
 
                             //화면 이동
                             MainActivity.showToast(Sign_up_02_Activity.this, "회원 가입 완료");

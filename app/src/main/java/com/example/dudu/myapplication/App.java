@@ -1,18 +1,15 @@
 package com.example.dudu.myapplication;
 
 import android.app.Application;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
-import android.webkit.WebView;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +40,10 @@ public class App extends Application {
 
 //    static FirebaseDatabase FB = FirebaseDatabase.getInstance();
 //    static DatabaseReference FB_DB = FB.getReference();
+
+    //사진용 변수 데이터
+    static Bitmap bitmap_pic;
+    static String string_pic;
 
     @Override
     public void onCreate() {
@@ -94,7 +95,25 @@ public class App extends Application {
 
             }
 
-
     }
 
+    //비트맵 -> 스트링 변환
+    static String getBase64String(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+
+        byte[] imageBytes = byteArrayOutputStream.toByteArray();
+
+        return Base64.encodeToString(imageBytes, Base64.NO_WRAP);
+    }
+
+    //스트링 -> 비트맵 전환
+    static Bitmap getBitmap(String zz) {
+
+        byte[] decodedByteArray = Base64.decode(zz, Base64.NO_WRAP);
+        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+
+        return decodedBitmap;
+    }
 }

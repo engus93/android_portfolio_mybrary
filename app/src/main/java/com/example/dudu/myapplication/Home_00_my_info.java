@@ -22,6 +22,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -37,7 +38,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,7 +62,7 @@ public class Home_00_my_info extends AppCompatActivity {
 
     private String currentPhotoPath;//실제 사진 파일 경로
 
-    Uri imageUri;
+    Uri imageUri = null;
     Uri photoURI, albumURI;
 
     protected void onCreate(Bundle savedIstancesState) {
@@ -98,7 +101,7 @@ public class Home_00_my_info extends AppCompatActivity {
         });
 
         my_info_back_B = findViewById(R.id.my_info_back_B);
-        my_info_back_B.setOnClickListener(new View.OnClickListener(){
+        my_info_back_B.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
@@ -119,7 +122,7 @@ public class Home_00_my_info extends AppCompatActivity {
 
     }
 
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
 
         //쉐어드 생성
@@ -128,7 +131,7 @@ public class Home_00_my_info extends AppCompatActivity {
         //쉐어드 안에 있는 정보 가져오기 - 프사
         String profile = savenick_info.getString(App.User_ID + "_user_profile", "");
 
-        if(!(profile.equals(""))) {
+        if (!(profile.equals(""))) {
 
             Log.d("체크", "프사 수정");
 
@@ -136,10 +139,12 @@ public class Home_00_my_info extends AppCompatActivity {
             HashMap<String, String> profile_map = new HashMap<>();
 
             //해쉬맵에 삽입
-            profile_map = App.gson.fromJson(profile,App.collectionTypeString);
+            profile_map = App.gson.fromJson(profile, App.collectionTypeString);
 
             //이미지 삽입
-            iv_view.setImageURI(Uri.parse(profile_map.get(App.User_ID + "_user_profile")));
+            App.bitmap_pic = App.getBitmap(profile_map.get(App.User_ID + "_user_profile"));
+
+            iv_view.setImageBitmap(App.bitmap_pic);
 
         }
 
@@ -149,7 +154,7 @@ public class Home_00_my_info extends AppCompatActivity {
         //쉐어드 안에 있는 정보 가져오기 - 닉네임
         String nick = savenick_info.getString(App.User_ID + "_user_nick", "");
 
-        if(!(nick.equals(""))) {
+        if (!(nick.equals(""))) {
 
             Log.d("체크", "닉네임 수정");
 
@@ -157,7 +162,7 @@ public class Home_00_my_info extends AppCompatActivity {
             HashMap<String, String> nick_map = new HashMap<>();
 
             //해쉬맵에 삽입
-            nick_map = App.gson.fromJson(nick,App.collectionTypeString);
+            nick_map = App.gson.fromJson(nick, App.collectionTypeString);
 
             //일치
             TextView user_nick = findViewById(R.id.home_00_my_info_nick);
@@ -171,7 +176,7 @@ public class Home_00_my_info extends AppCompatActivity {
         //쉐어드 안에 있는 정보 가져오기 - 좋아하는 책
         String like = savenick_info.getString(App.User_ID + "_user_like", "");
 
-        if(!(like.equals(""))) {
+        if (!(like.equals(""))) {
 
             Log.d("체크", "좋아하는 책 수정");
 
@@ -179,7 +184,7 @@ public class Home_00_my_info extends AppCompatActivity {
             HashMap<String, String> like_map = new HashMap<>();
 
             //해쉬맵에 삽입
-            like_map = App.gson.fromJson(like,App.collectionTypeString);
+            like_map = App.gson.fromJson(like, App.collectionTypeString);
 
             //일치
             TextView user_like = findViewById(R.id.home_00_my_info_genre);
@@ -193,7 +198,7 @@ public class Home_00_my_info extends AppCompatActivity {
         //쉐어드 안에 있는 정보 가져오기 - 대화명
         String talk = savenick_info.getString(App.User_ID + "_user_talk", "");
 
-        if(!(talk.equals(""))) {
+        if (!(talk.equals(""))) {
 
             Log.d("체크", "대화명 수정");
 
@@ -201,7 +206,7 @@ public class Home_00_my_info extends AppCompatActivity {
             HashMap<String, String> user_talk_map = new HashMap<>();
 
             //해쉬맵에 삽입
-            user_talk_map = App.gson.fromJson(talk,App.collectionTypeString);
+            user_talk_map = App.gson.fromJson(talk, App.collectionTypeString);
 
             //일치
             TextView user_talk = findViewById(R.id.home_00_my_info_talk);
@@ -214,38 +219,38 @@ public class Home_00_my_info extends AppCompatActivity {
     //프로필 사진 설정
     void showprofile() {
 
-            final List<String> ListItems = new ArrayList<>();
-            ListItems.add("사진 찍기");
-            ListItems.add("앨범 선택");
-            final CharSequence[] items = ListItems.toArray(new String[ListItems.size()]);
+        final List<String> ListItems = new ArrayList<>();
+        ListItems.add("사진 찍기");
+        ListItems.add("앨범 선택");
+        final CharSequence[] items = ListItems.toArray(new String[ListItems.size()]);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("프로필 사진");
-            builder.setItems(items, new DialogInterface.OnClickListener() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("프로필 사진");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
 
-                        public void onClick(DialogInterface dialog, int pos) {
+                    public void onClick(DialogInterface dialog, int pos) {
 
-                            if (pos == 0) {
-                                selectPhoto();
-                            } else if (pos == 1) {
-                                selectGallery();
-                            }
-
-
+                        if (pos == 0) {
+                            selectPhoto();
+                        } else if (pos == 1) {
+                            selectGallery();
                         }
+
 
                     }
 
-            );
+                }
 
-            builder.show();
+        );
+
+        builder.show();
 
 
-
-        }
+    }
 
     //카메라로 찍은 사진 가져오기
     private void selectPhoto() {
+
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -257,7 +262,7 @@ public class Home_00_my_info extends AppCompatActivity {
 
                 }
                 if (photoFile != null) {
-                    imageUri = FileProvider.getUriForFile(this, "com.example.dudu.myapplication", photoFile);
+                    imageUri = FileProvider.getUriForFile(this, getPackageName(), photoFile);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                     startActivityForResult(intent, REQUEST_TAKE_PHOTO);
                 }
@@ -269,21 +274,56 @@ public class Home_00_my_info extends AppCompatActivity {
     //이미지 파일화 시키기
 
     public File createImageFile() throws IOException {
-        // Create an image file name
+
+        File dir = new File(Environment.getExternalStorageDirectory() + "/path/");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = timeStamp + ".png";
-        File imageFile = null;
-        File storageDir = new File(Environment.getExternalStorageDirectory() + "/Pictures", "MyBrary");
 
-        if (!storageDir.exists()) {
-            Log.i("currentPhotoPath", storageDir.toString());
-            storageDir.mkdirs();
+        File storageDir = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/path/" + imageFileName);
+        currentPhotoPath = storageDir.getAbsolutePath();
+
+        return storageDir;
+
+    }
+
+    public static void SaveBitmapToFileCache(Bitmap bitmap, String strFilePath, String filename) {
+
+        File file = new File(strFilePath);
+
+        if (!file.exists())
+            file.mkdirs();
+        File fileCacheItem = new File(strFilePath + filename);
+        OutputStream out = null;
+
+        try {
+            fileCacheItem.createNewFile();
+            out = new FileOutputStream(fileCacheItem);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+    }
 
-        imageFile = new File(storageDir, imageFileName);
-        currentPhotoPath = imageFile.getAbsolutePath();
-
-        return imageFile;
+//    사진 가져오기
+    private void galleryAddPic(){
+        Log.i("galleryAddPic", "Call");
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        // 해당 경로에 있는 파일을 객체화(새로 파일을 만든다는 것으로 이해하면 안 됨)
+        File f = new File(currentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        sendBroadcast(mediaScanIntent);
+        Toast.makeText(this, "사진이 앨범에 저장되었습니다.", Toast.LENGTH_SHORT).show();
     }
 
     //찍은 사진 가져오기
@@ -305,7 +345,10 @@ public class Home_00_my_info extends AppCompatActivity {
             exifDegree = 0;
         }
 
-        iv_view.setImageBitmap(rotate(bitmap, exifDegree));//이미지 뷰에 비트맵 넣기
+        App.bitmap_pic = rotate(bitmap, exifDegree);    //비트맵 회전
+        App.string_pic = App.getBase64String(App.bitmap_pic);   //비트맵 스트링 변환
+
+        iv_view.setImageBitmap(App.bitmap_pic);//이미지 뷰에 비트맵 넣기
 
         //쉐어드 생성
         SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
@@ -315,7 +358,7 @@ public class Home_00_my_info extends AppCompatActivity {
         HashMap<String, String> profile_map = new HashMap<>();
 
         //정보 삽입
-        String user_profile = imageUri.toString();
+        String user_profile = App.string_pic;
 
         //정보 -> 해쉬맵에 삽입
         profile_map.put(App.User_ID + "_user_profile", user_profile);
@@ -336,16 +379,7 @@ public class Home_00_my_info extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_TAKE_ALBUM);
     }
 
-    private void galleryAddPic(){
-        Log.i("galleryAddPic", "Call");
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        // 해당 경로에 있는 파일을 객체화(새로 파일을 만든다는 것으로 이해하면 안 됨)
-        File f = new File(currentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        sendBroadcast(mediaScanIntent);
-        Toast.makeText(this, "사진이 앨범에 저장되었습니다.", Toast.LENGTH_SHORT).show();
-    }
+//
 
     //선택한 데이터 처리 1
     @Override
@@ -357,14 +391,14 @@ public class Home_00_my_info extends AppCompatActivity {
             switch (requestCode) {
 
                 case REQUEST_TAKE_ALBUM:
-                    sendPicture(data.getData()); //갤러리에서 가져오기
 
                     if (resultCode == Activity.RESULT_OK) {
                         if (data.getData() != null) {
-//                            sendPicture(data.getData());
-                            imageUri = data.getData();
-                            String RealPthImage = getRealPathFromURI(imageUri);
-                            imageUri = Uri.parse(RealPthImage);
+                            sendPicture(data.getData());
+
+//                            imageUri = data.getData();
+//                            String RealPthImage = getRealPathFromURI(imageUri);
+//                            imageUri = Uri.parse(RealPthImage);
 
                             //쉐어드 생성
                             SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
@@ -374,7 +408,7 @@ public class Home_00_my_info extends AppCompatActivity {
                             HashMap<String, String> profile_map = new HashMap<>();
 
                             //정보 삽입
-                            String user_profile = imageUri.toString();
+                            String user_profile = App.string_pic;
 
                             //정보 -> 해쉬맵에 삽입
                             profile_map.put(App.User_ID + "_user_profile", user_profile);
@@ -391,16 +425,15 @@ public class Home_00_my_info extends AppCompatActivity {
                     break;
 
                 case REQUEST_TAKE_PHOTO:
-                    getPictureForPhoto(); //카메라에서 가져오기
 
                     if (resultCode == Activity.RESULT_OK) {
                         try {
                             Log.i("REQUEST_TAKE_PHOTO", "OK");
                             galleryAddPic();
 
+//                            iv_view.setImageURI(imageUri);
 
-                            iv_view.setImageURI(imageUri);
-
+                            getPictureForPhoto(); //카메라에서 가져오기
                         } catch (Exception e) {
                             Log.e("REQUEST_TAKE_PHOTO", e.toString());
                         }
@@ -409,6 +442,7 @@ public class Home_00_my_info extends AppCompatActivity {
                     }
 
                     break;
+
                 default:
                     break;
             }
@@ -430,7 +464,11 @@ public class Home_00_my_info extends AppCompatActivity {
         int exifDegree = exifOrientationToDegrees(exifOrientation);
 
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//경로를 통해 비트맵으로 전환
-        iv_view.setImageBitmap(rotate(bitmap, exifDegree));//이미지 뷰에 비트맵 넣기
+
+        App.bitmap_pic = rotate(bitmap, exifDegree);    //비트맵 회전
+        App.string_pic = App.getBase64String(App.bitmap_pic);   //비트맵 스트링 변환
+
+        iv_view.setImageBitmap(App.bitmap_pic);//이미지 뷰에 비트맵 넣기
 
 
 
@@ -472,26 +510,6 @@ public class Home_00_my_info extends AppCompatActivity {
         return cursor.getString(column_index);
     }
 
-    // 카메라 전용 크랍
-    public void cropImage(){
-        Log.i("cropImage", "Call");
-        Log.i("cropImage", "photoURI : " + photoURI + " / albumURI : " + albumURI);
-
-        Intent cropIntent = new Intent("com.android.camera.action.CROP");
-
-        // 50x50픽셀미만은 편집할 수 없다는 문구 처리 + 갤러리, 포토 둘다 호환하는 방법
-        cropIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        cropIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        cropIntent.setDataAndType(photoURI, "image/*");
-        //cropIntent.putExtra("outputX", 200); // crop한 이미지의 x축 크기, 결과물의 크기
-        //cropIntent.putExtra("outputY", 200); // crop한 이미지의 y축 크기
-        cropIntent.putExtra("aspectX", 1); // crop 박스의 x축 비율, 1&1이면 정사각형
-        cropIntent.putExtra("aspectY", 1); // crop 박스의 y축 비율
-        cropIntent.putExtra("scale", true);
-        cropIntent.putExtra("output", albumURI); // 크랍된 이미지를 해당 경로에 저장
-        startActivityForResult(cropIntent, REQUEST_IMAGE_CROP);
-    }
-
     //권한 체크 1
     private void checkPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -499,7 +517,6 @@ public class Home_00_my_info extends AppCompatActivity {
             if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) ||
                     (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA))) {
 
-//                Log.d("체크", "1");
                 new android.app.AlertDialog.Builder(this)
                         .setTitle("알림")
                         .setMessage("저장소 권한이 거부되었습니다. 사용을 원하시면 설정에서 해당 권한을 직접 허용하셔야 합니다.")
@@ -522,8 +539,6 @@ public class Home_00_my_info extends AppCompatActivity {
                         .show();
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, MY_PERMISSION_CAMERA);
-
-//                Log.d("체크", "2");
 
             }
         }else{
@@ -548,8 +563,6 @@ public class Home_00_my_info extends AppCompatActivity {
                     }
                 }
 
-//                Log.d("체크", "권한 진입");
-
                 showprofile();
 
                 break;
@@ -557,14 +570,6 @@ public class Home_00_my_info extends AppCompatActivity {
 
         }
 
-
     }
-
-
-
-
-
-
-
 
 }
