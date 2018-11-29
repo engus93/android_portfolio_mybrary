@@ -58,8 +58,11 @@ public class Home_02_01 extends AppCompatActivity {
     Button home_02_01_book_plus_B;
     ImageButton home_02_01_back_B;
 
-    String set_date;
-    Boolean Regeneration = false;
+
+
+    //사진 저장 변수
+    Bitmap bitmap_pic;  //사진 비트맵 저장
+    String string_pic;  //사진 스트링 변환
 
     Context context;
 
@@ -68,11 +71,12 @@ public class Home_02_01 extends AppCompatActivity {
     private static final int MY_PERMISSION_CAMERA = 1111;
     private static final int REQUEST_TAKE_PHOTO = 1112;
     private static final int REQUEST_TAKE_ALBUM = 1113;
-    private static final int REQUEST_IMAGE_CROP = 1114;
 
     private String currentPhotoPath;//실제 사진 파일 경로
 
     Uri imageUri;
+    String set_date;
+    Boolean Regeneration = false;
 
     protected void onCreate(Bundle savedInstancesState) {
 
@@ -301,7 +305,7 @@ public class Home_02_01 extends AppCompatActivity {
     //------------------------책 사진 적용--------------
 
     //프로필 사진 설정
-    void showprofile() {
+    void showmybrary() {
 
         final List<String> ListItems = new ArrayList<>();
         ListItems.add("사진 찍기");
@@ -325,6 +329,7 @@ public class Home_02_01 extends AppCompatActivity {
                             Toast.makeText(Home_02_01.this, "검색하러 가즈아ㅏㅏ", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(Home_02_01.this, Search_01.class);
                             startActivityForResult(intent, 4747);
+
                         }
                     }
 
@@ -556,7 +561,7 @@ public class Home_02_01 extends AppCompatActivity {
         }else{
 
             //프로필 사진 바꾸기
-            showprofile();
+            showmybrary();
 
         }
 
@@ -577,7 +582,7 @@ public class Home_02_01 extends AppCompatActivity {
 
 //                Log.d("체크", "권한 진입");
 
-                showprofile();
+                showmybrary();
 
                 break;
             }

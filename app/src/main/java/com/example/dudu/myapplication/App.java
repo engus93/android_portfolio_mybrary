@@ -41,10 +41,6 @@ public class App extends Application {
 //    static FirebaseDatabase FB = FirebaseDatabase.getInstance();
 //    static DatabaseReference FB_DB = FB.getReference();
 
-    //사진용 변수 데이터
-    static Bitmap bitmap_pic;
-    static String string_pic;
-
     @Override
     public void onCreate() {
         super.onCreate();

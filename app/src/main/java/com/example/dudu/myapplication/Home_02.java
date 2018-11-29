@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -245,11 +246,12 @@ public class Home_02 extends AppCompatActivity {
 
             //이미지 삽입 (드로어)
             ImageView drower_profile = findViewById(R.id.home_drawer_profile);
-            drower_profile.setImageURI(Uri.parse(profile_map.get(App.User_ID + "_user_profile")));
+            Bitmap bitmap_pic = App.getBitmap(profile_map.get(App.User_ID + "_user_profile"));
+            drower_profile.setImageBitmap(bitmap_pic);
 
             //이미지 삽입 (내 서재)
             ImageView mybrary_profile = findViewById(R.id.home_02_re_fropile_I);
-            mybrary_profile.setImageURI(Uri.parse(profile_map.get(App.User_ID + "_user_profile")));
+            mybrary_profile.setImageBitmap(bitmap_pic);
 
         }
 

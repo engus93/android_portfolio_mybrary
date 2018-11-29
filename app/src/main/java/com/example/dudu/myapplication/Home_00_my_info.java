@@ -58,12 +58,13 @@ public class Home_00_my_info extends AppCompatActivity {
     private static final int MY_PERMISSION_CAMERA = 1111;
     private static final int REQUEST_TAKE_PHOTO = 1112;
     private static final int REQUEST_TAKE_ALBUM = 1113;
-    private static final int REQUEST_IMAGE_CROP = 1114;
 
     private String currentPhotoPath;//실제 사진 파일 경로
 
-    Uri imageUri = null;
-    Uri photoURI, albumURI;
+    Uri imageUri;
+    Bitmap bitmap_pic;  //사진 비트맵 저장
+    String string_pic;  //사진 스트링 변환
+
 
     protected void onCreate(Bundle savedIstancesState) {
         super.onCreate(savedIstancesState);
@@ -142,9 +143,9 @@ public class Home_00_my_info extends AppCompatActivity {
             profile_map = App.gson.fromJson(profile, App.collectionTypeString);
 
             //이미지 삽입
-            App.bitmap_pic = App.getBitmap(profile_map.get(App.User_ID + "_user_profile"));
+            bitmap_pic = App.getBitmap(profile_map.get(App.User_ID + "_user_profile"));
 
-            iv_view.setImageBitmap(App.bitmap_pic);
+            iv_view.setImageBitmap(bitmap_pic);
 
         }
 
@@ -229,28 +230,20 @@ public class Home_00_my_info extends AppCompatActivity {
         builder.setItems(items, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int pos) {
-
                         if (pos == 0) {
                             selectPhoto();
                         } else if (pos == 1) {
                             selectGallery();
                         }
-
-
                     }
 
                 }
-
         );
-
         builder.show();
-
-
     }
 
     //카메라로 찍은 사진 가져오기
     private void selectPhoto() {
-
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -272,50 +265,24 @@ public class Home_00_my_info extends AppCompatActivity {
     }
 
     //이미지 파일화 시키기
-
     public File createImageFile() throws IOException {
-
-        File dir = new File(Environment.getExternalStorageDirectory() + "/path/");
+        File dir = new File(Environment.getExternalStorageDirectory() +  "/MyBrary/");
         if (!dir.exists()) {
             dir.mkdirs();
         }
+
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = timeStamp + ".png";
 
-        File storageDir = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/path/" + imageFileName);
+        File storageDir = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/MyBrary/" + imageFileName);
         currentPhotoPath = storageDir.getAbsolutePath();
 
         return storageDir;
 
     }
 
-    public static void SaveBitmapToFileCache(Bitmap bitmap, String strFilePath, String filename) {
-
-        File file = new File(strFilePath);
-
-        if (!file.exists())
-            file.mkdirs();
-        File fileCacheItem = new File(strFilePath + filename);
-        OutputStream out = null;
-
-        try {
-            fileCacheItem.createNewFile();
-            out = new FileOutputStream(fileCacheItem);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-//    사진 가져오기
-    private void galleryAddPic(){
+    //    사진 가져오기
+    private void galleryAddPic() {
         Log.i("galleryAddPic", "Call");
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         // 해당 경로에 있는 파일을 객체화(새로 파일을 만든다는 것으로 이해하면 안 됨)
@@ -345,10 +312,10 @@ public class Home_00_my_info extends AppCompatActivity {
             exifDegree = 0;
         }
 
-        App.bitmap_pic = rotate(bitmap, exifDegree);    //비트맵 회전
-        App.string_pic = App.getBase64String(App.bitmap_pic);   //비트맵 스트링 변환
+        bitmap_pic = rotate(bitmap, exifDegree);    //비트맵 회전
+        string_pic = App.getBase64String(bitmap_pic);   //비트맵 스트링 변환
 
-        iv_view.setImageBitmap(App.bitmap_pic);//이미지 뷰에 비트맵 넣기
+        iv_view.setImageBitmap(bitmap_pic);//이미지 뷰에 비트맵 넣기
 
         //쉐어드 생성
         SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
@@ -358,7 +325,7 @@ public class Home_00_my_info extends AppCompatActivity {
         HashMap<String, String> profile_map = new HashMap<>();
 
         //정보 삽입
-        String user_profile = App.string_pic;
+        String user_profile = string_pic;
 
         //정보 -> 해쉬맵에 삽입
         profile_map.put(App.User_ID + "_user_profile", user_profile);
@@ -379,8 +346,6 @@ public class Home_00_my_info extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_TAKE_ALBUM);
     }
 
-//
-
     //선택한 데이터 처리 1
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -396,10 +361,6 @@ public class Home_00_my_info extends AppCompatActivity {
                         if (data.getData() != null) {
                             sendPicture(data.getData());
 
-//                            imageUri = data.getData();
-//                            String RealPthImage = getRealPathFromURI(imageUri);
-//                            imageUri = Uri.parse(RealPthImage);
-
                             //쉐어드 생성
                             SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
                             SharedPreferences.Editor save = savenick_info.edit();
@@ -408,7 +369,7 @@ public class Home_00_my_info extends AppCompatActivity {
                             HashMap<String, String> profile_map = new HashMap<>();
 
                             //정보 삽입
-                            String user_profile = App.string_pic;
+                            String user_profile = string_pic;
 
                             //정보 -> 해쉬맵에 삽입
                             profile_map.put(App.User_ID + "_user_profile", user_profile);
@@ -465,12 +426,10 @@ public class Home_00_my_info extends AppCompatActivity {
 
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//경로를 통해 비트맵으로 전환
 
-        App.bitmap_pic = rotate(bitmap, exifDegree);    //비트맵 회전
-        App.string_pic = App.getBase64String(App.bitmap_pic);   //비트맵 스트링 변환
+        bitmap_pic = rotate(bitmap, exifDegree);    //비트맵 회전
+        string_pic = App.getBase64String(bitmap_pic);   //비트맵 스트링 변환
 
-        iv_view.setImageBitmap(App.bitmap_pic);//이미지 뷰에 비트맵 넣기
-
-
+        iv_view.setImageBitmap(bitmap_pic);//이미지 뷰에 비트맵 넣기
 
     }
 
@@ -541,7 +500,7 @@ public class Home_00_my_info extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, MY_PERMISSION_CAMERA);
 
             }
-        }else{
+        } else {
 
             //프로필 사진 바꾸기
             showprofile();
@@ -554,7 +513,7 @@ public class Home_00_my_info extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case MY_PERMISSION_CAMERA:{
+            case MY_PERMISSION_CAMERA: {
                 for (int i = 0; i < grantResults.length; i++) {
                     // grantResults[] : 허용된 권한은 0, 거부한 권한은 -1
                     if (grantResults[i] < 0) {
