@@ -34,6 +34,12 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -59,8 +65,7 @@ public class Home_00_my_info extends AppCompatActivity {
     private static final int REQUEST_TAKE_ALBUM = 1113;
 
     //파이어베이스
-    private FirebaseAuth firebaseAuth;  //파이어베이스 인증
-    private FirebaseStorage storage;
+    private FirebaseStorage storage;    //스토리지
 
     //사진 저장
     private String currentPhotoPath;    //실제 사진 파일 경로
@@ -69,14 +74,21 @@ public class Home_00_my_info extends AppCompatActivity {
     Bitmap bitmap_pic;  //사진 비트맵 저장
     String string_pic;  //사진 스트링 변환
 
+    //해당 UID 캐치
+    FirebaseUser user;
+    String uid;
+
     protected void onCreate(Bundle savedIstancesState) {
         super.onCreate(savedIstancesState);
         setContentView(R.layout.home_00_my_info);
 
-        firebaseAuth = FirebaseAuth.getInstance();  //파베 인증 객체
         storage = FirebaseStorage.getInstance();    //스토리지 객체
 
         iv_view = (ImageView) findViewById(R.id.my_info_profile);   //프로필 사진
+
+        //UID 캐칭
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        uid = user.getUid();
 
         //내 정보 수정 - > 닉네임 수정
         bt_02 = findViewById(R.id.my_info_nick_B);
@@ -127,6 +139,28 @@ public class Home_00_my_info extends AppCompatActivity {
             }
         });
 
+        FirebaseDatabase.getInstance().getReference("User_Info").child(uid).child("user_info").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    //일치
+                    TextView user_nick = findViewById(R.id.home_00_my_info_nick);
+                    Member_ArrayList user_info = new Member_ArrayList();
+                    user_info = snapshot.getValue(Member_ArrayList.class);
+                    System.out.println(uid);
+                    Log.d("체크","들어왔니?");
+                    user_nick.setText(user_info.getUser_nick());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
     }
 
     protected void onResume() {
@@ -155,27 +189,27 @@ public class Home_00_my_info extends AppCompatActivity {
 
         }
 
-        //쉐어드 생성
-        savenick_info = getSharedPreferences("member_info_01", MODE_PRIVATE);
-
-        //쉐어드 안에 있는 정보 가져오기 - 닉네임
-        String nick = savenick_info.getString(App.User_ID + "_user_nick", "");
-
-        if (!(nick.equals(""))) {
-
-            Log.d("체크", "닉네임 수정");
-
-            //해쉬맵 생성
-            HashMap<String, String> nick_map = new HashMap<>();
-
-            //해쉬맵에 삽입
-            nick_map = App.gson.fromJson(nick, App.collectionTypeString);
-
-            //일치
-            TextView user_nick = findViewById(R.id.home_00_my_info_nick);
-            user_nick.setText(nick_map.get(App.User_ID + "_user_nick"));
-
-        }
+//        //쉐어드 생성
+//        savenick_info = getSharedPreferences("member_info_01", MODE_PRIVATE);
+//
+//        //쉐어드 안에 있는 정보 가져오기 - 닉네임
+//        String nick = savenick_info.getString(App.User_ID + "_user_nick", "");
+//
+//        if (!(nick.equals(""))) {
+//
+//            Log.d("체크", "닉네임 수정");
+//
+//            //해쉬맵 생성
+//            HashMap<String, String> nick_map = new HashMap<>();
+//
+//            //해쉬맵에 삽입
+//            nick_map = App.gson.fromJson(nick, App.collectionTypeString);
+//
+//            //일치
+//            TextView user_nick = findViewById(R.id.home_00_my_info_nick);
+//            user_nick.setText(nick_map.get(App.User_ID + "_user_nick"));
+//
+//        }
 
         //쉐어드 생성
         savenick_info = getSharedPreferences("member_info_02", MODE_PRIVATE);
@@ -568,8 +602,15 @@ public class Home_00_my_info extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
 
-                    String uploaded_image_url = downloadUri.toString();
+                    //파이어베이스 데이터베이스 선언
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef = database.getReference("User_Info");
 
+                    //정보 삽입
+                    String image_uri = downloadUri.toString();
+
+                    //파이어베이스에 저장
+                    myRef.child(uid).child("user_info").child("user_profile").setValue(image_uri);
 
                 } else {
                     Toast.makeText(Home_00_my_info.this, "업로드 실패", Toast.LENGTH_SHORT).show();

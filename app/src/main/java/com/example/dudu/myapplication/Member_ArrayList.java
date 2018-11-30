@@ -7,6 +7,10 @@ public class Member_ArrayList {
     String member_name;
     String member_birthday;
     String member_sex;
+    String user_nick;
+    String user_talk;
+    String user_like;
+    String user_profile;
 
     public Member_ArrayList(String member_id, String member_password,String member_name,String member_birthday, String member_sex){
 
@@ -15,6 +19,14 @@ public class Member_ArrayList {
         this.member_name = member_name;
         this.member_birthday= member_birthday;
         this.member_sex = member_sex;
+        this.user_nick = "";
+        this.user_talk = "";
+        this.user_like = "";
+        this.user_profile = "";
+    }
+
+    public Member_ArrayList(){
+
     }
 
     public String getMember_id() {
@@ -57,4 +69,35 @@ public class Member_ArrayList {
         this.member_sex = member_sex;
     }
 
+    public String getUser_nick() {
+        return user_nick;
+    }
+
+    public void setUser_nick(String user_nick) {
+        this.user_nick = user_nick;
+    }
+
+    public String getUser_talk() {
+        return user_talk;
+    }
+
+    public void setUser_talk(String user_talk) {
+        this.user_talk = user_talk;
+    }
+
+    public String getUser_like() {
+        return user_like;
+    }
+
+    public void setUser_like(String user_like) {
+        this.user_like = user_like;
+    }
+
+    public String getUser_profile() {
+        return user_profile;
+    }
+
+    public void setUser_profile(String user_profile) {
+        this.user_profile = user_profile;
+    }
 }
