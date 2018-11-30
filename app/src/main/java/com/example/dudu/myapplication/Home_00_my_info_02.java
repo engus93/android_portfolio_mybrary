@@ -68,7 +68,7 @@ public class Home_00_my_info_02 extends AppCompatActivity {
                 String user_like = my_info_genre.getText().toString();
 
                 //파이어베이스에 저장
-                myRef.child(uid).child("user_info").child("user_like").setValue(user_like);
+                myRef.child(uid).child("user_like").setValue(user_like);
 
                 Intent intent1 = new Intent(Home_00_my_info_02.this, Home_00_my_info.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

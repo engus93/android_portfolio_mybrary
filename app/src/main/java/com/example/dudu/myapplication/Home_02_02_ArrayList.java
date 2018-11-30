@@ -1,13 +1,12 @@
 package com.example.dudu.myapplication;
 
-import android.net.Uri;
-
 public class Home_02_02_ArrayList {
     public String book;
     public String name;
     public String author;
     public String finish;
     public String main;
+    public long date;
 
     public Home_02_02_ArrayList(String book, String name, String author, String finish, String main) {
         this.book = book;
@@ -56,4 +55,13 @@ public class Home_02_02_ArrayList {
     public void setMain(String main) {
         this.main = main;
     }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
+
 }

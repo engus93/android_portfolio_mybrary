@@ -23,15 +23,23 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Home_01 extends AppCompatActivity {
 
@@ -43,6 +51,8 @@ public class Home_01 extends AppCompatActivity {
 
     ImageButton home_01_search; //검색창 버튼
 
+    CircleImageView drower_profile;
+
     int REQ_CALL_SELECT = 1300;
     int REQ_SMS_SELECT = 1400;
 
@@ -50,12 +60,43 @@ public class Home_01 extends AppCompatActivity {
 
     private long backPressedTime = 0;   //뒤로가기 2초 세기
 
+    //해당 UID 캐치
+    FirebaseUser user;
+
     protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_01);
 
         mAuth = FirebaseAuth.getInstance(); //파베 객체선언
+
+        //UID 캐칭
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        App.uid = user.getUid();
+
+        drower_profile = findViewById(R.id.home_drawer_profile);
+
+//        //쉐어드 생성
+//        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
+//
+//        //쉐어드 안에 있는 정보 가져오기 - 프사
+//        String profile = savenick_info.getString("user_profile", "");
+//
+//        if (!(profile.equals(""))) {
+//
+//            Log.d("체크", "프사 수정");
+//
+//            //해쉬맵 생성
+//            HashMap<String, String> profile_map = new HashMap<>();
+//
+//            //해쉬맵에 삽입
+//            profile_map = App.gson.fromJson(profile, App.collectionTypeString);
+//
+//            //이미지 삽입
+//            App.Login_User_Profile = profile_map.get("user_profile");
+//
+//        }
+
 
         //메뉴 1 - > 메뉴 2
         home_01_menu_02_b = findViewById(R.id.home_01_menu_02_B);
@@ -119,6 +160,36 @@ public class Home_01 extends AppCompatActivity {
 
             }
         });
+
+        FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Member_ArrayList user_info;
+//                user_info = dataSnapshot.child(App.uid).getValue(Member_ArrayList.class);
+
+//                String profile = dataSnapshot.child(App.uid).child("user_profile").getValue().toString();
+
+//                Glide.with(Home_00_my_info.this).load(App.Login_User_Profile).into(user_profile);
+
+//                Glide.clear(drower_profile);
+
+                Glide.with(Home_01.this).load(App.Login_User_Profile).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(drower_profile);
+
+//                App.Login_User_Profile = profile;
+
+//                user_nick.setText(user_info.getUser_nick());
+//                user_like.setText(user_info.getUser_like());
+//                user_talk.setText(user_info.getUser_talk());
+//                App.Login_User_Profile = user_info.getUser_profile();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
 
 
@@ -227,35 +298,41 @@ public class Home_01 extends AppCompatActivity {
             }
         });
 
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        //쉐어드 생성
-        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
 
-        //쉐어드 안에 있는 정보 가져오기 - 프사
-        String profile = savenick_info.getString(App.User_ID + "_user_profile", "");
+        Glide.with(Home_01.this).load(App.Login_User_Profile).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(drower_profile);
 
-        //프사 세팅
-        if(!(profile.equals(""))) {
+//        //쉐어드 생성
+//        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
+//
+//        //쉐어드 안에 있는 정보 가져오기 - 프사
+//        String profile = savenick_info.getString("user_profile", "");
+//
+//        //프사 세팅
+//        if(!(profile.equals(""))) {
+//
+//            Log.d("체크", "좋아하는 책 수정");
+//
+//            //해쉬맵 생성
+//            HashMap<String, String> profile_map = new HashMap<>();
+//
+//            //해쉬맵에 삽입
+//            profile_map = App.gson.fromJson(profile,App.collectionTypeString);
+//
+//            Bitmap bitmap_pic = App.getBitmap(profile_map.get("user_profile"));
+//            drower_profile.setImageBitmap(bitmap_pic);
+//
+//        }
 
-            Log.d("체크", "좋아하는 책 수정");
-
-            //해쉬맵 생성
-            HashMap<String, String> profile_map = new HashMap<>();
-
-            //해쉬맵에 삽입
-            profile_map = App.gson.fromJson(profile,App.collectionTypeString);
-
-            //이미지 삽입
-            ImageView drower_profile = findViewById(R.id.home_drawer_profile);
-            Bitmap bitmap_pic = App.getBitmap(profile_map.get(App.User_ID + "_user_profile"));
-            drower_profile.setImageBitmap(bitmap_pic);
-
-        }
+//        drower_profile = findViewById(R.id.home_drawer_profile);
+//
+//        Glide.with(Home_01.this).load(App.Login_User_Profile).override(150,150).into(drower_profile);
 
     }
 

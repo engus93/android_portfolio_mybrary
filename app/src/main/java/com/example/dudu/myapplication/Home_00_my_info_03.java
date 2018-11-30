@@ -68,7 +68,7 @@ public class Home_00_my_info_03 extends AppCompatActivity {
                 String user_talk = my_info_talk.getText().toString();
 
                 //파이어베이스에 저장
-                myRef.child(uid).child("user_info").child("user_talk").setValue(user_talk);
+                myRef.child(uid).child("user_talk").setValue(user_talk);
 
                 Intent intent1 = new Intent(Home_00_my_info_03.this, Home_00_my_info.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

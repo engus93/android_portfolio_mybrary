@@ -232,14 +232,14 @@ public class Sign_up_02_Activity extends AppCompatActivity {
                             //해당 UID 캐치
                             FirebaseUser user;
                             user = FirebaseAuth.getInstance().getCurrentUser();
-                            String uid = user.getUid();
+                            App.uid = user.getUid();
 
                             //정보 삽입
                             Member_ArrayList user_info = new Member_ArrayList(user_id.getText().toString(), user_password_01.getText().toString(),
-                                    user_name.getText().toString(), user_birth_day.getText().toString(), user_sex);
+                                    user_name.getText().toString(), user_birth_day.getText().toString(), user_sex, App.uid);
 
                             //파이어베이스에 저장
-                            myRef.child(uid).child("user_info").setValue(user_info);
+                            myRef.child(App.uid).setValue(user_info);
 
                             //화면 이동
                             MainActivity.showToast(Sign_up_02_Activity.this, "회원 가입 완료");

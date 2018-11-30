@@ -19,6 +19,9 @@ import java.util.regex.Pattern;
 public class App extends Application {
 
     static String User_ID; //현재 로그인 아이디
+    static String Login_User_Profile;
+
+    static String uid;
 
     // 비밀번호 정규식
     static Pattern PASSWORD_PATTERN = Pattern.compile("^[a-zA-Z0-9!@.#$%^&*?_~]{6,15}$");

@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -52,6 +55,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class Home_00_my_info extends AppCompatActivity {
 
     ImageView iv_view;  //프로필 사진
@@ -59,6 +64,14 @@ public class Home_00_my_info extends AppCompatActivity {
     Button bt_03;   //닉네임 수정 버튼
     Button my_info_profile_B; //프로필 사진 수정 버튼
     ImageButton my_info_back_B; //뒤로가기
+
+    TextView user_nick;
+    TextView user_like;
+    TextView user_talk;
+    CircleImageView user_profile;
+
+    Uri downloadUri;
+    String image_uri;
 
     private static final int MY_PERMISSION_CAMERA = 1111;
     private static final int REQUEST_TAKE_PHOTO = 1112;
@@ -74,9 +87,7 @@ public class Home_00_my_info extends AppCompatActivity {
     Bitmap bitmap_pic;  //사진 비트맵 저장
     String string_pic;  //사진 스트링 변환
 
-    //해당 UID 캐치
-    FirebaseUser user;
-    String uid;
+    String change;
 
     protected void onCreate(Bundle savedIstancesState) {
         super.onCreate(savedIstancesState);
@@ -86,9 +97,11 @@ public class Home_00_my_info extends AppCompatActivity {
 
         iv_view = (ImageView) findViewById(R.id.my_info_profile);   //프로필 사진
 
-        //UID 캐칭
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        uid = user.getUid();
+        //Find View
+        user_nick = findViewById(R.id.home_00_my_info_nick);
+        user_like = findViewById(R.id.home_00_my_info_genre);
+        user_talk = findViewById(R.id.home_00_my_info_talk);
+        user_profile = findViewById(R.id.my_info_profile);
 
         //내 정보 수정 - > 닉네임 수정
         bt_02 = findViewById(R.id.my_info_nick_B);
@@ -139,18 +152,16 @@ public class Home_00_my_info extends AppCompatActivity {
             }
         });
 
-        FirebaseDatabase.getInstance().getReference("User_Info").child(uid).child("user_info").addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    //일치
-                    TextView user_nick = findViewById(R.id.home_00_my_info_nick);
-                    Member_ArrayList user_info = new Member_ArrayList();
-                    user_info = snapshot.getValue(Member_ArrayList.class);
-                    System.out.println(uid);
-                    Log.d("체크","들어왔니?");
-                    user_nick.setText(user_info.getUser_nick());
-                }
+
+                Glide.with(Home_00_my_info.this).load(dataSnapshot.child(App.uid).child("user_profile").getValue().toString()).into(user_profile);
+                user_nick.setText(dataSnapshot.child(App.uid).child("user_nick").getValue().toString());
+                user_like.setText(dataSnapshot.child(App.uid).child("user_like").getValue().toString());
+                user_talk.setText(dataSnapshot.child(App.uid).child("user_talk").getValue().toString());
+                change = dataSnapshot.child(App.uid).child("user_profile").getValue().toString();
+
             }
 
             @Override
@@ -159,35 +170,53 @@ public class Home_00_my_info extends AppCompatActivity {
             }
         });
 
-
-
     }
 
     protected void onResume() {
         super.onResume();
 
-        //쉐어드 생성
-        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
 
-        //쉐어드 안에 있는 정보 가져오기 - 프사
-        String profile = savenick_info.getString(App.User_ID + "_user_profile", "");
+//        쉐어드 생성
+//        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
+//        SharedPreferences.Editor save = savenick_info.edit();
+//
+//        //해쉬맵 생성
+//        HashMap<String, String> nick_map = new HashMap<>();
+//
+//        //정보 삽입
+//        String user_profile = App.Login_User_Profile;
+//
+//        //정보 -> 해쉬맵에 삽입
+//        nick_map.put("user_profile", user_profile);
+//
+//        //해쉬맵(Gson 변환) -> 쉐어드 삽입
+//        save.putString("user_profile", App.gson.toJson(nick_map));
+//
+//        //저장
+//        save.apply();
 
-        if (!(profile.equals(""))) {
-
-            Log.d("체크", "프사 수정");
-
-            //해쉬맵 생성
-            HashMap<String, String> profile_map = new HashMap<>();
-
-            //해쉬맵에 삽입
-            profile_map = App.gson.fromJson(profile, App.collectionTypeString);
-
-            //이미지 삽입
-            bitmap_pic = App.getBitmap(profile_map.get(App.User_ID + "_user_profile"));
-
-            iv_view.setImageBitmap(bitmap_pic);
-
-        }
+//        //쉐어드 생성
+//        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
+//
+//        //쉐어드 안에 있는 정보 가져오기 - 프사
+//        String profile = savenick_info.getString(App.User_ID + "_user_profile", "");
+//
+//        if (!(profile.equals(""))) {
+//
+//            Log.d("체크", "프사 수정");
+//
+//            //해쉬맵 생성
+//            HashMap<String, String> profile_map = new HashMap<>();
+//
+//            //해쉬맵에 삽입
+//            profile_map = App.gson.fromJson(profile, App.collectionTypeString);
+//
+//            //이미지 삽입
+//            bitmap_pic = App.getBitmap(profile_map.get(App.User_ID + "_user_profile"));
+//
+//            iv_view.setImageBitmap(bitmap_pic);
+//
+//        }
 
 //        //쉐어드 생성
 //        savenick_info = getSharedPreferences("member_info_01", MODE_PRIVATE);
@@ -211,49 +240,49 @@ public class Home_00_my_info extends AppCompatActivity {
 //
 //        }
 
-        //쉐어드 생성
-        savenick_info = getSharedPreferences("member_info_02", MODE_PRIVATE);
-
-        //쉐어드 안에 있는 정보 가져오기 - 좋아하는 책
-        String like = savenick_info.getString(App.User_ID + "_user_like", "");
-
-        if (!(like.equals(""))) {
-
-            Log.d("체크", "좋아하는 책 수정");
-
-            //해쉬맵 생성
-            HashMap<String, String> like_map = new HashMap<>();
-
-            //해쉬맵에 삽입
-            like_map = App.gson.fromJson(like, App.collectionTypeString);
-
-            //일치
-            TextView user_like = findViewById(R.id.home_00_my_info_genre);
-            user_like.setText(like_map.get(App.User_ID + "_user_like"));
-
-        }
-
-        //쉐어드 생성
-        savenick_info = getSharedPreferences("member_info_03", MODE_PRIVATE);
-
-        //쉐어드 안에 있는 정보 가져오기 - 대화명
-        String talk = savenick_info.getString(App.User_ID + "_user_talk", "");
-
-        if (!(talk.equals(""))) {
-
-            Log.d("체크", "대화명 수정");
-
-            //해쉬맵 생성
-            HashMap<String, String> user_talk_map = new HashMap<>();
-
-            //해쉬맵에 삽입
-            user_talk_map = App.gson.fromJson(talk, App.collectionTypeString);
-
-            //일치
-            TextView user_talk = findViewById(R.id.home_00_my_info_talk);
-            user_talk.setText(user_talk_map.get(App.User_ID + "_user_talk"));
-
-        }
+//        //쉐어드 생성
+//        savenick_info = getSharedPreferences("member_info_02", MODE_PRIVATE);
+//
+//        //쉐어드 안에 있는 정보 가져오기 - 좋아하는 책
+//        String like = savenick_info.getString(App.User_ID + "_user_like", "");
+//
+//        if (!(like.equals(""))) {
+//
+//            Log.d("체크", "좋아하는 책 수정");
+//
+//            //해쉬맵 생성
+//            HashMap<String, String> like_map = new HashMap<>();
+//
+//            //해쉬맵에 삽입
+//            like_map = App.gson.fromJson(like, App.collectionTypeString);
+//
+//            //일치
+//            TextView user_like = findViewById(R.id.home_00_my_info_genre);
+//            user_like.setText(like_map.get(App.User_ID + "_user_like"));
+//
+//        }
+//
+//        //쉐어드 생성
+//        savenick_info = getSharedPreferences("member_info_03", MODE_PRIVATE);
+//
+//        //쉐어드 안에 있는 정보 가져오기 - 대화명
+//        String talk = savenick_info.getString(App.User_ID + "_user_talk", "");
+//
+//        if (!(talk.equals(""))) {
+//
+//            Log.d("체크", "대화명 수정");
+//
+//            //해쉬맵 생성
+//            HashMap<String, String> user_talk_map = new HashMap<>();
+//
+//            //해쉬맵에 삽입
+//            user_talk_map = App.gson.fromJson(talk, App.collectionTypeString);
+//
+//            //일치
+//            TextView user_talk = findViewById(R.id.home_00_my_info_talk);
+//            user_talk.setText(user_talk_map.get(App.User_ID + "_user_talk"));
+//
+//        }
 
     }
 
@@ -357,24 +386,24 @@ public class Home_00_my_info extends AppCompatActivity {
 
         iv_view.setImageBitmap(bitmap_pic);//이미지 뷰에 비트맵 넣기
 
-        //쉐어드 생성
-        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
-        SharedPreferences.Editor save = savenick_info.edit();
-
-        //해쉬맵 생성
-        HashMap<String, String> profile_map = new HashMap<>();
-
-        //정보 삽입
-        String user_profile = string_pic;
-
-        //정보 -> 해쉬맵에 삽입
-        profile_map.put(App.User_ID + "_user_profile", user_profile);
-
-        //해쉬맵(Gson 변환) -> 쉐어드 삽입
-        save.putString(App.User_ID + "_user_profile", App.gson.toJson(profile_map));
-
-        //저장
-        save.apply();
+//        //쉐어드 생성
+//        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
+//        SharedPreferences.Editor save = savenick_info.edit();
+//
+//        //해쉬맵 생성
+//        HashMap<String, String> profile_map = new HashMap<>();
+//
+//        //정보 삽입
+//        String user_profile = string_pic;
+//
+//        //정보 -> 해쉬맵에 삽입
+//        profile_map.put(App.User_ID + "_user_profile", user_profile);
+//
+//        //해쉬맵(Gson 변환) -> 쉐어드 삽입
+//        save.putString(App.User_ID + "_user_profile", App.gson.toJson(profile_map));
+//
+//        //저장
+//        save.apply();
 
         //파이어 베이스 업로드
         upload(currentPhotoPath);
@@ -404,24 +433,24 @@ public class Home_00_my_info extends AppCompatActivity {
                         if (data.getData() != null) {
                             sendPicture(data.getData());
 
-                            //쉐어드 생성
-                            SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
-                            SharedPreferences.Editor save = savenick_info.edit();
-
-                            //해쉬맵 생성
-                            HashMap<String, String> profile_map = new HashMap<>();
-
-                            //정보 삽입
-                            String user_profile = string_pic;
-
-                            //정보 -> 해쉬맵에 삽입
-                            profile_map.put(App.User_ID + "_user_profile", user_profile);
-
-                            //해쉬맵(Gson 변환) -> 쉐어드 삽입
-                            save.putString(App.User_ID + "_user_profile", App.gson.toJson(profile_map));
-
-                            //저장
-                            save.apply();
+//                            //쉐어드 생성
+//                            SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
+//                            SharedPreferences.Editor save = savenick_info.edit();
+//
+//                            //해쉬맵 생성
+//                            HashMap<String, String> profile_map = new HashMap<>();
+//
+//                            //정보 삽입
+//                            String user_profile = string_pic;
+//
+//                            //정보 -> 해쉬맵에 삽입
+//                            profile_map.put(App.User_ID + "_user_profile", user_profile);
+//
+//                            //해쉬맵(Gson 변환) -> 쉐어드 삽입
+//                            save.putString(App.User_ID + "_user_profile", App.gson.toJson(profile_map));
+//
+//                            //저장
+//                            save.apply();
 
                         }
                     }
@@ -449,9 +478,6 @@ public class Home_00_my_info extends AppCompatActivity {
                 default:
                     break;
             }
-
-
-
 
         }
     }
@@ -583,7 +609,7 @@ public class Home_00_my_info extends AppCompatActivity {
         StorageReference storageRef = storage.getReference();
 
         Uri file = Uri.fromFile(new File(uri));
-        final StorageReference riversRef = storageRef.child("images/"+file.getLastPathSegment());
+        final StorageReference riversRef = storageRef.child("MyBrary/User_Profile"+file.getLastPathSegment());
         UploadTask uploadTask = riversRef.putFile(file);
 
         Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -600,17 +626,17 @@ public class Home_00_my_info extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()) {
-                    Uri downloadUri = task.getResult();
+                    downloadUri = task.getResult();
 
-                    //파이어베이스 데이터베이스 선언
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef = database.getReference("User_Info");
+//                    파이어베이스 데이터베이스 선언
+//                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+//                    DatabaseReference myRef = database.getReference("User_Info");
+//
+//                    정보 삽입
+                    App.Login_User_Profile = downloadUri.toString();
 
-                    //정보 삽입
-                    String image_uri = downloadUri.toString();
-
-                    //파이어베이스에 저장
-                    myRef.child(uid).child("user_info").child("user_profile").setValue(image_uri);
+//                    //파이어베이스에 저장
+//                    myRef.child(App.uid).child("user_profile").setValue(image_uri);
 
                 } else {
                     Toast.makeText(Home_00_my_info.this, "업로드 실패", Toast.LENGTH_SHORT).show();
@@ -622,6 +648,20 @@ public class Home_00_my_info extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
 
+        //파이어베이스 데이터베이스 선언
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("User_Info");
 
+        //정보 삽입
+//        image_uri = downloadUri.toString();
+
+        //파이어베이스에 저장
+        myRef.child(App.uid).child("user_profile").setValue(App.Login_User_Profile);
+
+        finish();
+
+    }
 }

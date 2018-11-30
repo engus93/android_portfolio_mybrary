@@ -11,8 +11,11 @@ import android.widget.ImageButton;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
@@ -52,7 +55,7 @@ public class Home_00_my_info_01 extends AppCompatActivity {
                 String user_nick = my_info_nick.getText().toString();
 
                 //파이어베이스에 저장
-                myRef.child(uid).child("user_info").child("user_nick").setValue(user_nick);
+                myRef.child(App.uid).child("user_nick").setValue(user_nick);
 
 //                //쉐어드 생성
 //                SharedPreferences savenick_info = getSharedPreferences("member_info_01", MODE_PRIVATE);

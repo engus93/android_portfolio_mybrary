@@ -11,8 +11,9 @@ public class Member_ArrayList {
     String user_talk;
     String user_like;
     String user_profile;
+    String user_UID;
 
-    public Member_ArrayList(String member_id, String member_password,String member_name,String member_birthday, String member_sex){
+    public Member_ArrayList(String member_id, String member_password,String member_name,String member_birthday, String member_sex,String user_UID){
 
         this.member_id = member_id;
         this.member_password = member_password;
@@ -23,6 +24,7 @@ public class Member_ArrayList {
         this.user_talk = "";
         this.user_like = "";
         this.user_profile = "";
+        this.user_UID = user_UID;
     }
 
     public Member_ArrayList(){
@@ -99,5 +101,13 @@ public class Member_ArrayList {
 
     public void setUser_profile(String user_profile) {
         this.user_profile = user_profile;
+    }
+
+    public String getUser_UID() {
+        return user_UID;
+    }
+
+    public void setUser_UID(String user_UID) {
+        this.user_UID = user_UID;
     }
 }

@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -339,12 +340,8 @@ public class Home_02 extends AppCompatActivity {
             ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
             mRecyclerView.setLayoutManager(mLayoutManager);
 
-
-            if (!(mybrary.equals(""))) {
-
-                //정렬
-                App.mybrary_sort();
-            }
+            //그리드 리싸이클러뷰 역순
+            Collections.reverse(App.home_02_02_ArrayList);
 
             Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(),App.home_02_02_ArrayList);
             mRecyclerView.setAdapter(myAdapter);

@@ -115,7 +115,7 @@ public class Home_02_02 extends AppCompatActivity {
                                 MainActivity.showToast(Home_02_02.this, "삭제 되었습니다.");
 
                                 //정렬
-                                App.mybrary_sort();
+//                                App.mybrary_sort();
 
                                 onBackPressed();
 

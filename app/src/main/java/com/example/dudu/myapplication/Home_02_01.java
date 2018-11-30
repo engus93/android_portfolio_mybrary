@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -154,7 +155,7 @@ public class Home_02_01 extends AppCompatActivity {
                                     //해쉬맵 생성
                                     HashMap<String, Home_02_02_ArrayList> mybrary_map = new HashMap<>();
 
-                                    App.mybrary_sort(); //정렬
+//                                    App.mybrary_sort(); //정렬
 
                                     if(imageUri == null) {
                                         Log.d("체크", "널");
