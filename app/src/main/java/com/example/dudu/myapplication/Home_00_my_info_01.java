@@ -55,7 +55,7 @@ public class Home_00_my_info_01 extends AppCompatActivity {
                 String user_nick = my_info_nick.getText().toString();
 
                 //파이어베이스에 저장
-                myRef.child(App.uid).child("user_nick").setValue(user_nick);
+                myRef.child(App.user_UID()).child("user_nick").setValue(user_nick);
 
 //                //쉐어드 생성
 //                SharedPreferences savenick_info = getSharedPreferences("member_info_01", MODE_PRIVATE);

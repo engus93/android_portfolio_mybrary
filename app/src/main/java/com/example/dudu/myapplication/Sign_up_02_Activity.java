@@ -229,17 +229,17 @@ public class Sign_up_02_Activity extends AppCompatActivity {
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             DatabaseReference myRef = database.getReference("User_Info");
 
-                            //해당 UID 캐치
-                            FirebaseUser user;
-                            user = FirebaseAuth.getInstance().getCurrentUser();
-                            App.uid = user.getUid();
+//                            //해당 UID 캐치
+//                            FirebaseUser user;
+//                            user = FirebaseAuth.getInstance().getCurrentUser();
+//                            App.uid = user.getUid();
 
                             //정보 삽입
                             Member_ArrayList user_info = new Member_ArrayList(user_id.getText().toString(), user_password_01.getText().toString(),
-                                    user_name.getText().toString(), user_birth_day.getText().toString(), user_sex, App.uid);
+                                    user_name.getText().toString(), user_birth_day.getText().toString(), user_sex, App.user_UID());
 
                             //파이어베이스에 저장
-                            myRef.child(App.uid).setValue(user_info);
+                            myRef.child(App.user_UID()).setValue(user_info);
 
                             //화면 이동
                             MainActivity.showToast(Sign_up_02_Activity.this, "회원 가입 완료");

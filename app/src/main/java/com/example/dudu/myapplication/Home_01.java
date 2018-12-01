@@ -1,6 +1,7 @@
 package com.example.dudu.myapplication;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -53,6 +55,8 @@ public class Home_01 extends AppCompatActivity {
 
     CircleImageView drower_profile;
 
+    String change;
+
     int REQ_CALL_SELECT = 1300;
     int REQ_SMS_SELECT = 1400;
 
@@ -60,8 +64,12 @@ public class Home_01 extends AppCompatActivity {
 
     private long backPressedTime = 0;   //뒤로가기 2초 세기
 
+    Context context;
+
     //해당 UID 캐치
     FirebaseUser user;
+
+    public RequestManager mGlideRequestManager;
 
     protected void onCreate(Bundle savedInstancesState) {
 
@@ -70,11 +78,13 @@ public class Home_01 extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance(); //파베 객체선언
 
-        //UID 캐칭
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        App.uid = user.getUid();
+//        //UID 캐칭
+//        user = FirebaseAuth.getInstance().getCurrentUser();
+//        App.uid = user.getUid();
 
         drower_profile = findViewById(R.id.home_drawer_profile);
+
+        mGlideRequestManager = Glide.with(this);
 
 //        //쉐어드 생성
 //        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
@@ -164,16 +174,17 @@ public class Home_01 extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Member_ArrayList user_info;
-//                user_info = dataSnapshot.child(App.uid).getValue(Member_ArrayList.class);
 
-//                String profile = dataSnapshot.child(App.uid).child("user_profile").getValue().toString();
+                change = (String) dataSnapshot.child(App.user_UID()).child("user_profile").getValue();
+                if(!(change.equals(""))){
+                    mGlideRequestManager.load(change).into(drower_profile);
+                }
 
 //                Glide.with(Home_00_my_info.this).load(App.Login_User_Profile).into(user_profile);
 
 //                Glide.clear(drower_profile);
 
-                Glide.with(Home_01.this).load(App.Login_User_Profile).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(drower_profile);
+//                Glide.with(Home_01.this).load(App.Login_User_Profile).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(drower_profile);
 
 //                App.Login_User_Profile = profile;
 
@@ -189,11 +200,6 @@ public class Home_01 extends AppCompatActivity {
 
             }
         });
-
-
-
-
-
 
 
 
@@ -281,13 +287,13 @@ public class Home_01 extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
-                                FirebaseAuth.getInstance().signOut();
+                                mAuth.signOut();
 
                                 Intent intent1 = new Intent(Home_01.this, MainActivity.class);
                                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent1);
-                                return;
+
                             }
                         });
 
@@ -304,9 +310,6 @@ public class Home_01 extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-
-        Glide.with(Home_01.this).load(App.Login_User_Profile).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(drower_profile);
 
 //        //쉐어드 생성
 //        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);

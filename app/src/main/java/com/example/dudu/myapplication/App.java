@@ -7,6 +7,8 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.facebook.stetho.Stetho;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -21,7 +23,7 @@ public class App extends Application {
     static String User_ID; //현재 로그인 아이디
     static String Login_User_Profile;
 
-    static String uid;
+//    static String uid;
 
     // 비밀번호 정규식
     static Pattern PASSWORD_PATTERN = Pattern.compile("^[a-zA-Z0-9!@.#$%^&*?_~]{6,15}$");
@@ -115,5 +117,15 @@ public class App extends Application {
         Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
 
         return decodedBitmap;
+    }
+
+    static String user_UID(){
+
+        //해당 UID 캐치
+        FirebaseUser user;
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
+        return user.getUid();
+
     }
 }

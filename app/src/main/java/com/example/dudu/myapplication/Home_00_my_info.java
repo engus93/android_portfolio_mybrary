@@ -43,6 +43,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.core.view.Change;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -73,6 +74,8 @@ public class Home_00_my_info extends AppCompatActivity {
     Uri downloadUri;
     String image_uri;
 
+    int check;
+
     private static final int MY_PERMISSION_CAMERA = 1111;
     private static final int REQUEST_TAKE_PHOTO = 1112;
     private static final int REQUEST_TAKE_ALBUM = 1113;
@@ -97,11 +100,14 @@ public class Home_00_my_info extends AppCompatActivity {
 
         iv_view = (ImageView) findViewById(R.id.my_info_profile);   //프로필 사진
 
+        check = 0;
+
         //Find View
         user_nick = findViewById(R.id.home_00_my_info_nick);
         user_like = findViewById(R.id.home_00_my_info_genre);
         user_talk = findViewById(R.id.home_00_my_info_talk);
         user_profile = findViewById(R.id.my_info_profile);
+
 
         //내 정보 수정 - > 닉네임 수정
         bt_02 = findViewById(R.id.my_info_nick_B);
@@ -155,14 +161,22 @@ public class Home_00_my_info extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                user_nick.setText((CharSequence) dataSnapshot.child(App.user_UID()).child("user_nick").getValue());
+                user_like.setText((CharSequence) dataSnapshot.child(App.user_UID()).child("user_like").getValue());
+                user_talk.setText((CharSequence) dataSnapshot.child(App.user_UID()).child("user_talk").getValue());
 
-                Glide.with(Home_00_my_info.this).load(dataSnapshot.child(App.uid).child("user_profile").getValue().toString()).into(user_profile);
-                user_nick.setText(dataSnapshot.child(App.uid).child("user_nick").getValue().toString());
-                user_like.setText(dataSnapshot.child(App.uid).child("user_like").getValue().toString());
-                user_talk.setText(dataSnapshot.child(App.uid).child("user_talk").getValue().toString());
-                change = dataSnapshot.child(App.uid).child("user_profile").getValue().toString();
+                if (check == 0) {
+                    String profile = dataSnapshot.child(App.user_UID()).child("user_profile").getValue().toString();
+                    Glide.with(Home_00_my_info.this).load(profile).into(iv_view);
+                    check = 1;
+                }
 
-            }
+//                change = (String) dataSnapshot.child(App.uid).child("user_profile").getValue();
+//                change = (String) dataSnapshot.child(App.uid).child("user_profile").getValue();
+//                if(!(change_02.equals(""))){
+//                }else {
+
+                }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -359,7 +373,6 @@ public class Home_00_my_info extends AppCompatActivity {
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         sendBroadcast(mediaScanIntent);
-        Toast.makeText(this, "사진이 앨범에 저장되었습니다.", Toast.LENGTH_SHORT).show();
     }
 
     //찍은 사진 가져오기
@@ -628,15 +641,15 @@ public class Home_00_my_info extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     downloadUri = task.getResult();
 
-//                    파이어베이스 데이터베이스 선언
-//                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-//                    DatabaseReference myRef = database.getReference("User_Info");
-//
-//                    정보 삽입
-                    App.Login_User_Profile = downloadUri.toString();
+                    //정보 삽입
+                    change = downloadUri.toString();
 
-//                    //파이어베이스에 저장
-//                    myRef.child(App.uid).child("user_profile").setValue(image_uri);
+                    //파이어베이스에 저장
+                    FirebaseDatabase.getInstance().getReference("User_Info").child(App.user_UID()).child("user_profile").setValue(change);
+
+                    App.Login_User_Profile = change;
+
+                    Toast.makeText(Home_00_my_info.this, "사진이 업로드 되었습니다.", Toast.LENGTH_SHORT).show();
 
                 } else {
                     Toast.makeText(Home_00_my_info.this, "업로드 실패", Toast.LENGTH_SHORT).show();
@@ -651,15 +664,8 @@ public class Home_00_my_info extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        //파이어베이스 데이터베이스 선언
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("User_Info");
-
         //정보 삽입
 //        image_uri = downloadUri.toString();
-
-        //파이어베이스에 저장
-        myRef.child(App.uid).child("user_profile").setValue(App.Login_User_Profile);
 
         finish();
 
