@@ -4,13 +4,11 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,18 +30,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.RequestManager;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.core.view.Change;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -92,6 +86,9 @@ public class Home_00_my_info extends AppCompatActivity {
 
     String change;
 
+    //글라이드 오류 방지
+    public RequestManager mGlideRequestManager;
+
     protected void onCreate(Bundle savedIstancesState) {
         super.onCreate(savedIstancesState);
         setContentView(R.layout.home_00_my_info);
@@ -99,6 +96,9 @@ public class Home_00_my_info extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();    //스토리지 객체
 
         iv_view = (ImageView) findViewById(R.id.my_info_profile);   //프로필 사진
+
+        //글라이드 오류 방지
+        mGlideRequestManager = Glide.with(this);
 
         check = 0;
 
@@ -165,18 +165,11 @@ public class Home_00_my_info extends AppCompatActivity {
                 user_like.setText((CharSequence) dataSnapshot.child(App.user_UID()).child("user_like").getValue());
                 user_talk.setText((CharSequence) dataSnapshot.child(App.user_UID()).child("user_talk").getValue());
 
-                if (check == 0) {
-                    String profile = dataSnapshot.child(App.user_UID()).child("user_profile").getValue().toString();
-                    Glide.with(Home_00_my_info.this).load(profile).into(iv_view);
-                    check = 1;
-                }
 
-//                change = (String) dataSnapshot.child(App.uid).child("user_profile").getValue();
-//                change = (String) dataSnapshot.child(App.uid).child("user_profile").getValue();
-//                if(!(change_02.equals(""))){
-//                }else {
+                String profile = dataSnapshot.child(App.user_UID()).child("user_profile").getValue().toString();
+                mGlideRequestManager.load(profile).into(iv_view);
 
-                }
+            }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -188,7 +181,6 @@ public class Home_00_my_info extends AppCompatActivity {
 
     protected void onResume() {
         super.onResume();
-
 
 //        쉐어드 생성
 //        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
@@ -397,7 +389,7 @@ public class Home_00_my_info extends AppCompatActivity {
         bitmap_pic = rotate(bitmap, exifDegree);    //비트맵 회전
         string_pic = App.getBase64String(bitmap_pic);   //비트맵 스트링 변환
 
-        iv_view.setImageBitmap(bitmap_pic);//이미지 뷰에 비트맵 넣기
+//        iv_view.setImageBitmap(bitmap_pic);//이미지 뷰에 비트맵 넣기
 
 //        //쉐어드 생성
 //        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
@@ -512,8 +504,6 @@ public class Home_00_my_info extends AppCompatActivity {
 
         bitmap_pic = rotate(bitmap, exifDegree);    //비트맵 회전
         string_pic = App.getBase64String(bitmap_pic);   //비트맵 스트링 변환
-
-        iv_view.setImageBitmap(bitmap_pic);//이미지 뷰에 비트맵 넣기
 
         upload(imagePath);
 
@@ -661,13 +651,4 @@ public class Home_00_my_info extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onBackPressed() {
-
-        //정보 삽입
-//        image_uri = downloadUri.toString();
-
-        finish();
-
-    }
 }

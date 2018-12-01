@@ -25,6 +25,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,19 +49,42 @@ public class Home_02 extends AppCompatActivity {
     ImageButton home_02_menu_05_b;
     ImageButton home_02_search; //검색창 버튼
 
-    TextView home_02_nick_title;
+    TextView home_02_nick_title;    //닉네임 타이틀
+    TextView home_02_user_talk; //대화명
 
     TextView home_02_book_count;  //내 서재 게시글 변수
+    ImageView drower_profile;   //드로어 프로필
+    ImageView mybrary_profile;  //서재 프로필
 
     private long backPressedTime = 0;
 
     int REQ_CALL_SELECT = 1300;
     int REQ_SMS_SELECT = 1400;
 
+
+    //파이어 베이스
+    private FirebaseAuth mAuth; //FireBase 인증
+
+    //글라이드 오류 방지
+    public RequestManager mGlideRequestManager;
+
     protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_02);
+
+        //파베 객체선언
+        mAuth = FirebaseAuth.getInstance();
+
+        //글라이드 오류 방지
+        mGlideRequestManager = Glide.with(this);
+
+
+        home_02_book_count = findViewById(R.id.home_02_re_mini_1_T);  //내 서재 게시글 수
+        home_02_nick_title = findViewById(R.id.home_02_nick_title); //내 닉네임 글
+        home_02_user_talk = findViewById(R.id.home_02_re_screen_T); //내 대화명
+        drower_profile = findViewById(R.id.home_drawer_profile);    //드로어 프로필
+        mybrary_profile = findViewById(R.id.home_02_re_fropile_I);  //서재 프로필
 
         //-------------------------------쉐어드-------------------------------------
 
@@ -63,8 +94,6 @@ public class Home_02 extends AppCompatActivity {
         //쉐어드 안에 있는 정보 가져오기
         String check = saveMember_info.getString(App.User_ID + "_MyBrary", "");
 
-        home_02_book_count = findViewById(R.id.home_02_re_mini_1_T);  //내 서재 게시글 수
-        home_02_nick_title = findViewById(R.id.home_02_nick_title); //내 닉네임 글
 
         //메뉴 2 - > 메뉴 1
         home_02_menu_01_b = findViewById(R.id.home_02_menu_01_B);
@@ -149,6 +178,29 @@ public class Home_02 extends AppCompatActivity {
             }
         });
 
+        FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                home_02_nick_title.setText((CharSequence) dataSnapshot.child(App.user_UID()).child("user_nick").getValue());
+                home_02_user_talk.setText((CharSequence) dataSnapshot.child(App.user_UID()).child("user_talk").getValue());
+
+
+                String change = (String) dataSnapshot.child(App.user_UID()).child("user_profile").getValue();
+                if(!(change.equals(""))){
+                    mGlideRequestManager.load(change).into(mybrary_profile);
+                    mGlideRequestManager.load(change).into(drower_profile);
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         // 전체화면인 DrawerLayout 객체 참조
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout_02);
 
@@ -202,11 +254,12 @@ public class Home_02 extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                mAuth.signOut();
+
                                 Intent intent1 = new Intent(Home_02.this, MainActivity.class);
                                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent1);
-                                return;
                             }
                         });
 
@@ -226,109 +279,109 @@ public class Home_02 extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        //--------------------------------------쉐어드---------------------------------------------------
-
-        //쉐어드 생성
-        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
-
-        //쉐어드 안에 있는 정보 가져오기 - 프사
-        String profile = savenick_info.getString(App.User_ID + "_user_profile", "");
-
-        //프사 세팅
-        if(!(profile.equals(""))) {
-
-            Log.d("체크", "프사 수정");
-
-            //해쉬맵 생성
-            HashMap<String, String> profile_map = new HashMap<>();
-
-            //해쉬맵에 삽입
-            profile_map = App.gson.fromJson(profile,App.collectionTypeString);
-
-            //이미지 삽입 (드로어)
-            ImageView drower_profile = findViewById(R.id.home_drawer_profile);
-            Bitmap bitmap_pic = App.getBitmap(profile_map.get(App.User_ID + "_user_profile"));
-            drower_profile.setImageBitmap(bitmap_pic);
-
-            //이미지 삽입 (내 서재)
-            ImageView mybrary_profile = findViewById(R.id.home_02_re_fropile_I);
-            mybrary_profile.setImageBitmap(bitmap_pic);
-
-        }
-
-        //쉐어드 생성
-        savenick_info = getSharedPreferences("member_info_01", MODE_PRIVATE);
-
-        //쉐어드 안에 있는 정보 가져오기 - 닉네임
-        String nick = savenick_info.getString(App.User_ID + "_user_nick", "");
-
-        if(!(nick.equals(""))) {
-
-            Log.d("체크", "닉네임 수정");
-
-            //해쉬맵 생성
-            HashMap<String, String> nick_map = new HashMap<>();
-
-            //해쉬맵에 삽입
-            nick_map = App.gson.fromJson(nick,App.collectionTypeString);
-
-            //일치
-            TextView user_nick = findViewById(R.id.home_02_nick_title);
-            user_nick.setText(nick_map.get(App.User_ID + "_user_nick"));
-
-        }
-
-        //쉐어드 생성
-        savenick_info = getSharedPreferences("member_info_03", MODE_PRIVATE);
-
-        //쉐어드 안에 있는 정보 가져오기 - 대화명
-        String talk = savenick_info.getString(App.User_ID + "_user_talk", "");
-
-        if(!(talk.equals(""))) {
-
-            Log.d("체크", "대화명 수정");
-
-            //해쉬맵 생성
-            HashMap<String, String> user_talk_map = new HashMap<>();
-
-            //해쉬맵에 삽입
-            user_talk_map = App.gson.fromJson(talk,App.collectionTypeString);
-
-            //일치
-            TextView user_talk = findViewById(R.id.home_02_re_screen_T);
-            user_talk.setText(user_talk_map.get(App.User_ID + "_user_talk"));
-
-        }
-
-        //쉐어드 생성
-        savenick_info = getSharedPreferences("mybrary", MODE_PRIVATE);
-
-        //쉐어드 안에 있는 정보 가져오기 - 내 서재
-        String mybrary = savenick_info.getString(App.User_ID + "_MyBrary", "");
-
-        if (!(mybrary.equals(""))) {
-
-            Log.d("체크", "잘 불러옴");
-
-            //해쉬맵 생성
-            HashMap<String, Home_02_02_ArrayList> mybrary_map = new HashMap<>();
-
-            //해쉬맵에 삽입
-            mybrary_map = App.gson.fromJson(mybrary, App.collectionTypeMyBrary);
-
-            App.home_02_02_ArrayList.clear();
-
-            for (int i = 0; i < mybrary_map.size(); i++) {
-
-                Log.d("체크", "잘 넣음");
-
-                App.home_02_02_ArrayList.add(mybrary_map.get(App.User_ID + "_MyBrary_" + i));
-
-            }
-
-            //내 서재 게시글 수 갱신
-            String a = String.valueOf(App.home_02_02_ArrayList.size());
-            home_02_book_count.setText(a);
+//        //--------------------------------------쉐어드---------------------------------------------------
+//
+//        //쉐어드 생성
+//        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
+//
+//        //쉐어드 안에 있는 정보 가져오기 - 프사
+//        String profile = savenick_info.getString(App.User_ID + "_user_profile", "");
+//
+//        //프사 세팅
+//        if(!(profile.equals(""))) {
+//
+//            Log.d("체크", "프사 수정");
+//
+//            //해쉬맵 생성
+//            HashMap<String, String> profile_map = new HashMap<>();
+//
+//            //해쉬맵에 삽입
+//            profile_map = App.gson.fromJson(profile,App.collectionTypeString);
+//
+//            //이미지 삽입 (드로어)
+//            ImageView drower_profile = findViewById(R.id.home_drawer_profile);
+//            Bitmap bitmap_pic = App.getBitmap(profile_map.get(App.User_ID + "_user_profile"));
+//            drower_profile.setImageBitmap(bitmap_pic);
+//
+//            //이미지 삽입 (내 서재)
+//            ImageView mybrary_profile = findViewById(R.id.home_02_re_fropile_I);
+//            mybrary_profile.setImageBitmap(bitmap_pic);
+//
+//        }
+//
+//        //쉐어드 생성
+//        savenick_info = getSharedPreferences("member_info_01", MODE_PRIVATE);
+//
+//        //쉐어드 안에 있는 정보 가져오기 - 닉네임
+//        String nick = savenick_info.getString(App.User_ID + "_user_nick", "");
+//
+//        if(!(nick.equals(""))) {
+//
+//            Log.d("체크", "닉네임 수정");
+//
+//            //해쉬맵 생성
+//            HashMap<String, String> nick_map = new HashMap<>();
+//
+//            //해쉬맵에 삽입
+//            nick_map = App.gson.fromJson(nick,App.collectionTypeString);
+//
+//            //일치
+//            TextView user_nick = findViewById(R.id.home_02_nick_title);
+//            user_nick.setText(nick_map.get(App.User_ID + "_user_nick"));
+//
+//        }
+//
+//        //쉐어드 생성
+//        savenick_info = getSharedPreferences("member_info_03", MODE_PRIVATE);
+//
+//        //쉐어드 안에 있는 정보 가져오기 - 대화명
+//        String talk = savenick_info.getString(App.User_ID + "_user_talk", "");
+//
+//        if(!(talk.equals(""))) {
+//
+//            Log.d("체크", "대화명 수정");
+//
+//            //해쉬맵 생성
+//            HashMap<String, String> user_talk_map = new HashMap<>();
+//
+//            //해쉬맵에 삽입
+//            user_talk_map = App.gson.fromJson(talk,App.collectionTypeString);
+//
+//            //일치
+//            TextView user_talk = findViewById(R.id.home_02_re_screen_T);
+//            user_talk.setText(user_talk_map.get(App.User_ID + "_user_talk"));
+//
+//        }
+//
+//        //쉐어드 생성
+//        savenick_info = getSharedPreferences("mybrary", MODE_PRIVATE);
+//
+//        //쉐어드 안에 있는 정보 가져오기 - 내 서재
+//        String mybrary = savenick_info.getString(App.User_ID + "_MyBrary", "");
+//
+//        if (!(mybrary.equals(""))) {
+//
+//            Log.d("체크", "잘 불러옴");
+//
+//            //해쉬맵 생성
+//            HashMap<String, Home_02_02_ArrayList> mybrary_map = new HashMap<>();
+//
+//            //해쉬맵에 삽입
+//            mybrary_map = App.gson.fromJson(mybrary, App.collectionTypeMyBrary);
+//
+//            App.home_02_02_ArrayList.clear();
+//
+//            for (int i = 0; i < mybrary_map.size(); i++) {
+//
+//                Log.d("체크", "잘 넣음");
+//
+//                App.home_02_02_ArrayList.add(mybrary_map.get(App.User_ID + "_MyBrary_" + i));
+//
+//            }
+//
+//            //내 서재 게시글 수 갱신
+//            String a = String.valueOf(App.home_02_02_ArrayList.size());
+//            home_02_book_count.setText(a);
 
             //---------------------------리싸이클러뷰---------------------------------
             RecyclerView mRecyclerView;
@@ -341,15 +394,13 @@ public class Home_02 extends AppCompatActivity {
             mRecyclerView.setLayoutManager(mLayoutManager);
 
             //그리드 리싸이클러뷰 역순
-            Collections.reverse(App.home_02_02_ArrayList);
+//            Collections.reverse(App.home_02_02_ArrayList);
 
             Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(),App.home_02_02_ArrayList);
             mRecyclerView.setAdapter(myAdapter);
 
         }
 
-
-    }
 
     //뒤로 두번 누르면 종료
     @Override

@@ -57,25 +57,6 @@ public class Home_00_my_info_01 extends AppCompatActivity {
                 //파이어베이스에 저장
                 myRef.child(App.user_UID()).child("user_nick").setValue(user_nick);
 
-//                //쉐어드 생성
-//                SharedPreferences savenick_info = getSharedPreferences("member_info_01", MODE_PRIVATE);
-//                SharedPreferences.Editor save = savenick_info.edit();
-//
-//                //해쉬맵 생성
-//                HashMap<String, String> nick_map = new HashMap<>();
-//
-//                //정보 삽입
-//                String user_nick = my_info_nick.getText().toString();
-//
-//                //정보 -> 해쉬맵에 삽입
-//                nick_map.put(App.User_ID + "_user_nick", user_nick);
-//
-//                //해쉬맵(Gson 변환) -> 쉐어드 삽입
-//                save.putString(App.User_ID + "_user_nick", App.gson.toJson(nick_map));
-//
-//                //저장
-//                save.apply();
-
                 Intent intent1 = new Intent(Home_00_my_info_01.this, Home_00_my_info.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);

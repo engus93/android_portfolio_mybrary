@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Collections;
 import java.util.HashMap;
 
 public class Home_02_02 extends AppCompatActivity {
@@ -114,8 +115,8 @@ public class Home_02_02 extends AppCompatActivity {
 
                                 MainActivity.showToast(Home_02_02.this, "삭제 되었습니다.");
 
-                                //정렬
-//                                App.mybrary_sort();
+                                //그리드 리싸이클러뷰 역순
+                                Collections.reverse(App.home_02_02_ArrayList);
 
                                 onBackPressed();
 

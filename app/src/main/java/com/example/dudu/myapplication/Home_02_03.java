@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class Home_02_03 extends AppCompatActivity {
@@ -113,6 +114,9 @@ public class Home_02_03 extends AppCompatActivity {
                     save.apply();
 
                     MainActivity.showToast(Home_02_03.this, "수정 되었습니다.");
+
+                    //그리드 리싸이클러뷰 역순
+                    Collections.reverse(App.home_02_02_ArrayList);
 
                     //종료
                     Intent intent1 = new Intent(Home_02_03.this, Home_02.class);

@@ -60,15 +60,14 @@ public class Home_01 extends AppCompatActivity {
     int REQ_CALL_SELECT = 1300;
     int REQ_SMS_SELECT = 1400;
 
-    private FirebaseAuth mAuth; //FireBase 인증
-
     private long backPressedTime = 0;   //뒤로가기 2초 세기
 
     Context context;
 
-    //해당 UID 캐치
-    FirebaseUser user;
+    //파이어 베이스
+    private FirebaseAuth mAuth; //FireBase 인증
 
+    //글라이드 오류 방지
     public RequestManager mGlideRequestManager;
 
     protected void onCreate(Bundle savedInstancesState) {
@@ -76,37 +75,13 @@ public class Home_01 extends AppCompatActivity {
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_01);
 
-        mAuth = FirebaseAuth.getInstance(); //파베 객체선언
+        //파베 객체선언
+        mAuth = FirebaseAuth.getInstance();
 
-//        //UID 캐칭
-//        user = FirebaseAuth.getInstance().getCurrentUser();
-//        App.uid = user.getUid();
-
-        drower_profile = findViewById(R.id.home_drawer_profile);
-
+        //글라이드 오류 방지
         mGlideRequestManager = Glide.with(this);
 
-//        //쉐어드 생성
-//        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
-//
-//        //쉐어드 안에 있는 정보 가져오기 - 프사
-//        String profile = savenick_info.getString("user_profile", "");
-//
-//        if (!(profile.equals(""))) {
-//
-//            Log.d("체크", "프사 수정");
-//
-//            //해쉬맵 생성
-//            HashMap<String, String> profile_map = new HashMap<>();
-//
-//            //해쉬맵에 삽입
-//            profile_map = App.gson.fromJson(profile, App.collectionTypeString);
-//
-//            //이미지 삽입
-//            App.Login_User_Profile = profile_map.get("user_profile");
-//
-//        }
-
+        drower_profile = findViewById(R.id.home_drawer_profile);
 
         //메뉴 1 - > 메뉴 2
         home_01_menu_02_b = findViewById(R.id.home_01_menu_02_B);
@@ -180,19 +155,6 @@ public class Home_01 extends AppCompatActivity {
                     mGlideRequestManager.load(change).into(drower_profile);
                 }
 
-//                Glide.with(Home_00_my_info.this).load(App.Login_User_Profile).into(user_profile);
-
-//                Glide.clear(drower_profile);
-
-//                Glide.with(Home_01.this).load(App.Login_User_Profile).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(drower_profile);
-
-//                App.Login_User_Profile = profile;
-
-//                user_nick.setText(user_info.getUser_nick());
-//                user_like.setText(user_info.getUser_like());
-//                user_talk.setText(user_info.getUser_talk());
-//                App.Login_User_Profile = user_info.getUser_profile();
-
             }
 
             @Override
@@ -226,9 +188,6 @@ public class Home_01 extends AppCompatActivity {
         final Home_01_Adapter myAdapter = new Home_01_Adapter(best_book_info_ArrayList);
 
         mRecyclerView.setAdapter(myAdapter);
-
-
-
 
 
 
@@ -307,38 +266,6 @@ public class Home_01 extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-//        //쉐어드 생성
-//        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
-//
-//        //쉐어드 안에 있는 정보 가져오기 - 프사
-//        String profile = savenick_info.getString("user_profile", "");
-//
-//        //프사 세팅
-//        if(!(profile.equals(""))) {
-//
-//            Log.d("체크", "좋아하는 책 수정");
-//
-//            //해쉬맵 생성
-//            HashMap<String, String> profile_map = new HashMap<>();
-//
-//            //해쉬맵에 삽입
-//            profile_map = App.gson.fromJson(profile,App.collectionTypeString);
-//
-//            Bitmap bitmap_pic = App.getBitmap(profile_map.get("user_profile"));
-//            drower_profile.setImageBitmap(bitmap_pic);
-//
-//        }
-
-//        drower_profile = findViewById(R.id.home_drawer_profile);
-//
-//        Glide.with(Home_01.this).load(App.Login_User_Profile).override(150,150).into(drower_profile);
-
-    }
-
     //뒤로 두번 누르면 종료
     @Override
     public void onBackPressed() {
@@ -411,92 +338,6 @@ public class Home_01 extends AppCompatActivity {
 
     }
 
-
-
-////왼쪽 상단 메뉴 프로필 사진 변경
-//        iv = (ImageView) findViewById(R.id.home_drawer_profile);
-//
-//                iv.setOnClickListener(new View.OnClickListener() {
-//@Override
-//public void onClick(View view) {
-//        showprofile();
-//        }
-//        });
-
-
-
-
-//        //프로필 사진 교체 메소드
-//    void showprofile() {
-//        final List<String> ListItems = new ArrayList<>();
-//        ListItems.add("사진 찍기");
-//        ListItems.add("앨범 선택");
-//        final CharSequence[] items = ListItems.toArray(new String[ListItems.size()]);
-//
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle("프로필 사진");
-//        builder.setItems(items, new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int pos) {
-//                switch (pos + 1) {
-//
-//                    case 1: {
-//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//
-//                            int permissionCheck1 = ContextCompat.checkSelfPermission(Home_01.this, Manifest.permission.CAMERA);
-//                            int permissionCheck2 = ContextCompat.checkSelfPermission(Home_01.this, Manifest.permission.READ_EXTERNAL_STORAGE);
-//
-//                            if (permissionCheck1 == PackageManager.PERMISSION_DENIED | permissionCheck2 == PackageManager.PERMISSION_DENIED) {
-//
-//                                if (permissionCheck1 == PackageManager.PERMISSION_DENIED) {
-//                                    // 권한 없음
-//                                    ActivityCompat.requestPermissions(Home_01.this, new String[]{Manifest.permission.CAMERA}, REQ_CAMERA_SELECT);
-//
-//                                    if(permissionCheck2 == PackageManager.PERMISSION_DENIED){
-//                                        // 권한 없음
-//                                        ActivityCompat.requestPermissions(Home_01.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQ_PICTURE_SELECT);
-//                                    }
-//                                } else {
-//                                    ActivityCompat.requestPermissions(Home_01.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQ_PICTURE_SELECT);
-//                                }
-//                            } else {    // ACCESS_FINE_LOCATION 에 대한 권한이 이미 있음.
-//                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                                startActivityForResult(intent, 1);
-//
-//                            }
-//
-//                        }
-//
-//                        break;
-//                    }
-//                case 2: {
-//
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//
-//                        int permissionCheck = ContextCompat.checkSelfPermission(Home_01.this, Manifest.permission.READ_EXTERNAL_STORAGE);
-//
-//                        if (permissionCheck == PackageManager.PERMISSION_DENIED) {
-//                            // 권한 없음
-//                            ActivityCompat.requestPermissions(Home_01.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQ_PICTURE_SELECT);
-//                        } else {    // ACCESS_FINE_LOCATION 에 대한 권한이 이미 있음.
-//                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//                            intent.setType("image/*");
-//                            startActivity(intent);
-//                        }
-//                    }
-//
-//                    break;
-//                }
-//                }
-//            }
-//        });
-//        builder.show();
-//    }
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-//    {
-//        iv.setImageURI(data.getData());
-//    }
 
 
 

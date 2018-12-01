@@ -33,6 +33,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -59,7 +62,7 @@ public class Home_02_01 extends AppCompatActivity {
     Button home_02_01_book_plus_B;
     ImageButton home_02_01_back_B;
 
-
+    Home_02_02_ArrayList mybrary_plus;  //파이어베이스 넣을 객체
 
     //사진 저장 변수
     Bitmap bitmap_pic;  //사진 비트맵 저장
@@ -157,21 +160,31 @@ public class Home_02_01 extends AppCompatActivity {
 
 //                                    App.mybrary_sort(); //정렬
 
+                                    //그리드 리싸이클러뷰 역순
+                                    Collections.reverse(App.home_02_02_ArrayList);
+
                                     if(imageUri == null) {
                                         Log.d("체크", "널");
                                         //정보 삽입
                                         App.home_02_02_ArrayList.add(new Home_02_02_ArrayList("null", home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
+                                        mybrary_plus = new Home_02_02_ArrayList("null", home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString());
                                     }else{
                                         Log.d("체크", "잘");
                                         //정보 삽입
                                         App.home_02_02_ArrayList.add(new Home_02_02_ArrayList(string_pic, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
+                                        mybrary_plus = new Home_02_02_ArrayList(string_pic, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString());
                                     }
+
+                                    //파이어베이스 데이터베이스 선언
+                                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                    DatabaseReference myRef = database.getReference("User_MyBrary");
+
+                                    //파이어베이스에 저장
+                                    myRef.child(App.user_UID()).push().setValue(mybrary_plus);
 
                                     //정보 -> 해쉬맵에 삽입
                                     for(int i = 0; i < App.home_02_02_ArrayList.size(); i++){
-
                                         mybrary_map.put(App.User_ID + "_MyBrary_" + i , App.home_02_02_ArrayList.get(i));
-
                                     }
 
                                     save.clear();
@@ -186,6 +199,9 @@ public class Home_02_01 extends AppCompatActivity {
                                         intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                         MainActivity.showToast(Home_02_01.this, "작성 되었습니다.");
                                         startActivity(intent1);
+
+                                    //그리드 리싸이클러뷰 역순
+                                    Collections.reverse(App.home_02_02_ArrayList);
 
                                         return;
                                 }

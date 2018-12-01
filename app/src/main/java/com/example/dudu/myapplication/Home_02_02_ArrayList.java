@@ -6,7 +6,7 @@ public class Home_02_02_ArrayList {
     public String author;
     public String finish;
     public String main;
-    public long date;
+//    public long date;
 
     public Home_02_02_ArrayList(String book, String name, String author, String finish, String main) {
         this.book = book;
@@ -56,12 +56,12 @@ public class Home_02_02_ArrayList {
         this.main = main;
     }
 
-    public long getDate() {
-        return date;
-    }
-
-    public void setDate(long date) {
-        this.date = date;
-    }
+//    public long getDate() {
+//        return date;
+//    }
+//
+//    public void setDate(long date) {
+//        this.date = date;
+//    }
 
 }

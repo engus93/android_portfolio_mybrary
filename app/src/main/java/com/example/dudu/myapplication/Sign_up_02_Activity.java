@@ -229,11 +229,6 @@ public class Sign_up_02_Activity extends AppCompatActivity {
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             DatabaseReference myRef = database.getReference("User_Info");
 
-//                            //해당 UID 캐치
-//                            FirebaseUser user;
-//                            user = FirebaseAuth.getInstance().getCurrentUser();
-//                            App.uid = user.getUid();
-
                             //정보 삽입
                             Member_ArrayList user_info = new Member_ArrayList(user_id.getText().toString(), user_password_01.getText().toString(),
                                     user_name.getText().toString(), user_birth_day.getText().toString(), user_sex, App.user_UID());

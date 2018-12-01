@@ -28,17 +28,13 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
 
     public Home_02_Adapter(Context context, ArrayList<Home_02_02_ArrayList> home_02_02_ArrayList) {
         this.context = context;
-//        App.home_02_02_ArrayList = home_02_02_ArrayList;
         this.home_02_02_Array = home_02_02_ArrayList;
     }
-
 
     //틀 생성
     @Override
     public home_02_re_02 onCreateViewHolder(ViewGroup parent, int viewType) {
-
         View v1 = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_02_re_02, parent, false);
-
         return new home_02_re_02(v1);
 
     }
