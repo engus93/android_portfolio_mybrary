@@ -163,24 +163,27 @@ public class Home_02_01 extends AppCompatActivity {
                                     //그리드 리싸이클러뷰 역순
                                     Collections.reverse(App.home_02_02_ArrayList);
 
+                                    //파이어베이스 데이터베이스 선언
+                                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                    DatabaseReference myRef = database.getReference("Users_MyBrary");
+
+                                    //랜덤 키 생성
+                                    String key = myRef.push().getKey();
+
                                     if(imageUri == null) {
                                         Log.d("체크", "널");
                                         //정보 삽입
-                                        App.home_02_02_ArrayList.add(new Home_02_02_ArrayList("null", home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
-                                        mybrary_plus = new Home_02_02_ArrayList("null", home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString());
+                                        App.home_02_02_ArrayList.add(new Home_02_02_ArrayList("null", home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID()));
+                                        mybrary_plus = new Home_02_02_ArrayList("null", home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID());
                                     }else{
                                         Log.d("체크", "잘");
                                         //정보 삽입
-                                        App.home_02_02_ArrayList.add(new Home_02_02_ArrayList(string_pic, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString()));
-                                        mybrary_plus = new Home_02_02_ArrayList(string_pic, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString());
+                                        App.home_02_02_ArrayList.add(new Home_02_02_ArrayList(string_pic, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID()));
+                                        mybrary_plus = new Home_02_02_ArrayList(string_pic, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID());
                                     }
 
-                                    //파이어베이스 데이터베이스 선언
-                                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                    DatabaseReference myRef = database.getReference("User_MyBrary");
-
                                     //파이어베이스에 저장
-                                    myRef.child(App.user_UID()).push().setValue(mybrary_plus);
+                                    myRef.child(key).setValue(mybrary_plus);
 
                                     //정보 -> 해쉬맵에 삽입
                                     for(int i = 0; i < App.home_02_02_ArrayList.size(); i++){

@@ -86,7 +86,7 @@ public class Home_02_03 extends AppCompatActivity {
 
                     }else {
 
-                    App.home_02_02_ArrayList.set(position, new Home_02_02_ArrayList(App.home_02_02_ArrayList.get(position).getBook(), home_02_03_book_name.getText().toString(), home_02_03_book_author.getText().toString(), home_02_03_book_date.getText().toString(), home_02_03_book_main.getText().toString()));
+//                    App.home_02_02_ArrayList.set(position, new Home_02_02_ArrayList(App.home_02_02_ArrayList.get(position).getBook(), home_02_03_book_name.getText().toString(), home_02_03_book_author.getText().toString(), home_02_03_book_date.getText().toString(), home_02_03_book_main.getText().toString()));
 
                     App.mybrary_sort();
 

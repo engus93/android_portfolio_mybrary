@@ -95,6 +95,17 @@ public class Home_02 extends AppCompatActivity {
         String check = saveMember_info.getString(App.User_ID + "_MyBrary", "");
 
 
+        //---------------------------리싸이클러뷰---------------------------------
+        final RecyclerView mRecyclerView;
+        RecyclerView.LayoutManager mLayoutManager;
+
+        mRecyclerView = findViewById(R.id.home_02_RE);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new GridLayoutManager(this,3);
+        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+
         //메뉴 2 - > 메뉴 1
         home_02_menu_01_b = findViewById(R.id.home_02_menu_01_B);
         home_02_menu_01_b.setOnClickListener(new View.OnClickListener() {
@@ -178,6 +189,7 @@ public class Home_02 extends AppCompatActivity {
             }
         });
 
+        //유저 정보 파이어 베이스
         FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -185,13 +197,11 @@ public class Home_02 extends AppCompatActivity {
                 home_02_nick_title.setText((CharSequence) dataSnapshot.child(App.user_UID()).child("user_nick").getValue());
                 home_02_user_talk.setText((CharSequence) dataSnapshot.child(App.user_UID()).child("user_talk").getValue());
 
-
                 String change = (String) dataSnapshot.child(App.user_UID()).child("user_profile").getValue();
                 if(!(change.equals(""))){
                     mGlideRequestManager.load(change).into(mybrary_profile);
                     mGlideRequestManager.load(change).into(drower_profile);
                 }
-
 
             }
 
@@ -200,6 +210,38 @@ public class Home_02 extends AppCompatActivity {
 
             }
         });
+
+        //리싸이클러뷰 파이어베이스 업데이트
+        FirebaseDatabase.getInstance().getReference("Users_MyBrary").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                App.home_02_02_ArrayList.clear();
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                    Home_02_02_ArrayList home_02_02_arrayList = new Home_02_02_ArrayList();
+                    home_02_02_arrayList = snapshot.getValue(Home_02_02_ArrayList.class);
+
+                    if (home_02_02_arrayList.getUser_uid().equals(App.user_UID())) {
+                        App.home_02_02_ArrayList.add(home_02_02_arrayList);
+                    }
+
+                }
+
+                Collections.reverse(App.home_02_02_ArrayList);
+
+                Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(),App.home_02_02_ArrayList);
+                mRecyclerView.setAdapter(myAdapter);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
         // 전체화면인 DrawerLayout 객체 참조
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout_02);
@@ -272,8 +314,9 @@ public class Home_02 extends AppCompatActivity {
 
 
 
-
     }
+
+
 
     @Override
     protected void onResume() {
@@ -383,21 +426,9 @@ public class Home_02 extends AppCompatActivity {
 //            String a = String.valueOf(App.home_02_02_ArrayList.size());
 //            home_02_book_count.setText(a);
 
-            //---------------------------리싸이클러뷰---------------------------------
-            RecyclerView mRecyclerView;
-            RecyclerView.LayoutManager mLayoutManager;
 
-            mRecyclerView = findViewById(R.id.home_02_RE);
-            mRecyclerView.setHasFixedSize(true);
-            mLayoutManager = new GridLayoutManager(this,3);
-            ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
-            mRecyclerView.setLayoutManager(mLayoutManager);
 
-            //그리드 리싸이클러뷰 역순
-//            Collections.reverse(App.home_02_02_ArrayList);
 
-            Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(),App.home_02_02_ArrayList);
-            mRecyclerView.setAdapter(myAdapter);
 
         }
 

@@ -6,14 +6,21 @@ public class Home_02_02_ArrayList {
     public String author;
     public String finish;
     public String main;
-//    public long date;
+    public String user_key;
+    public String user_uid;
 
-    public Home_02_02_ArrayList(String book, String name, String author, String finish, String main) {
+    public Home_02_02_ArrayList(String book, String name, String author, String finish, String main, String user_key, String user_uid) {
         this.book = book;
         this.name = name;
         this.author = author;
         this.finish = finish;
         this.main = main;
+        this.user_key = user_key;
+        this.user_uid = user_uid;
+    }
+
+    public Home_02_02_ArrayList(){
+
     }
 
     public String getBook() {
@@ -56,12 +63,19 @@ public class Home_02_02_ArrayList {
         this.main = main;
     }
 
-//    public long getDate() {
-//        return date;
-//    }
-//
-//    public void setDate(long date) {
-//        this.date = date;
-//    }
+    public String getUser_key() {
+        return user_key;
+    }
 
+    public void setUser_key(String user_key) {
+        this.user_key = user_key;
+    }
+
+    public String getUser_uid() {
+        return user_uid;
+    }
+
+    public void setUser_uid(String user_uid) {
+        this.user_uid = user_uid;
+    }
 }
