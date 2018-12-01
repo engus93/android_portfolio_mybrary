@@ -2,7 +2,6 @@ package com.example.dudu.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,7 +20,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -231,10 +229,10 @@ public class Sign_up_02_Activity extends AppCompatActivity {
 
                             //정보 삽입
                             Member_ArrayList user_info = new Member_ArrayList(user_id.getText().toString(), user_password_01.getText().toString(),
-                                    user_name.getText().toString(), user_birth_day.getText().toString(), user_sex, App.user_UID());
+                                    user_name.getText().toString(), user_birth_day.getText().toString(), user_sex, App.user_UID_get());
 
                             //파이어베이스에 저장
-                            myRef.child(App.user_UID()).setValue(user_info);
+                            myRef.child(App.user_UID_get()).setValue(user_info);
 
                             //화면 이동
                             MainActivity.showToast(Sign_up_02_Activity.this, "회원 가입 완료");

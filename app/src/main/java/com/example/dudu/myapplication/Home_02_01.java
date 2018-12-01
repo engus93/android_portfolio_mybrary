@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -25,7 +24,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -33,25 +31,38 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.RequestManager;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 public class Home_02_01 extends AppCompatActivity {
 
-    //등록
+    //파이어베이스
+    private FirebaseStorage storage;    //스토리지
+    public String change;
+    String key; //푸쉬 키
 
+    Uri downloadUri;
+
+    //글라이드 오류 방지
+    public RequestManager mGlideRequestManager;
+
+    //등록
     Calendar myCalendar = Calendar.getInstance();
 
     ImageView home_02_01_book_image;
@@ -93,6 +104,8 @@ public class Home_02_01 extends AppCompatActivity {
         home_02_01_book_main = findViewById(R.id.home_02_01_main);
         home_02_01_book_plus_B = findViewById(R.id.home_02_01_plus_B);
         home_02_01_back_B = findViewById(R.id.home_02_01_back_B);
+
+        storage = FirebaseStorage.getInstance();    //스토리지 객체
 
         //뒤로가기
         home_02_01_back_B.setOnClickListener(new View.OnClickListener() {
@@ -149,62 +162,62 @@ public class Home_02_01 extends AppCompatActivity {
 
                                 }else {
 
-                                        Log.d("체크", "사진 어디냐1");
+//                                        Log.d("체크", "사진 어디냐1");
 
-                                    //쉐어드 생성
-                                    SharedPreferences saveMember_info = getSharedPreferences("mybrary", MODE_PRIVATE);
-                                    SharedPreferences.Editor save = saveMember_info.edit();
-
-                                    //해쉬맵 생성
-                                    HashMap<String, Home_02_02_ArrayList> mybrary_map = new HashMap<>();
+//                                    //쉐어드 생성
+//                                    SharedPreferences saveMember_info = getSharedPreferences("mybrary", MODE_PRIVATE);
+//                                    SharedPreferences.Editor save = saveMember_info.edit();
+//
+//                                    //해쉬맵 생성
+//                                    HashMap<String, Home_02_02_ArrayList> mybrary_map = new HashMap<>();
 
 //                                    App.mybrary_sort(); //정렬
 
-                                    //그리드 리싸이클러뷰 역순
-                                    Collections.reverse(App.home_02_02_ArrayList);
+//                                    //그리드 리싸이클러뷰 역순
+//                                    Collections.reverse(App.home_02_02_ArrayList);
 
                                     //파이어베이스 데이터베이스 선언
                                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                                     DatabaseReference myRef = database.getReference("Users_MyBrary");
 
                                     //랜덤 키 생성
-                                    String key = myRef.push().getKey();
+                                    key = myRef.push().getKey();
 
-                                    if(imageUri == null) {
+                                    if(change == null) {
                                         Log.d("체크", "널");
                                         //정보 삽입
-                                        App.home_02_02_ArrayList.add(new Home_02_02_ArrayList("null", home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID()));
-                                        mybrary_plus = new Home_02_02_ArrayList("null", home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID());
+                                        App.home_02_02_ArrayList.add(new Home_02_02_ArrayList("null", home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID_get()));
+                                        mybrary_plus = new Home_02_02_ArrayList("null", home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID_get());
                                     }else{
                                         Log.d("체크", "잘");
                                         //정보 삽입
-                                        App.home_02_02_ArrayList.add(new Home_02_02_ArrayList(string_pic, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID()));
-                                        mybrary_plus = new Home_02_02_ArrayList(string_pic, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID());
+                                        App.home_02_02_ArrayList.add(new Home_02_02_ArrayList(change, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID_get()));
+                                        mybrary_plus = new Home_02_02_ArrayList(change, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID_get());
                                     }
 
                                     //파이어베이스에 저장
                                     myRef.child(key).setValue(mybrary_plus);
 
-                                    //정보 -> 해쉬맵에 삽입
-                                    for(int i = 0; i < App.home_02_02_ArrayList.size(); i++){
-                                        mybrary_map.put(App.User_ID + "_MyBrary_" + i , App.home_02_02_ArrayList.get(i));
-                                    }
-
-                                    save.clear();
-
-                                    //해쉬맵(Gson 변환) -> 쉐어드 삽입
-                                    save.putString(App.User_ID + "_MyBrary", App.gson.toJson(mybrary_map));
-
-                                    //저장
-                                    save.apply();
+//                                    //정보 -> 해쉬맵에 삽입
+//                                    for(int i = 0; i < App.home_02_02_ArrayList.size(); i++){
+//                                        mybrary_map.put(App.User_ID + "_MyBrary_" + i , App.home_02_02_ArrayList.get(i));
+//                                    }
+//
+//                                    save.clear();
+//
+//                                    //해쉬맵(Gson 변환) -> 쉐어드 삽입
+//                                    save.putString(App.User_ID + "_MyBrary", App.gson.toJson(mybrary_map));
+//
+//                                    //저장
+//                                    save.apply();
 
                                         Intent intent1 = new Intent(Home_02_01.this, Home_02.class);
                                         intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                         MainActivity.showToast(Home_02_01.this, "작성 되었습니다.");
                                         startActivity(intent1);
 
-                                    //그리드 리싸이클러뷰 역순
-                                    Collections.reverse(App.home_02_02_ArrayList);
+//                                    //그리드 리싸이클러뷰 역순
+//                                    Collections.reverse(App.home_02_02_ArrayList);
 
                                         return;
                                 }
@@ -358,6 +371,258 @@ public class Home_02_01 extends AppCompatActivity {
         builder.show();
     }
 
+//    //카메라로 찍은 사진 가져오기
+//    private void selectPhoto() {
+//        String state = Environment.getExternalStorageState();
+//        if (Environment.MEDIA_MOUNTED.equals(state)) {
+//            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//            if (intent.resolveActivity(getPackageManager()) != null) {
+//                File photoFile = null;
+//                try {
+//                    photoFile = createImageFile();
+//                } catch (IOException ex) {
+//
+//                }
+//                if (photoFile != null) {
+//                    imageUri = FileProvider.getUriForFile(this, getPackageName(), photoFile);
+//                    intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//                    startActivityForResult(intent, REQUEST_TAKE_PHOTO);
+//                }
+//            }
+//
+//        }
+//    }
+//
+//    //이미지 파일화 시키기
+//    public File createImageFile() throws IOException {
+//        File dir = new File(Environment.getExternalStorageDirectory() +  "/MyBrary/");
+//        if (!dir.exists()) {
+//            dir.mkdirs();
+//        }
+//
+//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+//        String imageFileName = timeStamp + ".png";
+//
+//        File storageDir = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/MyBrary/" + imageFileName);
+//        currentPhotoPath = storageDir.getAbsolutePath();
+//
+//        return storageDir;
+//
+//    }
+//
+//    //    사진 가져오기
+//    private void galleryAddPic() {
+//        Log.i("galleryAddPic", "Call");
+//        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//        // 해당 경로에 있는 파일을 객체화(새로 파일을 만든다는 것으로 이해하면 안 됨)
+//        File f = new File(currentPhotoPath);
+//        Uri contentUri = Uri.fromFile(f);
+//        mediaScanIntent.setData(contentUri);
+//        sendBroadcast(mediaScanIntent);
+//        Toast.makeText(this, "사진이 앨범에 저장되었습니다.", Toast.LENGTH_SHORT).show();
+//    }
+//
+//    //찍은 사진 가져오기
+//    private void getPictureForPhoto() {
+//        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
+//        ExifInterface exif = null;
+//        try {
+//            exif = new ExifInterface(currentPhotoPath);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        int exifOrientation;
+//        int exifDegree;
+//
+//        if (exif != null) {
+//            exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+//            exifDegree = exifOrientationToDegrees(exifOrientation);
+//        } else {
+//            exifDegree = 0;
+//        }
+//
+//        bitmap_pic = rotate(bitmap, exifDegree);    //비트맵 회전
+//        string_pic = App.getBase64String(bitmap_pic);   //비트맵 스트링 변환
+//
+//        home_02_01_book_image.setImageBitmap(bitmap_pic);//이미지 뷰에 비트맵 넣기
+//    }
+//
+//    //갤러리에서 가져오기
+//    private void selectGallery() {
+//        Intent intent = new Intent(Intent.ACTION_PICK);
+//        intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//        intent.setType("image/*");
+//        startActivityForResult(intent, REQUEST_TAKE_ALBUM);
+//    }
+//
+//    //선택한 데이터 처리 1
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if (resultCode == RESULT_OK) {
+//
+//            switch (requestCode) {
+//
+//                case REQUEST_TAKE_ALBUM:
+//
+//                    if (resultCode == Activity.RESULT_OK) {
+//                        if (data.getData() != null) {
+//                            sendPicture(data.getData());
+//                        }
+//                    }
+//                    break;
+//
+//                case REQUEST_TAKE_PHOTO:
+////                    getPictureForPhoto(); //카메라에서 가져오기
+//
+//                    if (resultCode == Activity.RESULT_OK) {
+//                        try {
+//                            Log.i("REQUEST_TAKE_PHOTO", "OK");
+//                            galleryAddPic();
+//
+//                            getPictureForPhoto(); //카메라에서 가져오기
+//                        } catch (Exception e) {
+//                            Log.e("REQUEST_TAKE_PHOTO", e.toString());
+//                        }
+//                    } else {
+//                        Toast.makeText(Home_02_01.this, "사진찍기를 취소하였습니다.", Toast.LENGTH_SHORT).show();
+//                    }
+//                    break;
+//
+//                default:
+//                    break;
+//            }
+//
+//        }
+//    }
+//
+//    //선택한 데이터 처리 2
+//    private void sendPicture(Uri imgUri) {
+//
+//        String imagePath = getRealPathFromURI(imgUri); // path 경로
+//        ExifInterface exif = null;
+//        try {
+//            exif = new ExifInterface(imagePath);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+//        int exifDegree = exifOrientationToDegrees(exifOrientation);
+//
+//        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//경로를 통해 비트맵으로 전환
+//
+//        bitmap_pic = rotate(bitmap, exifDegree);    //비트맵 회전
+//        string_pic = App.getBase64String(bitmap_pic);   //비트맵 스트링 변환
+//
+//        home_02_01_book_image.setImageBitmap(bitmap_pic);//이미지 뷰에 비트맵 넣기
+//
+//    }
+//
+//    //이미지 찍은 포커스 대로 가져오기
+//    private int exifOrientationToDegrees(int exifOrientation) {
+//        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+//            return 90;
+//        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+//            return 180;
+//        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+//            return 270;
+//        }
+//        return 0;
+//    }
+//
+//    //이미지 정방향 맞춰주기
+//    private Bitmap rotate(Bitmap src, float degree) {
+//
+//        // Matrix 객체 생성
+//        Matrix matrix = new Matrix();
+//        // 회전 각도 셋팅
+//        matrix.postRotate(degree);
+//        // 이미지와 Matrix 를 셋팅해서 Bitmap 객체 생성
+//        return Bitmap.createBitmap(src, 0, 0, src.getWidth(),
+//                src.getHeight(), matrix, true);
+//    }
+//
+//    //경로 가져오기
+//    private String getRealPathFromURI(Uri contentUri) {
+//        int column_index = 0;
+//        String[] proj = {MediaStore.Images.Media.DATA};
+//        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+//        if (cursor.moveToFirst()) {
+//            column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+//        }
+//
+//        return cursor.getString(column_index);
+//    }
+//
+//    //권한 체크 1
+//    private void checkPermission() {
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//            // 처음 호출시엔 if()안의 부분은 false로 리턴 됨 -> else{..}의 요청으로 넘어감
+//            if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) ||
+//                    (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA))) {
+//
+////                Log.d("체크", "1");
+//                new android.app.AlertDialog.Builder(this)
+//                        .setTitle("알림")
+//                        .setMessage("저장소 권한이 거부되었습니다. 사용을 원하시면 설정에서 해당 권한을 직접 허용하셔야 합니다.")
+//                        .setNeutralButton("설정", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//                                intent.setData(Uri.parse("package:" + getPackageName()));
+//                                startActivity(intent);
+//                            }
+//                        })
+//                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                            }
+//                        })
+//                        .setCancelable(false)
+//                        .create()
+//                        .show();
+//            } else {
+//                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, MY_PERMISSION_CAMERA);
+//
+////                Log.d("체크", "2");
+//
+//            }
+//        }else{
+//
+//            //프로필 사진 바꾸기
+//            showmybrary();
+//
+//        }
+//
+//    }
+//
+//    //권한 있으면 사진 기능 가능
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        switch (requestCode) {
+//            case MY_PERMISSION_CAMERA:{
+//                for (int i = 0; i < grantResults.length; i++) {
+//                    // grantResults[] : 허용된 권한은 0, 거부한 권한은 -1
+//                    if (grantResults[i] < 0) {
+//                        Toast.makeText(this, "해당 권한을 활성화 하셔야 합니다.", Toast.LENGTH_SHORT).show();
+//                        return;
+//                    }
+//                }
+//
+////                Log.d("체크", "권한 진입");
+//
+//                showmybrary();
+//
+//                break;
+//            }
+//
+//        }
+//
+//
+//    }
+
     //카메라로 찍은 사진 가져오기
     private void selectPhoto() {
         String state = Environment.getExternalStorageState();
@@ -406,7 +671,6 @@ public class Home_02_01 extends AppCompatActivity {
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         sendBroadcast(mediaScanIntent);
-        Toast.makeText(this, "사진이 앨범에 저장되었습니다.", Toast.LENGTH_SHORT).show();
     }
 
     //찍은 사진 가져오기
@@ -432,6 +696,32 @@ public class Home_02_01 extends AppCompatActivity {
         string_pic = App.getBase64String(bitmap_pic);   //비트맵 스트링 변환
 
         home_02_01_book_image.setImageBitmap(bitmap_pic);//이미지 뷰에 비트맵 넣기
+
+//        //쉐어드 생성
+//        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
+//        SharedPreferences.Editor save = savenick_info.edit();
+//
+//        //해쉬맵 생성
+//        HashMap<String, String> profile_map = new HashMap<>();
+//
+//        //정보 삽입
+//        String user_profile = string_pic;
+//
+//        //정보 -> 해쉬맵에 삽입
+//        profile_map.put(App.User_ID + "_user_profile", user_profile);
+//
+//        //해쉬맵(Gson 변환) -> 쉐어드 삽입
+//        save.putString(App.User_ID + "_user_profile", App.gson.toJson(profile_map));
+//
+//        //저장
+//        save.apply();
+
+        Toast.makeText(Home_02_01.this, "사진이 업로드 되는 동안 잠시만 기다려주세요. :)", Toast.LENGTH_SHORT).show();
+
+        //파이어 베이스 업로드
+        upload(currentPhotoPath);
+
+
     }
 
     //갤러리에서 가져오기
@@ -456,12 +746,32 @@ public class Home_02_01 extends AppCompatActivity {
                     if (resultCode == Activity.RESULT_OK) {
                         if (data.getData() != null) {
                             sendPicture(data.getData());
+
+//                            //쉐어드 생성
+//                            SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
+//                            SharedPreferences.Editor save = savenick_info.edit();
+//
+//                            //해쉬맵 생성
+//                            HashMap<String, String> profile_map = new HashMap<>();
+//
+//                            //정보 삽입
+//                            String user_profile = string_pic;
+//
+//                            //정보 -> 해쉬맵에 삽입
+//                            profile_map.put(App.User_ID + "_user_profile", user_profile);
+//
+//                            //해쉬맵(Gson 변환) -> 쉐어드 삽입
+//                            save.putString(App.User_ID + "_user_profile", App.gson.toJson(profile_map));
+//
+//                            //저장
+//                            save.apply();
+
                         }
                     }
+
                     break;
 
                 case REQUEST_TAKE_PHOTO:
-//                    getPictureForPhoto(); //카메라에서 가져오기
 
                     if (resultCode == Activity.RESULT_OK) {
                         try {
@@ -469,12 +779,14 @@ public class Home_02_01 extends AppCompatActivity {
                             galleryAddPic();
 
                             getPictureForPhoto(); //카메라에서 가져오기
+
                         } catch (Exception e) {
                             Log.e("REQUEST_TAKE_PHOTO", e.toString());
                         }
                     } else {
                         Toast.makeText(Home_02_01.this, "사진찍기를 취소하였습니다.", Toast.LENGTH_SHORT).show();
                     }
+
                     break;
 
                 default:
@@ -502,7 +814,11 @@ public class Home_02_01 extends AppCompatActivity {
         bitmap_pic = rotate(bitmap, exifDegree);    //비트맵 회전
         string_pic = App.getBase64String(bitmap_pic);   //비트맵 스트링 변환
 
-        home_02_01_book_image.setImageBitmap(bitmap_pic);//이미지 뷰에 비트맵 넣기
+        home_02_01_book_image.setImageBitmap(bitmap_pic);
+
+        Toast.makeText(Home_02_01.this, "사진이 업로드 되는 동안 잠시만 기다려주세요. :)", Toast.LENGTH_SHORT).show();
+
+        upload(imagePath);
 
     }
 
@@ -549,7 +865,6 @@ public class Home_02_01 extends AppCompatActivity {
             if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) ||
                     (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA))) {
 
-//                Log.d("체크", "1");
                 new android.app.AlertDialog.Builder(this)
                         .setTitle("알림")
                         .setMessage("저장소 권한이 거부되었습니다. 사용을 원하시면 설정에서 해당 권한을 직접 허용하셔야 합니다.")
@@ -573,10 +888,8 @@ public class Home_02_01 extends AppCompatActivity {
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, MY_PERMISSION_CAMERA);
 
-//                Log.d("체크", "2");
-
             }
-        }else{
+        } else {
 
             //프로필 사진 바꾸기
             showmybrary();
@@ -585,11 +898,11 @@ public class Home_02_01 extends AppCompatActivity {
 
     }
 
-    //권한 있으면 사진 기능 가능
+    //권한 있으면 프사 기능
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case MY_PERMISSION_CAMERA:{
+            case MY_PERMISSION_CAMERA: {
                 for (int i = 0; i < grantResults.length; i++) {
                     // grantResults[] : 허용된 권한은 0, 거부한 권한은 -1
                     if (grantResults[i] < 0) {
@@ -598,8 +911,6 @@ public class Home_02_01 extends AppCompatActivity {
                     }
                 }
 
-//                Log.d("체크", "권한 진입");
-
                 showmybrary();
 
                 break;
@@ -607,9 +918,53 @@ public class Home_02_01 extends AppCompatActivity {
 
         }
 
-
     }
 
+    public void upload(String uri){
+
+        StorageReference storageRef = storage.getReference();
+
+        Uri file = Uri.fromFile(new File(uri));
+        final StorageReference riversRef = storageRef.child("MyBrary/User_MyBrary"+file.getLastPathSegment());
+        UploadTask uploadTask = riversRef.putFile(file);
+
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+
+                // Continue with the task to get the download URL
+                return riversRef.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    downloadUri = task.getResult();
+
+                    System.out.println(downloadUri);
+
+                    //정보 삽입
+                    change = downloadUri.toString();
+
+                    System.out.println(change);
+//
+//                    //파이어베이스에 저장
+//                    FirebaseDatabase.getInstance().getReference("Users_MyBrary").child(key).child("book").setValue(change);
+
+                    Toast.makeText(Home_02_01.this, "사진이 업로드 되었습니다.", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(Home_02_01.this, "업로드 실패", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+
+    }
 
 }
 

@@ -4,27 +4,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 
 import java.util.ArrayList;
 
-public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_02_re_02> {
+public class Home_03_Adapter extends RecyclerView.Adapter<Home_03_Adapter.home_03_re> {
 
     Context context;
     ArrayList<Home_02_02_ArrayList> home_02_02_Array;
@@ -32,22 +27,22 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
     //글라이드 오류 방지
     public RequestManager mGlideRequestManager;
 
-    public Home_02_Adapter(Context context, ArrayList<Home_02_02_ArrayList> home_02_02_ArrayList) {
+    public Home_03_Adapter(Context context, ArrayList<Home_02_02_ArrayList> home_02_02_ArrayList) {
         this.context = context;
         this.home_02_02_Array = home_02_02_ArrayList;
     }
 
     //틀 생성
     @Override
-    public home_02_re_02 onCreateViewHolder(ViewGroup parent, int viewType) {
+    public home_03_re onCreateViewHolder(ViewGroup parent, int viewType) {
         View v1 = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_02_re_02, parent, false);
-        return new home_02_re_02(v1);
+        return new home_03_re(v1);
 
     }
 
     //묶어주기
     @Override
-    public void onBindViewHolder(home_02_re_02 holder, final int position) {
+    public void onBindViewHolder(home_03_re holder, final int position) {
 
         //글라이드 오류 방지
         mGlideRequestManager = Glide.with(context);
@@ -71,26 +66,26 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
             public void onClick(View v) {
                 Context context = v.getContext();
 //                Toast.makeText(context, selItem, Toast.LENGTH_SHORT).show();
-                Intent intent1 = new Intent(context, Home_02_02.class);
+                Intent intent1 = new Intent(context, Home_03_View.class);
                 intent1.putExtra("position", position);
                 context.startActivity(intent1);
             }
 
         });
 
-        holder.click_item.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-
-
-//                Toast.makeText(context, selItem+"롱", Toast.LENGTH_SHORT).show();
-                Intent intent1 = new Intent(context, Home_02_03.class);
-                intent1.putExtra("position", position);
-                context.startActivity(intent1);
-
-                return true; // 다음 이벤트 계속 진행 false, 이벤트 완료 true
-            }
-        });
+//        holder.click_item.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//
+//
+////                Toast.makeText(context, selItem+"롱", Toast.LENGTH_SHORT).show();
+//                Intent intent1 = new Intent(context, Home_02_03.class);
+//                intent1.putExtra("position", position);
+//                context.startActivity(intent1);
+//
+//                return true; // 다음 이벤트 계속 진행 false, 이벤트 완료 true
+//            }
+//        });
 
     }
 
@@ -100,7 +95,7 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
         return home_02_02_Array.size();
     }
 
-    public static class home_02_re_02 extends RecyclerView.ViewHolder {
+    public static class home_03_re extends RecyclerView.ViewHolder {
 
         //2번
         ImageView book_image;
@@ -109,7 +104,7 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
         TextView book_finish;
         CardView click_item;
 
-        home_02_re_02(View view) {
+        home_03_re(View view) {
             super(view);
             book_image = view.findViewById(R.id.home_02_re_book_I);
             book_name = view.findViewById(R.id.home_02_re_book_name_T);
@@ -132,3 +127,4 @@ public class Home_02_Adapter extends RecyclerView.Adapter<Home_02_Adapter.home_0
     }
 
 }
+

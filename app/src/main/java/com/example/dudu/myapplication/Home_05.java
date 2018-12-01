@@ -20,7 +20,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,6 +48,17 @@ public class Home_05 extends AppCompatActivity {
 
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_05);
+
+        //         리싸이클러뷰
+
+        final RecyclerView mRecyclerView;
+        RecyclerView.LayoutManager mLayoutManager;
+
+        mRecyclerView = findViewById(R.id.home_05_RE);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
         //메뉴 5 - > 메뉴 1
         home_05_menu_01_b = findViewById(R.id.home_05_menu_01_B);
@@ -100,6 +117,36 @@ public class Home_05 extends AppCompatActivity {
                 Intent intent1 = new Intent(Home_05.this, Search_01.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
+
+            }
+        });
+
+        //리싸이클러뷰 파이어베이스 업데이트
+        FirebaseDatabase.getInstance().getReference("Users_Like_Book").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                App.heart_book_ArrayList.clear();
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                    Home_05_ArrayList home_05_arrayList = new Home_05_ArrayList();
+                    home_05_arrayList = snapshot.getValue(Home_05_ArrayList.class);
+
+                    App.heart_book_ArrayList.add(home_05_arrayList);
+
+                }
+
+                Collections.reverse(App.heart_book_ArrayList);
+
+                final Home_05_Adapter myAdapter = new Home_05_Adapter(getApplicationContext(),App.heart_book_ArrayList);
+
+                mRecyclerView.setAdapter(myAdapter);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
@@ -182,51 +229,37 @@ public class Home_05 extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        //쉐어드 생성
-        SharedPreferences savenick_info = getSharedPreferences("Heart", MODE_PRIVATE);
+//        //쉐어드 생성
+//        SharedPreferences savenick_info = getSharedPreferences("Heart", MODE_PRIVATE);
+//
+//        //쉐어드 안에 있는 정보 가져오기 - 내 찜목록
+//        String heart = savenick_info.getString(App.User_ID + "_Heart", "");
+//
+////        //찜목록 정렬
+////        App.heart_sort();
+//
+//        if (!(heart.equals(""))) {
+//
+//            Log.d("체크", "잘 불러옴");
+//
+//            //해쉬맵 생성
+//            HashMap<String, Home_05_ArrayList> heart_map = new HashMap<>();
+//
+//            //해쉬맵에 삽입
+//            heart_map = App.gson.fromJson(heart, App.collectionTypeHeart);
+//
+//            App.heart_book_ArrayList.clear();
+//
+//            for (int i = 0; i < heart_map.size(); i++) {
+//
+//                Log.d("체크", "잘 넣음");
+//
+//                App.heart_book_ArrayList.add(heart_map.get(App.User_ID + "_Heart_" + i));
+//
+//            }
+//
+//        }
 
-        //쉐어드 안에 있는 정보 가져오기 - 내 찜목록
-        String heart = savenick_info.getString(App.User_ID + "_Heart", "");
-
-//        //찜목록 정렬
-//        App.heart_sort();
-
-        if (!(heart.equals(""))) {
-
-            Log.d("체크", "잘 불러옴");
-
-            //해쉬맵 생성
-            HashMap<String, Home_05_ArrayList> heart_map = new HashMap<>();
-
-            //해쉬맵에 삽입
-            heart_map = App.gson.fromJson(heart, App.collectionTypeHeart);
-
-            App.heart_book_ArrayList.clear();
-
-            for (int i = 0; i < heart_map.size(); i++) {
-
-                Log.d("체크", "잘 넣음");
-
-                App.heart_book_ArrayList.add(heart_map.get(App.User_ID + "_Heart_" + i));
-
-            }
-
-        }
-
-            //         리싸이클러뷰
-
-        final RecyclerView mRecyclerView;
-        RecyclerView.LayoutManager mLayoutManager;
-
-        mRecyclerView = findViewById(R.id.home_05_RE);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        final Home_05_Adapter myAdapter = new Home_05_Adapter(getApplicationContext(),App.heart_book_ArrayList);
-
-        mRecyclerView.setAdapter(myAdapter);
 
     }
 

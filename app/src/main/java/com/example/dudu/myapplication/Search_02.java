@@ -99,7 +99,7 @@ public class Search_02 extends AppCompatActivity {
 
                     Log.d("체크", "찜");
 
-                    App.heart_book_ArrayList.add(new Home_05_ArrayList(App.search_book_ArrayList.get(position).drawableId, App.search_book_ArrayList.get(position).name, App.search_book_ArrayList.get(position).author, App.search_book_ArrayList.get(position).price, (float) App.search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02));
+//                    App.heart_book_ArrayList.add(new Home_05_ArrayList(App.search_book_ArrayList.get(position).drawableId, App.search_book_ArrayList.get(position).name, App.search_book_ArrayList.get(position).author, App.search_book_ArrayList.get(position).price, (float) App.search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02));
 
 //                    ------------------------------------------------쉐어드---------------------------------------
 

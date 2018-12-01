@@ -13,10 +13,19 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Home_03 extends AppCompatActivity {
@@ -37,6 +46,16 @@ public class Home_03 extends AppCompatActivity {
 
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_03);
+
+        //---------------------------리싸이클러뷰---------------------------------
+        final RecyclerView mRecyclerView;
+        RecyclerView.LayoutManager mLayoutManager;
+
+        mRecyclerView = findViewById(R.id.home_03_Re);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new GridLayoutManager(this,3);
+        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
         //메뉴 3 - > 메뉴 1
         home_03_menu_01_b = findViewById(R.id.home_03_menu_01_B);
@@ -96,6 +115,33 @@ public class Home_03 extends AppCompatActivity {
                 Intent intent1 = new Intent(Home_03.this, Search_01.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
+
+            }
+        });
+
+        //리싸이클러뷰 파이어베이스 업데이트
+        FirebaseDatabase.getInstance().getReference("Users_MyBrary").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                App.home_03_ArrayList.clear();
+
+                Home_02_02_ArrayList home_03_arrayList = new Home_02_02_ArrayList();
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    home_03_arrayList = snapshot.getValue(Home_02_02_ArrayList.class);
+                    App.home_03_ArrayList.add(home_03_arrayList);
+                }
+
+                Collections.reverse(App.home_03_ArrayList);
+
+                Home_03_Adapter myAdapter = new Home_03_Adapter(getApplicationContext(), App.home_03_ArrayList);
+                mRecyclerView.setAdapter(myAdapter);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });

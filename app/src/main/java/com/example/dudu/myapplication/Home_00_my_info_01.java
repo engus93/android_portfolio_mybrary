@@ -1,7 +1,6 @@
 package com.example.dudu.myapplication;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,13 +10,8 @@ import android.widget.ImageButton;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
 
 public class Home_00_my_info_01 extends AppCompatActivity {
 
@@ -55,7 +49,7 @@ public class Home_00_my_info_01 extends AppCompatActivity {
                 String user_nick = my_info_nick.getText().toString();
 
                 //파이어베이스에 저장
-                myRef.child(App.user_UID()).child("user_nick").setValue(user_nick);
+                myRef.child(App.user_UID_get()).child("user_nick").setValue(user_nick);
 
                 Intent intent1 = new Intent(Home_00_my_info_01.this, Home_00_my_info.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

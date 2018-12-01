@@ -40,7 +40,7 @@ public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_H
     @Override
     public void onBindViewHolder(final Home_Heart_ViewHolder holder, final int position) {
 
-        holder.heart_book_image.setImageResource(heart_book_ArrayList.get(position).heart_book);
+//        holder.heart_book_image.setImageResource(heart_book_ArrayList.get(position).heart_book);
         holder.heart_book_name.setText(heart_book_ArrayList.get(position).heart_name);
         holder.heart_book_author.setText(heart_book_ArrayList.get(position).heart_author);
         holder.heart_book_price.setText(heart_book_ArrayList.get(position).heart_price);

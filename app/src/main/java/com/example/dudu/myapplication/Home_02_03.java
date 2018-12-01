@@ -7,17 +7,31 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 
 public class Home_02_03 extends AppCompatActivity {
+
+    String key;
+
+    //글라이드 오류 방지
+    public RequestManager mGlideRequestManager;
 
     //수정하기
 
@@ -33,6 +47,9 @@ public class Home_02_03 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstancesState) {
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_02_01);
+
+        //글라이드 오류 방지
+        mGlideRequestManager = Glide.with(this);
 
         home_02_03_title = findViewById(R.id.home_02_01_title);
         home_02_03_book_image = findViewById(R.id.home_02_01_book_image);
@@ -54,8 +71,7 @@ public class Home_02_03 extends AppCompatActivity {
             if(App.home_02_02_ArrayList.get(position).book.equals("null")){
                 home_02_03_book_image.setImageResource(R.drawable.home_02_default);
             }else{//비트맵일 경우
-                Bitmap bitmap_pic = App.getBitmap(App.home_02_02_ArrayList.get(position).book);
-                home_02_03_book_image.setImageBitmap(bitmap_pic);
+                mGlideRequestManager.load(App.home_02_02_ArrayList.get(position).book).into(home_02_03_book_image);
             }
 
 //            home_02_03_book_image.setImageURI(Uri.parse(App.home_02_02_ArrayList.get(position).getBook()));
@@ -88,35 +104,73 @@ public class Home_02_03 extends AppCompatActivity {
 
 //                    App.home_02_02_ArrayList.set(position, new Home_02_02_ArrayList(App.home_02_02_ArrayList.get(position).getBook(), home_02_03_book_name.getText().toString(), home_02_03_book_author.getText().toString(), home_02_03_book_date.getText().toString(), home_02_03_book_main.getText().toString()));
 
-                    App.mybrary_sort();
+                    final Home_02_02_ArrayList change = new Home_02_02_ArrayList(App.home_02_02_ArrayList.get(position).getBook(), home_02_03_book_name.getText().toString(), home_02_03_book_author.getText().toString(), home_02_03_book_date.getText().toString(), home_02_03_book_main.getText().toString(),App.home_02_02_ArrayList.get(position).getUser_key(), App.home_02_02_ArrayList.get(position).getUser_uid());
 
-                    //쉐어드 생성
-                    SharedPreferences saveMember_info = getSharedPreferences("mybrary", MODE_PRIVATE);
-                    SharedPreferences.Editor save = saveMember_info.edit();
+                    key = App.home_02_02_ArrayList.get(position).getUser_key();
 
-                    //해쉬맵 생성
-                    HashMap<String, Home_02_02_ArrayList> mybrary_map = new HashMap<>();
+//                    App.mybrary_sort();
+//
+//                    //쉐어드 생성
+//                    SharedPreferences saveMember_info = getSharedPreferences("mybrary", MODE_PRIVATE);
+//                    SharedPreferences.Editor save = saveMember_info.edit();
+//
+//                    //해쉬맵 생성
+//                    HashMap<String, Home_02_02_ArrayList> mybrary_map = new HashMap<>();
+//
+//                    //정보 -> 해쉬맵에 삽입
+//                    for (int i = 0; i < App.home_02_02_ArrayList.size(); i++) {
+//
+//                        mybrary_map.put(App.User_ID + "_MyBrary_" + i, App.home_02_02_ArrayList.get(i));
+//
+//                    }
+//
+//                    //쉐어드 초기화
+//                    save.clear();
+//
+//                    //해쉬맵(Gson 변환) -> 쉐어드 삽입
+//                    save.putString(App.User_ID + "_MyBrary", App.gson.toJson(mybrary_map));
+//
+//                    //저장
+//                    save.apply();
+//
+//                    MainActivity.showToast(Home_02_03.this, "수정 되었습니다.");
+//
+//                    //그리드 리싸이클러뷰 역순
+//                    Collections.reverse(App.home_02_02_ArrayList);
 
-                    //정보 -> 해쉬맵에 삽입
-                    for (int i = 0; i < App.home_02_02_ArrayList.size(); i++) {
+                    //파이어베이스 데이터베이스 선언
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    final DatabaseReference myRef = database.getReference("Users_MyBrary");
 
-                        mybrary_map.put(App.User_ID + "_MyBrary_" + i, App.home_02_02_ArrayList.get(i));
+                    //리싸이클러뷰 파이어베이스 업데이트
+                    myRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    }
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
-                    //쉐어드 초기화
-                    save.clear();
+                                Home_02_02_ArrayList home_02_02_arrayList_00 = new Home_02_02_ArrayList();
+                                home_02_02_arrayList_00 = snapshot.getValue(Home_02_02_ArrayList.class);
 
-                    //해쉬맵(Gson 변환) -> 쉐어드 삽입
-                    save.putString(App.User_ID + "_MyBrary", App.gson.toJson(mybrary_map));
+                                Log.d("체크", "삭제 전");
 
-                    //저장
-                    save.apply();
+                                if (home_02_02_arrayList_00.getUser_key().equals(key)) {
 
-                    MainActivity.showToast(Home_02_03.this, "수정 되었습니다.");
+                                    Log.d("체크", "삭제 진입");
 
-                    //그리드 리싸이클러뷰 역순
-                    Collections.reverse(App.home_02_02_ArrayList);
+                                    myRef.child(home_02_02_arrayList_00.getUser_key()).setValue(change);
+
+                                }
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
 
                     //종료
                     Intent intent1 = new Intent(Home_02_03.this, Home_02.class);

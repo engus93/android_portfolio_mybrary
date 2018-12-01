@@ -47,7 +47,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -66,7 +65,6 @@ public class Home_00_my_info extends AppCompatActivity {
     CircleImageView user_profile;
 
     Uri downloadUri;
-    String image_uri;
 
     int check;
 
@@ -76,6 +74,10 @@ public class Home_00_my_info extends AppCompatActivity {
 
     //파이어베이스
     private FirebaseStorage storage;    //스토리지
+    String change;
+
+    //글라이드 오류 방지
+    public RequestManager mGlideRequestManager;
 
     //사진 저장
     private String currentPhotoPath;    //실제 사진 파일 경로
@@ -84,10 +86,6 @@ public class Home_00_my_info extends AppCompatActivity {
     Bitmap bitmap_pic;  //사진 비트맵 저장
     String string_pic;  //사진 스트링 변환
 
-    String change;
-
-    //글라이드 오류 방지
-    public RequestManager mGlideRequestManager;
 
     protected void onCreate(Bundle savedIstancesState) {
         super.onCreate(savedIstancesState);
@@ -161,12 +159,12 @@ public class Home_00_my_info extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                user_nick.setText((CharSequence) dataSnapshot.child(App.user_UID()).child("user_nick").getValue());
-                user_like.setText((CharSequence) dataSnapshot.child(App.user_UID()).child("user_like").getValue());
-                user_talk.setText((CharSequence) dataSnapshot.child(App.user_UID()).child("user_talk").getValue());
+                user_nick.setText((CharSequence) dataSnapshot.child(App.user_UID_get()).child("user_nick").getValue());
+                user_like.setText((CharSequence) dataSnapshot.child(App.user_UID_get()).child("user_like").getValue());
+                user_talk.setText((CharSequence) dataSnapshot.child(App.user_UID_get()).child("user_talk").getValue());
 
 
-                String profile = dataSnapshot.child(App.user_UID()).child("user_profile").getValue().toString();
+                String profile = dataSnapshot.child(App.user_UID_get()).child("user_profile").getValue().toString();
                 mGlideRequestManager.load(profile).into(iv_view);
 
             }
@@ -635,7 +633,7 @@ public class Home_00_my_info extends AppCompatActivity {
                     change = downloadUri.toString();
 
                     //파이어베이스에 저장
-                    FirebaseDatabase.getInstance().getReference("User_Info").child(App.user_UID()).child("user_profile").setValue(change);
+                    FirebaseDatabase.getInstance().getReference("User_Info").child(App.user_UID_get()).child("user_profile").setValue(change);
 
                     App.Login_User_Profile = change;
 

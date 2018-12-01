@@ -40,6 +40,8 @@ public class App extends Application {
     static ArrayList<Home_05_ArrayList> heart_book_ArrayList = new ArrayList<>();   //찜목록
     static Type collectionTypeHeart = new TypeToken<HashMap<String,Home_05_ArrayList>>(){}.getType();   //찜목록 타입 분류
 
+    static ArrayList<Home_02_02_ArrayList> home_03_ArrayList = new ArrayList<>();    //어레이리스트
+
     static Type collectionTypeString = new TypeToken<HashMap<String,String>>(){}.getType(); //일반 스트링 타입 분류
 
     static ArrayList<Search_01_ArrayList> search_book_ArrayList = new ArrayList<>();    //검색용 어레이 리스트
@@ -119,13 +121,15 @@ public class App extends Application {
         return decodedBitmap;
     }
 
-    static String user_UID(){
+    static String user_UID_get(){
 
         //해당 UID 캐치
         FirebaseUser user;
         user = FirebaseAuth.getInstance().getCurrentUser();
 
-        return user.getUid();
+        String uid = user.getUid();
+
+        return uid;
 
     }
 }

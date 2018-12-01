@@ -5,11 +5,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -35,7 +33,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import static com.example.dudu.myapplication.MainActivity.showToast;
@@ -78,7 +75,6 @@ public class Home_02 extends AppCompatActivity {
 
         //글라이드 오류 방지
         mGlideRequestManager = Glide.with(this);
-
 
         home_02_book_count = findViewById(R.id.home_02_re_mini_1_T);  //내 서재 게시글 수
         home_02_nick_title = findViewById(R.id.home_02_nick_title); //내 닉네임 글
@@ -194,10 +190,10 @@ public class Home_02 extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                home_02_nick_title.setText((CharSequence) dataSnapshot.child(App.user_UID()).child("user_nick").getValue());
-                home_02_user_talk.setText((CharSequence) dataSnapshot.child(App.user_UID()).child("user_talk").getValue());
+                home_02_nick_title.setText((CharSequence) dataSnapshot.child(App.user_UID_get()).child("user_nick").getValue());
+                home_02_user_talk.setText((CharSequence) dataSnapshot.child(App.user_UID_get()).child("user_talk").getValue());
 
-                String change = (String) dataSnapshot.child(App.user_UID()).child("user_profile").getValue();
+                String change = (String) dataSnapshot.child(App.user_UID_get()).child("user_profile").getValue();
                 if(!(change.equals(""))){
                     mGlideRequestManager.load(change).into(mybrary_profile);
                     mGlideRequestManager.load(change).into(drower_profile);
@@ -223,7 +219,7 @@ public class Home_02 extends AppCompatActivity {
                     Home_02_02_ArrayList home_02_02_arrayList = new Home_02_02_ArrayList();
                     home_02_02_arrayList = snapshot.getValue(Home_02_02_ArrayList.class);
 
-                    if (home_02_02_arrayList.getUser_uid().equals(App.user_UID())) {
+                    if (home_02_02_arrayList.getUser_uid().equals(App.user_UID_get())) {
                         App.home_02_02_ArrayList.add(home_02_02_arrayList);
                     }
 
@@ -231,8 +227,12 @@ public class Home_02 extends AppCompatActivity {
 
                 Collections.reverse(App.home_02_02_ArrayList);
 
-                Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(),App.home_02_02_ArrayList);
+                Home_02_Adapter myAdapter = new Home_02_Adapter(getApplicationContext(), App.home_02_02_ArrayList);
                 mRecyclerView.setAdapter(myAdapter);
+
+                //내 서재 게시글 수 갱신
+                String mybrary_count = String.valueOf(App.home_02_02_ArrayList.size());
+                home_02_book_count.setText(mybrary_count);
 
             }
 
