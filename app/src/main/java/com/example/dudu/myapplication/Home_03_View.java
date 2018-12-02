@@ -38,6 +38,7 @@ public class Home_03_View extends AppCompatActivity {
     Button home_02_02_remove_B;
     CircleImageView home_03_wright_user_profile;
     TextView home_03_wright_user_nick;
+    Button home_03_view_follow_B;
 
     boolean remove_like;
 
@@ -57,6 +58,7 @@ public class Home_03_View extends AppCompatActivity {
         home_02_02_remove_B = findViewById(R.id.home_02_02_remove_B);
         home_03_wright_user_profile = findViewById(R.id.wright_user_profile);
         home_03_wright_user_nick = findViewById(R.id.wright_user_nick);
+        home_03_view_follow_B = findViewById(R.id.home_03_view_Follow);
 
         Intent intent1 = getIntent();
 

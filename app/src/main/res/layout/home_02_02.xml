@@ -57,57 +57,60 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/wright_user_profile"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view18"
-        android:src ="@mipmap/ic_launcher_round" />
-
-    <TextView
-        android:id="@+id/wright_user_nick"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:gravity="center"
-        android:text="닉네임"
-        android:textColor="@color/mybrary_main"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/wright_user_profile"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/wright_user_profile"
-        app:layout_constraintTop_toTopOf="@+id/wright_user_profile" />
-
-    <View
-        android:id="@+id/view15"
-        android:layout_width="0dp"
-        android:layout_height="0.5dp"
-        android:layout_marginTop="10dp"
-        android:layout_weight="1"
-        android:background="@android:color/darker_gray"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wright_user_nick" />
-
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view15">
+        app:layout_constraintTop_toBottomOf="@+id/view18">
 
         <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+
+            <TextView
+                android:id="@+id/wright_user_nick"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_vertical|start"
+                android:text="닉네임"
+                android:textColor="@color/mybrary_main"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/wright_user_profile"
+                app:layout_constraintEnd_toStartOf="@+id/home_03_view_Follow"
+                app:layout_constraintStart_toEndOf="@+id/wright_user_profile"
+                app:layout_constraintTop_toTopOf="@+id/wright_user_profile" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/wright_user_profile"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:src="@mipmap/ic_launcher_round"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/view15"
+                android:layout_width="0dp"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/wright_user_profile" />
 
             <ImageView
                 android:id="@+id/home_02_02_book_image"
@@ -121,7 +124,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view15"
                 app:srcCompat="@drawable/home_02_default" />
 
             <TextView
@@ -219,6 +222,17 @@
                 app:layout_constraintEnd_toStartOf="@+id/guideline24"
                 app:layout_constraintStart_toStartOf="@+id/guideline23"
                 app:layout_constraintTop_toBottomOf="@+id/home_02_02_main" />
+
+            <Button
+                android:id="@+id/home_03_view_Follow"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/all_stroke"
+                android:text="팔로우"
+                app:layout_constraintBottom_toBottomOf="@+id/wright_user_nick"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/wright_user_nick" />
 
 
         </android.support.constraint.ConstraintLayout>
