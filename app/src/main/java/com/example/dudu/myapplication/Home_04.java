@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -26,7 +25,7 @@ public class Home_04 extends AppCompatActivity {
     ImageButton home_04_menu_03_b;
     ImageButton home_04_menu_04_b;
     ImageButton home_04_menu_05_b;
-    ImageButton home_04_search; //검색창 버튼
+    ImageButton home_04_friend_plus; //검색창 버튼
 
     private long backPressedTime = 0;
 
@@ -89,17 +88,23 @@ public class Home_04 extends AppCompatActivity {
             }
         });
 
-        //메뉴 3 - > 검색창
-        home_04_search = findViewById(R.id.home_04_search);
-        home_04_search.setOnClickListener(new View.OnClickListener() {
+        //메뉴 3 - > 채팅 추가
+        home_04_friend_plus = findViewById(R.id.home_04_friend_plus);
+        home_04_friend_plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent1 = new Intent(Home_04.this, Search_01.class);
+                Intent intent1 = new Intent(Home_04.this, Home_04_FriendList.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
 
             }
         });
+
+
+
+
+
+        
 
         //왼쪽 상단 메뉴
 

@@ -13,6 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.HashMap;
 
 public class Search_02 extends AppCompatActivity {
@@ -20,6 +23,8 @@ public class Search_02 extends AppCompatActivity {
     Boolean book_check = false;
 
     Context context;
+
+    String key;
 
     //북 세팅
     ImageView search_02_book;
@@ -83,15 +88,35 @@ public class Search_02 extends AppCompatActivity {
 
                 }
 
-                if (book_check || App.heart_book_ArrayList.size() == 0) {
+                        if (book_check || App.heart_book_ArrayList.size() == 0) {
 
-                    //키보드 내리기
-                    if (v != null) {
-                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                    }
+                            //키보드 내리기
+                            if (v != null) {
+                                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                            }
 
-                    try {
+                            //키보드 내리기
+                            if (v != null) {
+                                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                            }
+
+                            //파이어베이스 데이터베이스 선언
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            DatabaseReference myRef = database.getReference("Users_Like_Book");
+
+                            //랜덤 키 생성
+                            key = myRef.push().getKey();
+
+//                App.heart_book_ArrayList.add(new Home_05_ArrayList(App.search_book_ArrayList.get(position).drawableId, App.search_book_ArrayList.get(position).name, App.search_book_ArrayList.get(position).author, App.search_book_ArrayList.get(position).price, (float) App.search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02, key, App.user_UID_get()));
+
+                            Home_05_ArrayList like_plus = new Home_05_ArrayList(App.search_book_ArrayList.get(position).drawableId, App.search_book_ArrayList.get(position).name, App.search_book_ArrayList.get(position).author, App.search_book_ArrayList.get(position).price, (float) App.search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02, key, App.user_UID_get());
+
+                            //파이어베이스에 저장
+                            myRef.child(key).setValue(like_plus);
+
+                            try {
                         Thread.sleep(200);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -103,27 +128,27 @@ public class Search_02 extends AppCompatActivity {
 
 //                    ------------------------------------------------쉐어드---------------------------------------
 
-                    //쉐어드 생성
-                    SharedPreferences saveMember_info = getSharedPreferences("Heart", MODE_PRIVATE);
-                    SharedPreferences.Editor save = saveMember_info.edit();
-
-                    //해쉬맵 생성
-                    HashMap<String, Home_05_ArrayList> heart_map = new HashMap<>();
-
-                    //정보 -> 해쉬맵에 삽입
-                    for(int i = 0; i < App.heart_book_ArrayList.size(); i++){
-
-                        heart_map.put(App.User_ID + "_Heart_" + i , App.heart_book_ArrayList.get(i));
-
-                    }
-
-                    save.clear();
-
-                    //해쉬맵(Gson 변환) -> 쉐어드 삽입
-                    save.putString(App.User_ID + "_Heart", App.gson.toJson(heart_map));
-
-                    //저장
-                    save.apply();
+//                    //쉐어드 생성
+//                    SharedPreferences saveMember_info = getSharedPreferences("Heart", MODE_PRIVATE);
+//                    SharedPreferences.Editor save = saveMember_info.edit();
+//
+//                    //해쉬맵 생성
+//                    HashMap<String, Home_05_ArrayList> heart_map = new HashMap<>();
+//
+//                    //정보 -> 해쉬맵에 삽입
+//                    for(int i = 0; i < App.heart_book_ArrayList.size(); i++){
+//
+//                        heart_map.put(App.User_ID + "_Heart_" + i , App.heart_book_ArrayList.get(i));
+//
+//                    }
+//
+//                    save.clear();
+//
+//                    //해쉬맵(Gson 변환) -> 쉐어드 삽입
+//                    save.putString(App.User_ID + "_Heart", App.gson.toJson(heart_map));
+//
+//                    //저장
+//                    save.apply();
 
                     Toast.makeText(Search_02.this, search_02_name.getText().toString() + "가 찜목록에 추가 되었습니다.", Toast.LENGTH_SHORT).show();
 
