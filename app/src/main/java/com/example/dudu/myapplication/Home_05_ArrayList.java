@@ -9,19 +9,19 @@ public class Home_05_ArrayList {
     public String heart_price;
     public double heart_rank;
     public int heart_heart;
-    public String User_key;
-    public String User_UID;
+    public String user_key;
+    public String login_user_uid;
 
 
-    public Home_05_ArrayList(int book, String name, String author, String price, double rank, int heart_heart, String User_key, String User_UID) {
+    public Home_05_ArrayList(int book, String name, String author, String price, double rank, int heart_heart, String user_key, String login_user_uid) {
         this.heart_book = book;
         this.heart_name = name;
         this.heart_author = author;
         this.heart_price = price;
         this.heart_rank = rank;
         this.heart_heart = heart_heart;
-        this.User_key = User_key;
-        this.User_UID = User_UID;
+        this.user_key = user_key;
+        this.login_user_uid = login_user_uid;
     }
 
     public Home_05_ArrayList(){
@@ -77,18 +77,18 @@ public class Home_05_ArrayList {
     }
 
     public String getUser_key() {
-        return User_key;
+        return user_key;
     }
 
     public void setUser_key(String user_key) {
-        User_key = user_key;
+        this.user_key = user_key;
     }
 
-    public String getUser_UID() {
-        return User_UID;
+    public String getLogin_user_uid() {
+        return login_user_uid;
     }
 
-    public void setUser_UID(String user_UID) {
-        User_UID = user_UID;
+    public void setLogin_user_uid(String login_user_uid) {
+        this.login_user_uid = login_user_uid;
     }
 }

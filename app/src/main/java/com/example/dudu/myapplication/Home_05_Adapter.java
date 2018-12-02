@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +14,20 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_Heart_ViewHolder>  {
+
+    String key; //푸쉬 키 찾기
 
     Context context;
 
@@ -40,7 +49,7 @@ public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_H
     @Override
     public void onBindViewHolder(final Home_Heart_ViewHolder holder, final int position) {
 
-//        holder.heart_book_image.setImageResource(heart_book_ArrayList.get(position).heart_book);
+        holder.heart_book_image.setImageResource(heart_book_ArrayList.get(position).heart_book);
         holder.heart_book_name.setText(heart_book_ArrayList.get(position).heart_name);
         holder.heart_book_author.setText(heart_book_ArrayList.get(position).heart_author);
         holder.heart_book_price.setText(heart_book_ArrayList.get(position).heart_price);
@@ -62,44 +71,79 @@ public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_H
                 Toast.makeText(context, heart_book_ArrayList.get(position).heart_name + "가 찜목록에 삭제 되었습니다.", Toast.LENGTH_SHORT).show();
 
                 //어댑터에서 삭제
-                heart_book_ArrayList.remove(position);
+                key = heart_book_ArrayList.get(position).getUser_key();
 
-                // 어댑터에서 RecyclerView에 반영하도록 합니다.
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, heart_book_ArrayList.size());
+                //파이어베이스 데이터베이스 선언
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                final DatabaseReference myRef = database.getReference("Users_Like_Book");
 
-                //---------------------------------쉐어드-----------------------------------------
+                //리싸이클러뷰 파이어베이스 업데이트
+                myRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
 
-                //쉐어드 생성
-                SharedPreferences saveMember_info = context.getSharedPreferences("Heart", MODE_PRIVATE);
-                SharedPreferences.Editor save = saveMember_info.edit();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
-                //해쉬맵 생성
-                HashMap<String, Home_05_ArrayList> heart_map = new HashMap<>();
+                            Home_05_ArrayList home_05_arrayList = new Home_05_ArrayList();
+                            home_05_arrayList = snapshot.getValue(Home_05_ArrayList.class);
 
-                //정보 -> 해쉬맵에 삽입
-                for (int i = 0; i < App.heart_book_ArrayList.size(); i++) {
+                            Log.d("체크", "삭제 전");
 
-                    heart_map.put(App.User_ID + "_Heart_" + i, App.heart_book_ArrayList.get(i));
+                            if (home_05_arrayList.getUser_key().equals(key)) {
 
-                }
+                                Log.d("체크", "삭제 진입");
 
-                save.clear();
+                                myRef.child(home_05_arrayList.getUser_key()).removeValue();
 
-                //해쉬맵(Gson 변환) -> 쉐어드 삽입
-                save.putString(App.User_ID + "_Heart", App.gson.toJson(heart_map));
+                            }
 
-                //저장
-                save.apply();
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+                return;
+            }
+        });
+
+//                // 어댑터에서 RecyclerView에 반영하도록 합니다.
+//                notifyItemRemoved(position);
+//                notifyItemRangeChanged(position, heart_book_ArrayList.size());
+
+//                //---------------------------------쉐어드-----------------------------------------
+//
+//                //쉐어드 생성
+//                SharedPreferences saveMember_info = context.getSharedPreferences("Heart", MODE_PRIVATE);
+//                SharedPreferences.Editor save = saveMember_info.edit();
+//
+//                //해쉬맵 생성
+//                HashMap<String, Home_05_ArrayList> heart_map = new HashMap<>();
+//
+//                //정보 -> 해쉬맵에 삽입
+//                for (int i = 0; i < App.heart_book_ArrayList.size(); i++) {
+//
+//                    heart_map.put(App.User_ID + "_Heart_" + i, App.heart_book_ArrayList.get(i));
+//
+//                }
+//
+//                save.clear();
+//
+//                //해쉬맵(Gson 변환) -> 쉐어드 삽입
+//                save.putString(App.User_ID + "_Heart", App.gson.toJson(heart_map));
+//
+//                //저장
+//                save.apply();
 
                 //찜목록 정렬
 //                App.heart_sort();
 
             }
-
-        });
-
-    }
 
     @Override
     public int getItemCount() {
