@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <ImageButton
-        android:id="@+id/home_menu_01_B2"
+        android:id="@+id/home_04_chatting_back_B"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginStart="10dp"
@@ -20,7 +20,7 @@
         tools:srcCompat="@drawable/back" />
 
     <TextView
-        android:id="@+id/textView20"
+        android:id="@+id/home_04_chatting_nick"
         android:layout_width="0dp"
         android:layout_height="35dp"
         android:layout_gravity="center"
@@ -35,12 +35,12 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:typeface="serif"
-        app:layout_constraintEnd_toStartOf="@+id/home_04_friend_plus2"
-        app:layout_constraintStart_toEndOf="@+id/home_menu_01_B2"
+        app:layout_constraintEnd_toStartOf="@+id/home_04_chatting_people_list"
+        app:layout_constraintStart_toEndOf="@+id/home_04_chatting_back_B"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/home_04_friend_plus2"
+        android:id="@+id/home_04_chatting_people_list"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginTop="10dp"
@@ -50,7 +50,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/paper_plane" />
+        tools:src="@drawable/menu_00" />
 
     <View
         android:id="@+id/view20"
@@ -60,7 +60,7 @@
         android:background="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView20" />
+        app:layout_constraintTop_toBottomOf="@+id/home_04_chatting_nick" />
 
     <View
         android:id="@+id/view19"
@@ -68,38 +68,39 @@
         android:layout_height="0.5dp"
         android:layout_marginBottom="10dp"
         android:background="@android:color/darker_gray"
-        app:layout_constraintBottom_toTopOf="@+id/textView18"
+        app:layout_constraintBottom_toTopOf="@+id/home_04_chatting_ET"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/textView18"
-        android:backgroundTint="@color/trans"
+        android:id="@+id/home_04_chatting_ET"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/mybrary_main"
         android:hint="메세지를 입력해주세요."
         android:inputType="textMultiLine"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imageView2"
+        app:layout_constraintEnd_toStartOf="@+id/home_04_chatting_send"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/home_04_chatting_send"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView18"
+        app:layout_constraintBottom_toBottomOf="@+id/home_04_chatting_ET"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView20"
-        app:layout_constraintTop_toTopOf="@+id/textView18"
+        app:layout_constraintStart_toEndOf="@+id/home_04_chatting_nick"
+        app:layout_constraintTop_toTopOf="@+id/home_04_chatting_ET"
         app:srcCompat="@drawable/paper_plane" />
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/home_04_chatting_re"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="5dp"

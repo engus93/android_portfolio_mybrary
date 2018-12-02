@@ -2,16 +2,17 @@ package com.example.dudu.myapplication;
 
 public class Member_ArrayList {
 
-    String member_id;
-    String member_password;
-    String member_name;
     String member_birthday;
+    String member_id;
+    String member_name;
+    String member_password;
     String member_sex;
-    String user_nick;
-    String user_talk;
-    String user_like;
-    String user_profile;
     String user_UID;
+    String user_like;
+    String user_nick;
+    String user_profile;
+    String user_talk;
+//    String user_key;
 
     public Member_ArrayList(String member_id, String member_password,String member_name,String member_birthday, String member_sex,String user_UID){
 
@@ -23,8 +24,9 @@ public class Member_ArrayList {
         this.user_nick = "";
         this.user_talk = "";
         this.user_like = "";
-        this.user_profile = "";
+        this.user_profile = "https://firebasestorage.googleapis.com/v0/b/mybrary-4084f.appspot.com/o/MyBrary%2FDefault%2FUser_Default_Profile.png?alt=media&token=9c0e3cd1-f0d1-4df7-a98e-3fa64c6312df";
         this.user_UID = user_UID;
+//        this.user_key = user_key;
     }
 
     public Member_ArrayList(){

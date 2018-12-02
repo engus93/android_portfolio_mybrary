@@ -40,7 +40,9 @@ public class App extends Application {
     static ArrayList<Home_05_ArrayList> heart_book_ArrayList = new ArrayList<>();   //찜목록
     static Type collectionTypeHeart = new TypeToken<HashMap<String,Home_05_ArrayList>>(){}.getType();   //찜목록 타입 분류
 
-    static ArrayList<Home_02_02_ArrayList> home_03_ArrayList = new ArrayList<>();    //어레이리스트
+    static ArrayList<Home_02_02_ArrayList> home_03_ArrayList = new ArrayList<>();    //피드 모든 게시물 어레이리스트
+
+    static ArrayList<Member_ArrayList> all_userslist = new ArrayList<>();
 
     static Type collectionTypeString = new TypeToken<HashMap<String,String>>(){}.getType(); //일반 스트링 타입 분류
 

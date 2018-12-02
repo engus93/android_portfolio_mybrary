@@ -925,7 +925,7 @@ public class Home_02_01 extends AppCompatActivity {
         StorageReference storageRef = storage.getReference();
 
         Uri file = Uri.fromFile(new File(uri));
-        final StorageReference riversRef = storageRef.child("MyBrary/User_MyBrary"+file.getLastPathSegment());
+        final StorageReference riversRef = storageRef.child("MyBrary/User_MyBrary/"+file.getLastPathSegment());
         UploadTask uploadTask = riversRef.putFile(file);
 
         Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {

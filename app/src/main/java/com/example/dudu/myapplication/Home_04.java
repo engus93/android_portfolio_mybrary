@@ -38,7 +38,7 @@ public class Home_04 extends AppCompatActivity {
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_04);
 
-        //메뉴 1 - > 메뉴 1
+        //메뉴 4 - > 메뉴 1
         home_04_menu_01_b = findViewById(R.id.home_04_menu_01_B);
         home_04_menu_01_b.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,7 +50,7 @@ public class Home_04 extends AppCompatActivity {
             }
         });
 
-        //메뉴 1 - > 메뉴 2
+        //메뉴 4 - > 메뉴 2
         home_04_menu_02_b = findViewById(R.id.home_04_menu_02_B);
         home_04_menu_02_b.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +62,7 @@ public class Home_04 extends AppCompatActivity {
             }
         });
 
-        //메뉴 1 - > 메뉴 3
+        //메뉴 4 - > 메뉴 3
         home_04_menu_03_b = findViewById(R.id.home_04_menu_03_B);
         home_04_menu_03_b.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +75,7 @@ public class Home_04 extends AppCompatActivity {
             }
         });
 
-        //메뉴 1 - > 메뉴 5
+        //메뉴 4 - > 메뉴 5
         home_04_menu_05_b = findViewById(R.id.home_04_menu_05_B);
         home_04_menu_05_b.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,7 +88,7 @@ public class Home_04 extends AppCompatActivity {
             }
         });
 
-        //메뉴 3 - > 채팅 추가
+        //메뉴 4 - > 채팅 추가
         home_04_friend_plus = findViewById(R.id.home_04_friend_plus);
         home_04_friend_plus.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,7 +104,7 @@ public class Home_04 extends AppCompatActivity {
 
 
 
-        
+
 
         //왼쪽 상단 메뉴
 

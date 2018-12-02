@@ -13,8 +13,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class Home_04_FriendList extends AppCompatActivity {
-
+public class Home_04_Chatting extends AppCompatActivity {
 
     ImageButton home_04_friend_send; //채팅방 만들기
     ImageButton home_04_friendlist_back_B;  //뒤로가기 버튼

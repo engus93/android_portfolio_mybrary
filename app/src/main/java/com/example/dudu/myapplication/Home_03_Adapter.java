@@ -117,14 +117,5 @@ public class Home_03_Adapter extends RecyclerView.Adapter<Home_03_Adapter.home_0
 
     }
 
-    //스트링 -> 비트맵 전환
-    static Bitmap getBitmap(String zz) {
-
-        byte[] decodedByteArray = Base64.decode(zz, Base64.NO_WRAP);
-        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
-
-        return decodedBitmap;
-    }
-
 }
 

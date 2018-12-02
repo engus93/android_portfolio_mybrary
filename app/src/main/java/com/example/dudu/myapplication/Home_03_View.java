@@ -97,12 +97,8 @@ public class Home_03_View extends AppCompatActivity {
 
         }
 
-        //파이어베이스 데이터베이스 선언
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("User_Info");
-
         //리싸이클러뷰 파이어베이스 업데이트
-        myRef.addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 

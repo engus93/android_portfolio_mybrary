@@ -16,7 +16,7 @@
         android:layout_height="match_parent">
 
         <ImageButton
-            android:id="@+id/home_menu_01_B"
+            android:id="@+id/home_04_friendlist_back_B"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_marginTop="5dp"
@@ -45,12 +45,12 @@
             android:textSize="18sp"
             android:textStyle="bold"
             android:typeface="serif"
-            app:layout_constraintEnd_toStartOf="@+id/home_04_friend_plus"
-            app:layout_constraintStart_toEndOf="@+id/home_menu_01_B"
+            app:layout_constraintEnd_toStartOf="@+id/home_04_friend_send"
+            app:layout_constraintStart_toEndOf="@+id/home_04_friendlist_back_B"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            android:id="@+id/home_04_friend_plus"
+            android:id="@+id/home_04_friend_send"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_marginTop="5dp"
@@ -76,7 +76,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/home_04__re"
+            android:id="@+id/home_04_friend_re"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="5dp"
@@ -85,8 +85,10 @@
             android:layout_marginBottom="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view8" />
+            app:layout_constraintTop_toBottomOf="@+id/view8"
+            app:layout_constraintVertical_bias="0.0" />
 
     </android.support.constraint.ConstraintLayout>
 

@@ -50,6 +50,8 @@
 
         <activity android:name=".Home_04"/>
 
+        <activity android:name=".Home_04_FriendList"/>
+
         <activity android:name=".Home_05"/>
 
         <activity android:name=".Search_01"/>

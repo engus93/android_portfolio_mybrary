@@ -610,7 +610,7 @@ public class Home_00_my_info extends AppCompatActivity {
         StorageReference storageRef = storage.getReference();
 
         Uri file = Uri.fromFile(new File(uri));
-        final StorageReference riversRef = storageRef.child("MyBrary/User_Profile"+file.getLastPathSegment());
+        final StorageReference riversRef = storageRef.child("MyBrary/User_Profile/"+file.getLastPathSegment());
         UploadTask uploadTask = riversRef.putFile(file);
 
         Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
