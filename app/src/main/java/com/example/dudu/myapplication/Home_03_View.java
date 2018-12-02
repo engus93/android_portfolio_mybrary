@@ -19,6 +19,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class Home_03_View extends AppCompatActivity {
 
     String key;
@@ -34,6 +36,8 @@ public class Home_03_View extends AppCompatActivity {
     TextView home_02_02_book_main;
     ImageButton home_02_02_back_B;
     Button home_02_02_remove_B;
+    CircleImageView home_03_wright_user_profile;
+    TextView home_03_wright_user_nick;
 
     boolean remove_like;
 
@@ -51,6 +55,8 @@ public class Home_03_View extends AppCompatActivity {
         home_02_02_book_date = findViewById(R.id.home_02_02_date);
         home_02_02_book_main = findViewById(R.id.home_02_02_main);
         home_02_02_remove_B = findViewById(R.id.home_02_02_remove_B);
+        home_03_wright_user_profile = findViewById(R.id.wright_user_profile);
+        home_03_wright_user_nick = findViewById(R.id.wright_user_nick);
 
         Intent intent1 = getIntent();
 
@@ -88,6 +94,26 @@ public class Home_03_View extends AppCompatActivity {
             remove_like = true;
 
         }
+
+        //파이어베이스 데이터베이스 선언
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = database.getReference("User_Info");
+
+        //리싸이클러뷰 파이어베이스 업데이트
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                home_03_wright_user_nick.setText((CharSequence) dataSnapshot.child(App.home_03_ArrayList.get(position).getUser_uid()).child("user_nick").getValue());
+                mGlideRequestManager.load(dataSnapshot.child(App.home_03_ArrayList.get(position).getUser_uid()).child("user_profile").getValue()).fitCenter().into(home_03_wright_user_profile);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         //삭제하기
         home_02_02_remove_B.setOnClickListener(new View.OnClickListener() {

@@ -39,17 +39,23 @@ public class Home_02_02 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstancesState) {
         super.onCreate(savedInstancesState);
-        setContentView(R.layout.home_02_02);
+        setContentView(R.layout.home_02_01);
 
         //글라이드 오류 방지
         mGlideRequestManager = Glide.with(this);
 
-        home_02_02_book_image = findViewById(R.id.home_02_02_book_image);
-        home_02_02_book_name = findViewById(R.id.home_02_02_book_name);
-        home_02_02_book_author = findViewById(R.id.home_02_02_author);
-        home_02_02_book_date = findViewById(R.id.home_02_02_date);
-        home_02_02_book_main = findViewById(R.id.home_02_02_main);
-        home_02_02_remove_B = findViewById(R.id.home_02_02_remove_B);
+        home_02_02_book_image = findViewById(R.id.home_02_01_book_image);
+        home_02_02_book_name = findViewById(R.id.home_02_01_book_name);
+        home_02_02_book_author = findViewById(R.id.home_02_01_author);
+        home_02_02_book_date = findViewById(R.id.home_02_01_date);
+        home_02_02_book_main = findViewById(R.id.home_02_01_main);
+        home_02_02_remove_B = findViewById(R.id.home_02_01_plus_B);
+
+        home_02_02_book_name.setKeyListener(null);
+        home_02_02_book_author.setKeyListener(null);
+        home_02_02_book_main.setKeyListener(null);
+
+        home_02_02_remove_B.setText("삭제하기");
 
         Intent intent1 = getIntent();
 
@@ -180,7 +186,7 @@ public class Home_02_02 extends AppCompatActivity {
 
 
         //뒤로가기
-        findViewById(R.id.home_02_02_back_B).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.home_02_01_back_B).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
