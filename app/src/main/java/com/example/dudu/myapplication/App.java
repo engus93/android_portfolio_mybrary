@@ -42,7 +42,9 @@ public class App extends Application {
 
     static ArrayList<Home_02_02_ArrayList> home_03_ArrayList = new ArrayList<>();    //피드 모든 게시물 어레이리스트
 
-    static ArrayList<Member_ArrayList> all_userslist = new ArrayList<>();
+    static ArrayList<Member_ArrayList> all_userslist = new ArrayList<>();      //현재 가입 유저
+
+    static ArrayList<Home_04_Single_Chatting> user_chat_room = new ArrayList<>();
 
     static Type collectionTypeString = new TypeToken<HashMap<String,String>>(){}.getType(); //일반 스트링 타입 분류
 

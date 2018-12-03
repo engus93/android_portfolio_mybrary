@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +15,21 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Home_04_Friend_Adapter extends RecyclerView.Adapter<Home_04_Friend_Adapter.home_04_friend_re> {
 
     Context context;
     ArrayList<Member_ArrayList> all_user_info;
+
+    boolean overlabe;
 
     //글라이드 오류 방지
     public RequestManager mGlideRequestManager;
@@ -55,7 +64,42 @@ public class Home_04_Friend_Adapter extends RecyclerView.Adapter<Home_04_Friend_
             @Override
             public void onClick(View v) {
                 Context context = v.getContext();
-                Intent intent1 = new Intent(context, Home_04.class);
+
+                //파이어베이스 데이터베이스 선언
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                final DatabaseReference myRef = database.getReference("User_Message").child("User_Room");
+
+                final String key = myRef.push().getKey();
+
+                for(int i = 0; i < App.user_chat_room.size(); i++){
+
+                    if (App.user_chat_room.get(i).user_1.equals(App.user_UID_get()) && App.user_chat_room.get(i).user_2.equals(all_user_info.get(position).user_UID)) {
+
+                        overlabe = false;
+                        break;
+
+                    } else if (App.user_chat_room.get(i).user_2.equals(App.user_UID_get()) && App.user_chat_room.get(i).user_1.equals(all_user_info.get(position).user_UID)) {
+
+                        overlabe = false;
+                        break;
+
+                    } else {
+
+                        overlabe = true;
+
+                    }
+                }
+
+                if (overlabe) {
+                    Home_04_Single_Chatting chatroom = new Home_04_Single_Chatting(App.user_UID_get(), all_user_info.get(position).user_UID, key);
+
+                    //파이어베이스에 저장
+                    myRef.child(key).setValue(chatroom);
+
+                    overlabe = false;
+                }
+
+                Intent intent1 = new Intent(context, Home_04_Chatting.class);
                 intent1.putExtra("position", position);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 context.startActivity(intent1);

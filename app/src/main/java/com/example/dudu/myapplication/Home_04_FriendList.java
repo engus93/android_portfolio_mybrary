@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -16,8 +17,8 @@ import com.google.firebase.database.ValueEventListener;
 public class Home_04_FriendList extends AppCompatActivity {
 
 
-    ImageButton home_04_friend_send; //채팅방 만들기
-    ImageButton home_04_friendlist_back_B;  //뒤로가기 버튼
+    ImageView home_04_friend_send; //채팅방 만들기
+    ImageView home_04_friendlist_back_B;  //뒤로가기 버튼
 
     protected void onCreate(Bundle savedInstancesState) {
 
@@ -79,6 +80,27 @@ public class Home_04_FriendList extends AppCompatActivity {
                 Home_04_Friend_Adapter myAdapter = new Home_04_Friend_Adapter(getApplicationContext(), App.all_userslist);
                 mRecyclerView.setAdapter(myAdapter);
 
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        //리싸이클러뷰 파이어베이스 업데이트
+        FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                App.user_chat_room.clear();
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Home_04_Single_Chatting single_chatting = snapshot.getValue(Home_04_Single_Chatting.class);
+
+                    App.user_chat_room.add(single_chatting);
+
+                }
             }
 
             @Override
