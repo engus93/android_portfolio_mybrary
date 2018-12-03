@@ -23,6 +23,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
@@ -47,6 +51,8 @@ public class Sign_in_02_Activity extends AppCompatActivity{
 
         super.onCreate(savedInstancesState);
         setContentView(R.layout.sign_in_02);
+
+        App.user_chat_room.clear();
 
 //        --------------------------- 자동 로그인 --------------------------------
 
@@ -77,6 +83,33 @@ public class Sign_in_02_Activity extends AppCompatActivity{
             auto_login.setChecked(true);
 
         }
+
+        //모든 유저 리스트 불러오기
+        FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Home_04_Single_Chatting single_chatting = new Home_04_Single_Chatting();
+
+                App.user_chat_room.clear();
+
+                //모든 유저 리스트 불러오기
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    single_chatting = snapshot.getValue(Home_04_Single_Chatting.class);
+
+                    App.user_chat_room.add(single_chatting);
+
+                }
+
+                System.out.println(App.user_chat_room.size());
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
 
 //        ---------------------------구글 로그인---------------------------------
@@ -148,11 +181,23 @@ public class Sign_in_02_Activity extends AppCompatActivity{
 
                 } else {
 
-                    loginUser(sign_in_02_id.getText().toString(),sign_in_02_password.getText().toString());
+                    loginUser(sign_in_02_id.getText().toString(), sign_in_02_password.getText().toString());
+
+                }
+
+
+            }
+
+        });
 
 
 
-//                    //쉐어드 안에 있는 정보 가져오기
+
+
+
+    }
+
+    //                    //쉐어드 안에 있는 정보 가져오기
 //                    String check = saveMember_info.getString(sign_in_02_id.getText().toString(), "");
 //
 //                    if (!(check.equals(""))) {
@@ -186,17 +231,6 @@ public class Sign_in_02_Activity extends AppCompatActivity{
 //                        MainActivity.showToast(Sign_in_02_Activity.this, "아이디가 일치하지 않습니다.");
 //
 //                    }
-
-                }
-
-            }
-
-        });
-
-
-
-
-    }
 
 
     //구글 로그인

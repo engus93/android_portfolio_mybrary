@@ -115,7 +115,7 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
 
                     //파이어베이스 데이터베이스 선언
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef = database.getReference("Users_Like_Book");
+                    DatabaseReference myRef = database.getReference("Users_Like_Book").child(App.user_UID_get());
 
                     //랜덤 키 생성
                     key = myRef.push().getKey();

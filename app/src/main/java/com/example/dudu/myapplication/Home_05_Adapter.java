@@ -75,7 +75,7 @@ public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_H
 
                 //파이어베이스 데이터베이스 선언
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference myRef = database.getReference("Users_Like_Book");
+                final DatabaseReference myRef = database.getReference("Users_Like_Book").child(App.user_UID_get());
 
                 //리싸이클러뷰 파이어베이스 업데이트
                 myRef.addValueEventListener(new ValueEventListener() {

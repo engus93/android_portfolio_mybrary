@@ -12,8 +12,16 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,10 +108,81 @@ public class Home_04 extends AppCompatActivity {
             }
         });
 
+        //---------------------------리싸이클러뷰---------------------------------
+        final RecyclerView mRecyclerView;
+        RecyclerView.LayoutManager mLayoutManager;
 
+        mRecyclerView = findViewById(R.id.home_04_re);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        ((LinearLayoutManager) mLayoutManager).setReverseLayout(true);
+        ((LinearLayoutManager) mLayoutManager).setStackFromEnd(true);
+        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
+        //리싸이클러뷰 파이어베이스 업데이트
+        FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
+                App.opponent_userslist.clear();
 
+                //채팅방 불러오기
+                for (int i = 0; i < App.user_chat_room.size(); i++) {
+
+                    if (App.user_chat_room.get(i).user_1.equals(App.user_UID_get())) {
+
+                        App.opponent_userslist.add(dataSnapshot.child(App.user_chat_room.get(i).user_2).getValue(Member_ArrayList.class));
+
+                        Log.d("체크", "1번");
+
+                    } else if (App.user_chat_room.get(i).user_2.equals(App.user_UID_get())) {
+
+                        App.opponent_userslist.add(dataSnapshot.child(App.user_chat_room.get(i).user_1).getValue(Member_ArrayList.class));
+
+                        Log.d("체크", "2번");
+
+                    }
+
+                }
+
+                Home_04_Adapter myAdapter = new Home_04_Adapter(getApplicationContext(), App.opponent_userslist);
+                mRecyclerView.setAdapter(myAdapter);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        //모든 유저 리스트 불러오기
+        FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Home_04_Single_Chatting single_chatting = new Home_04_Single_Chatting();
+
+                App.user_chat_room.clear();
+
+                //모든 유저 리스트 불러오기
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    single_chatting = snapshot.getValue(Home_04_Single_Chatting.class);
+
+                    App.user_chat_room.add(single_chatting);
+
+                }
+
+                System.out.println(App.user_chat_room.size());
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
 
         //왼쪽 상단 메뉴

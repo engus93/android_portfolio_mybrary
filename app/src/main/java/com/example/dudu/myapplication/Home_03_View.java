@@ -70,7 +70,6 @@ public class Home_03_View extends AppCompatActivity {
                 home_02_02_book_image.setImageResource(R.drawable.home_02_default);
             }else{  //비트맵일 경우
                 mGlideRequestManager.load(App.home_03_ArrayList.get(position).book).into(home_02_02_book_image);
-
             }
 
             home_02_02_book_name.setText(App.home_03_ArrayList.get(position).getName());

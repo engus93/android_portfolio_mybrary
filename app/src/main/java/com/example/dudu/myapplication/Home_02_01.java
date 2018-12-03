@@ -97,6 +97,7 @@ public class Home_02_01 extends AppCompatActivity {
 
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_02_01);
+
         home_02_01_book_image = findViewById(R.id.home_02_01_book_image);
         home_02_01_book_name = findViewById(R.id.home_02_01_book_name);
         home_02_01_book_author = findViewById(R.id.home_02_01_author);

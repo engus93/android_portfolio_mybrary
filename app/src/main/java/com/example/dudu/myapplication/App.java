@@ -44,11 +44,20 @@ public class App extends Application {
 
     static ArrayList<Member_ArrayList> all_userslist = new ArrayList<>();      //현재 가입 유저
 
-    static ArrayList<Home_04_Single_Chatting> user_chat_room = new ArrayList<>();
+    static ArrayList<Home_04_Single_Chatting> user_chat_room = new ArrayList<>();   //모든 채팅방 리스트
+
+    static ArrayList<Home_04_Single_Chatting> my_chat_room = new ArrayList<>();   //내가 속한 채팅방 리스트
+    static ArrayList<Member_ArrayList> opponent_userslist = new ArrayList<>();      //내가 채팅중인 유저
+
+    static Home_04_Single_Chatting now_chat_user;
+
+    static ArrayList<Home_04_ChattingList> now_chat_Contents = new ArrayList<>();   //현재 채팅 내용
 
     static Type collectionTypeString = new TypeToken<HashMap<String,String>>(){}.getType(); //일반 스트링 타입 분류
 
     static ArrayList<Search_01_ArrayList> search_book_ArrayList = new ArrayList<>();    //검색용 어레이 리스트
+
+    static String opponent_uid; //상대방 uid
 
 //    static FirebaseDatabase FB = FirebaseDatabase.getInstance();
 //    static DatabaseReference FB_DB = FB.getReference();

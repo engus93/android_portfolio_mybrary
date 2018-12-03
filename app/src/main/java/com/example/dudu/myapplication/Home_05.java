@@ -122,7 +122,7 @@ public class Home_05 extends AppCompatActivity {
         });
 
         //리싸이클러뷰 파이어베이스 업데이트
-        FirebaseDatabase.getInstance().getReference("Users_Like_Book").addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("Users_Like_Book").child(App.user_UID_get()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 

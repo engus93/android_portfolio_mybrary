@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,14 +14,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Home_04_Friend_Adapter extends RecyclerView.Adapter<Home_04_Friend_Adapter.home_04_friend_re> {
 
@@ -67,20 +62,30 @@ public class Home_04_Friend_Adapter extends RecyclerView.Adapter<Home_04_Friend_
 
                 //파이어베이스 데이터베이스 선언
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference myRef = database.getReference("User_Message").child("User_Room");
+                final DatabaseReference myRef = database.getReference("User_Message");
 
-                final String key = myRef.push().getKey();
+                final String key = myRef.child("User_Room").push().getKey();
 
                 for(int i = 0; i < App.user_chat_room.size(); i++){
 
                     if (App.user_chat_room.get(i).user_1.equals(App.user_UID_get()) && App.user_chat_room.get(i).user_2.equals(all_user_info.get(position).user_UID)) {
 
                         overlabe = false;
+
+                        Home_04_Single_Chatting chatroom = new Home_04_Single_Chatting(App.user_UID_get(), all_user_info.get(position).user_UID, App.user_chat_room.get(i).room_key);
+
+                        App.now_chat_user = chatroom;
+
                         break;
 
                     } else if (App.user_chat_room.get(i).user_2.equals(App.user_UID_get()) && App.user_chat_room.get(i).user_1.equals(all_user_info.get(position).user_UID)) {
 
                         overlabe = false;
+
+                        Home_04_Single_Chatting chatroom = new Home_04_Single_Chatting(App.user_UID_get(), all_user_info.get(position).user_UID, App.user_chat_room.get(i).room_key);
+
+                        App.now_chat_user = chatroom;
+
                         break;
 
                     } else {
@@ -90,11 +95,19 @@ public class Home_04_Friend_Adapter extends RecyclerView.Adapter<Home_04_Friend_
                     }
                 }
 
+
+
                 if (overlabe) {
+
                     Home_04_Single_Chatting chatroom = new Home_04_Single_Chatting(App.user_UID_get(), all_user_info.get(position).user_UID, key);
 
+                    App.now_chat_user = chatroom;
+
                     //파이어베이스에 저장
-                    myRef.child(key).setValue(chatroom);
+                    myRef.child("User_Room").child(key).setValue(chatroom); //채팅 방 생성
+                    Home_04_ChattingList none = new Home_04_ChattingList("Null", "Null");   //오류 방지용
+
+                    myRef.child("User_Chat").child(key).push().setValue(none);    //채팅 방 안에 내용 담는 그릇 생성
 
                     overlabe = false;
                 }

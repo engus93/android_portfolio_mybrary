@@ -83,6 +83,7 @@
         android:backgroundTint="@color/mybrary_main"
         android:hint="메세지를 입력해주세요."
         android:inputType="textMultiLine"
+        android:maxHeight="120dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/home_04_chatting_send"
         app:layout_constraintStart_toStartOf="parent" />
@@ -90,14 +91,12 @@
     <ImageView
         android:id="@+id/home_04_chatting_send"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="5dp"
+        android:layout_height="40dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/home_04_chatting_ET"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/home_04_chatting_nick"
-        app:layout_constraintTop_toTopOf="@+id/home_04_chatting_ET"
         app:srcCompat="@drawable/paper_plane" />
 
     <android.support.v7.widget.RecyclerView
