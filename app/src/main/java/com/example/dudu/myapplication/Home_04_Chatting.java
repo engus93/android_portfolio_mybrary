@@ -22,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.mozilla.javascript.tools.jsc.Main;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Home_04_Chatting extends AppCompatActivity {
@@ -31,6 +32,13 @@ public class Home_04_Chatting extends AppCompatActivity {
     TextView home_04_chatting_nick; //유저 닉네임 (방제)
     EditText home_04_chatting_ET;   //텍스트 적기
     ImageView home_04_chatting_send;    //보내기
+
+    Home_04_Chatting_Adapter myAdapter;
+
+    RecyclerView mRecyclerView;
+    RecyclerView.LayoutManager mLayoutManager;
+
+    ArrayList<Home_04_ChattingList> chatlist = new ArrayList<Home_04_ChattingList>();
 
     //글라이드 오류 방지
     public RequestManager mGlideRequestManager;
@@ -51,13 +59,13 @@ public class Home_04_Chatting extends AppCompatActivity {
 
         Intent intent1 = getIntent();
 
-        final int position = intent1.getIntExtra("position", -1);
+        int position = intent1.getIntExtra("position", -1);
 
         //상대방 UID 추출
         if (!(App.now_chat_user.user_1.equals(App.user_UID_get()))) {
-            App.opponent_uid = App.now_chat_user.user_1;
+            App.opponent.opponent_uid = App.now_chat_user.user_1;
         } else {
-            App.opponent_uid = App.now_chat_user.user_2;
+            App.opponent.opponent_uid = App.now_chat_user.user_2;
         }
 
         //유저 정보
@@ -65,7 +73,12 @@ public class Home_04_Chatting extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                home_04_chatting_nick.setText((CharSequence) dataSnapshot.child(App.opponent_uid).child("user_nick").getValue());
+                App.opponent.opponent_nick = (String) dataSnapshot.child(App.opponent.opponent_uid).child("user_nick").getValue();
+                App.opponent.opponent_profile = (String) dataSnapshot.child(App.opponent.opponent_uid).child("user_profile").getValue();
+
+                home_04_chatting_nick.setText(App.opponent.opponent_nick);
+
+                //프사가 있을 경우 경우
 
             }
 
@@ -76,8 +89,7 @@ public class Home_04_Chatting extends AppCompatActivity {
         });
 
         //---------------------------리싸이클러뷰---------------------------------
-        final RecyclerView mRecyclerView;
-        final RecyclerView.LayoutManager mLayoutManager;
+
 
         mRecyclerView = findViewById(R.id.home_04_chatting_re);
         mRecyclerView.setHasFixedSize(true);
@@ -85,28 +97,32 @@ public class Home_04_Chatting extends AppCompatActivity {
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        myAdapter = new Home_04_Chatting_Adapter(getApplicationContext(), chatlist);
+
+        mRecyclerView.setAdapter(myAdapter);
+
+        mRecyclerView.scrollToPosition(chatlist.size() - 1);
+
+
+
+
         //채팅 내용
         FirebaseDatabase.getInstance().getReference("User_Message").child("User_Chat").child(App.now_chat_user.room_key).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                App.now_chat_Contents.clear();
-
                 Home_04_ChattingList contents = new Home_04_ChattingList();
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     contents = snapshot.getValue(Home_04_ChattingList.class);
-                    App.now_chat_Contents.add(contents);
+                    chatlist.add(contents);
                 }
-
-                Home_04_Chatting_Adapter myAdapter = new Home_04_Chatting_Adapter(getApplicationContext(), App.now_chat_Contents);
 
                 mRecyclerView.setAdapter(myAdapter);
 
-                mRecyclerView.scrollToPosition(App.now_chat_Contents.size() - 1);
+                mRecyclerView.scrollToPosition(chatlist.size() - 1);
 
-                System.out.println(App.now_chat_Contents.size());
-
+                System.out.println(chatlist.size());
             }
 
             @Override
@@ -131,8 +147,6 @@ public class Home_04_Chatting extends AppCompatActivity {
                     App.user_chat_room.add(single_chatting);
 
                 }
-
-                System.out.println(App.user_chat_room.size());
 
             }
 
