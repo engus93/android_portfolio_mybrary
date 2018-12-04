@@ -49,7 +49,6 @@ public class Home_04_Adapter extends RecyclerView.Adapter<Home_04_Adapter.home_0
         //글라이드 오류 방지
         mGlideRequestManager = Glide.with(context);
 
-        //프사가 있을 경우 경우
         mGlideRequestManager.load(App.opponent_userslist.get(position).user_profile).into(holder.user_profile);
         holder.user_nick.setText(App.opponent_userslist.get(position).user_nick);
         holder.user_id.setVisibility(View.GONE);
@@ -61,6 +60,38 @@ public class Home_04_Adapter extends RecyclerView.Adapter<Home_04_Adapter.home_0
             public void onClick(View v) {
 
 //                App.now_chat_user = chatroom;
+
+                //파이어베이스 데이터베이스 선언
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                final DatabaseReference myRef = database.getReference("User_Message");
+
+                final String key = myRef.child("User_Room").push().getKey();
+
+                for(int i = 0; i < App.user_chat_room.size(); i++){
+
+                    if (App.user_chat_room.get(i).user_1.equals(App.user_UID_get()) && App.user_chat_room.get(i).user_2.equals(all_user_info.get(position).user_UID)) {
+
+                        overlabe = false;
+
+                        Home_04_Single_Chatting chatroom = new Home_04_Single_Chatting(App.user_UID_get(), all_user_info.get(position).user_UID, App.user_chat_room.get(i).room_key);
+
+                        App.now_chat_user = chatroom;
+
+                        break;
+
+                    } else if (App.user_chat_room.get(i).user_2.equals(App.user_UID_get()) && App.user_chat_room.get(i).user_1.equals(all_user_info.get(position).user_UID)) {
+
+                        overlabe = false;
+
+                        Home_04_Single_Chatting chatroom = new Home_04_Single_Chatting(App.user_UID_get(), all_user_info.get(position).user_UID, App.user_chat_room.get(i).room_key);
+
+                        App.now_chat_user = chatroom;
+
+                        break;
+
+                    }
+
+                }
 
                 Intent intent1 = new Intent(context, Home_04_Chatting.class);
                 intent1.putExtra("position", position);

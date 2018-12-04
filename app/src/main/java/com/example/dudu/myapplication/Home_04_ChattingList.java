@@ -2,11 +2,13 @@ package com.example.dudu.myapplication;
 
 public class Home_04_ChattingList {
 
+    public String time;
     public String wright_uid;
     public String message;
 
-    Home_04_ChattingList(String wright_uid, String message){
+    Home_04_ChattingList(String time, String wright_uid, String message){
 
+        this.time = time;
         this.wright_uid = wright_uid;
         this.message = message;
 
@@ -31,4 +33,6 @@ public class Home_04_ChattingList {
     public void setMessage(String message) {
         this.message = message;
     }
+
+
 }

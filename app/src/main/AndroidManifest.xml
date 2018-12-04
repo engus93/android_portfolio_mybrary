@@ -52,7 +52,9 @@
 
         <activity android:name=".Home_04_FriendList"/>
 
-        <activity android:name=".Home_04_Chatting"/>
+        <activity
+            android:name=".Home_04_Chatting"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity android:name=".Home_05"/>
 

@@ -257,6 +257,14 @@ public class Home_04 extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        App.now_chat_Contents.clear();
+
+    }
+
     //뒤로 두번 누르면 종료
     @Override
     public void onBackPressed() {
