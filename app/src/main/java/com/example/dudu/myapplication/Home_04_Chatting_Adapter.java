@@ -66,17 +66,17 @@ public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatt
         //글라이드 오류 방지
         mGlideRequestManager = Glide.with(context);
 
-//        if (App.now_chat_Contents.get(position).wright_uid.equals("Null")) {
-//
-//            holder.user_profile.setVisibility(View.GONE);
-//            holder.user_nick.setVisibility(View.GONE);
-//            holder.user_contents.setVisibility(View.GONE);
-//            holder.getUser_contents_me.setVisibility(View.GONE);
-//            holder.time_you.setVisibility(View.GONE);
-//            holder.time_me.setVisibility(View.GONE);
-//
-//
-        } elseif (!(App.user_UID_get().equals(now_uid))) {
+        if (App.now_chat_Contents.get(position).wright_uid.equals("Null")) {
+
+            holder.user_profile.setVisibility(View.GONE);
+            holder.user_nick.setVisibility(View.GONE);
+            holder.user_contents.setVisibility(View.GONE);
+            holder.getUser_contents_me.setVisibility(View.GONE);
+            holder.time_you.setVisibility(View.GONE);
+            holder.time_me.setVisibility(View.GONE);
+
+
+        } else if (!(App.user_UID_get().equals(now_uid))) {
 
                 System.out.println("너꺼");
                 Log.d("가자", "너꺼");

@@ -99,10 +99,6 @@ public class Home_04_Chatting extends AppCompatActivity {
 
         myAdapter = new Home_04_Chatting_Adapter(getApplicationContext(), App.now_chat_Contents);
 
-//        mRecyclerView.setAdapter(myAdapter);
-
-//        mRecyclerView.scrollToPosition(chatlist.size() - 1);
-
         //채팅 내용
         FirebaseDatabase.getInstance().getReference("User_Message").child("User_Chat").child(App.now_chat_user.room_key).addValueEventListener(new ValueEventListener() {
             @Override
@@ -121,7 +117,6 @@ public class Home_04_Chatting extends AppCompatActivity {
 
                 mRecyclerView.scrollToPosition(chatlist.size() - 1);
 
-//                System.out.println(chatlist.size());
 
             }
 
