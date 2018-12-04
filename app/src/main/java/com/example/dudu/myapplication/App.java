@@ -20,129 +20,129 @@ import java.util.regex.Pattern;
 
 public class App extends Application {
 
-    static String User_ID; //현재 로그인 아이디
-    static String Login_User_Profile;
+  static String User_ID; //현재 로그인 아이디
+  static String Login_User_Profile;
 
 //    static String uid;
 
-    // 비밀번호 정규식
-    static Pattern PASSWORD_PATTERN = Pattern.compile("^[a-zA-Z0-9!@.#$%^&*?_~]{6,15}$");
+  // 비밀번호 정규식
+  static Pattern PASSWORD_PATTERN = Pattern.compile("^[a-zA-Z0-9!@.#$%^&*?_~]{6,15}$");
 
-    static Gson gson = new Gson();  //Gson 선언
-    static Type collectionTypeMember = new TypeToken<HashMap<String,Member_ArrayList>>(){}.getType();   //회원 가입 타입 분류
+  static Gson gson = new Gson();  //Gson 선언
+  static Type collectionTypeMember = new TypeToken<HashMap<String,Member_ArrayList>>(){}.getType();   //회원 가입 타입 분류
 
 
-    static ArrayList<Home_02_02_ArrayList> list = new ArrayList<>();    //교체용
-    static ArrayList<Home_02_02_ArrayList> home_02_02_ArrayList = new ArrayList<>();    //어레이리스트
-    static Type collectionTypeMyBrary = new TypeToken<HashMap<String,Home_02_02_ArrayList>>(){}.getType();  //타입 분류
+  static ArrayList<Home_02_02_ArrayList> list = new ArrayList<>();    //교체용
+  static ArrayList<Home_02_02_ArrayList> home_02_02_ArrayList = new ArrayList<>();    //어레이리스트
+  static Type collectionTypeMyBrary = new TypeToken<HashMap<String,Home_02_02_ArrayList>>(){}.getType();  //타입 분류
 
-    static ArrayList<Home_05_ArrayList> list_01 = new ArrayList<>();    //교체용
-    static ArrayList<Home_05_ArrayList> heart_book_ArrayList = new ArrayList<>();   //찜목록
-    static Type collectionTypeHeart = new TypeToken<HashMap<String,Home_05_ArrayList>>(){}.getType();   //찜목록 타입 분류
+  static ArrayList<Home_05_ArrayList> list_01 = new ArrayList<>();    //교체용
+  static ArrayList<Home_05_ArrayList> heart_book_ArrayList = new ArrayList<>();   //찜목록
+  static Type collectionTypeHeart = new TypeToken<HashMap<String,Home_05_ArrayList>>(){}.getType();   //찜목록 타입 분류
 
-    static ArrayList<Home_02_02_ArrayList> home_03_ArrayList = new ArrayList<>();    //피드 모든 게시물 어레이리스트
+  static ArrayList<Home_02_02_ArrayList> home_03_ArrayList = new ArrayList<>();    //피드 모든 게시물 어레이리스트
 
-    static ArrayList<Member_ArrayList> all_userslist = new ArrayList<>();      //현재 가입 유저
+  static ArrayList<Member_ArrayList> all_userslist = new ArrayList<>();      //현재 가입 유저
 
-    static ArrayList<Home_04_Single_Chatting> user_chat_room = new ArrayList<>();   //모든 채팅방 리스트
+  static ArrayList<Home_04_Single_Chatting> user_chat_room = new ArrayList<>();   //모든 채팅방 리스트
 
-    static ArrayList<Home_04_Single_Chatting> my_chat_room = new ArrayList<>();   //내가 속한 채팅방 리스트
-    static ArrayList<Member_ArrayList> opponent_userslist = new ArrayList<>();      //내가 채팅중인 유저
+  static ArrayList<Home_04_Single_Chatting> my_chat_room = new ArrayList<>();   //내가 속한 채팅방 리스트
+  static ArrayList<Member_ArrayList> opponent_userslist = new ArrayList<>();      //내가 채팅중인 유저
 
-    static Home_04_Single_Chatting now_chat_user;
+  static Home_04_Single_Chatting now_chat_user;
 
-    static ArrayList<Home_04_ChattingList> now_chat_Contents = new ArrayList<>();   //현재 채팅 내용
+  static ArrayList<Home_04_ChattingList> now_chat_Contents = new ArrayList<>();   //현재 채팅 내용
 
-    static Type collectionTypeString = new TypeToken<HashMap<String,String>>(){}.getType(); //일반 스트링 타입 분류
+  static Type collectionTypeString = new TypeToken<HashMap<String,String>>(){}.getType(); //일반 스트링 타입 분류
 
-    static ArrayList<Search_01_ArrayList> search_book_ArrayList = new ArrayList<>();    //검색용 어레이 리스트
+  static ArrayList<Search_01_ArrayList> search_book_ArrayList = new ArrayList<>();    //검색용 어레이 리스트
 
-    static opponent_uid opponent = new opponent_uid(); //상대방 uid
+  static opponent_uid opponent = new opponent_uid(); //상대방 uid
 
 //    static FirebaseDatabase FB = FirebaseDatabase.getInstance();
 //    static DatabaseReference FB_DB = FB.getReference();
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Stetho.initializeWithDefaults(this);
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    Stetho.initializeWithDefaults(this);
+
+  }
+
+  static void mybrary_sort(){
+
+    App.list.clear();
+
+    for (int i = App.home_02_02_ArrayList.size(); 0 < i; i--) {
+
+      App.list.add(App.home_02_02_ArrayList.get(i - 1));
 
     }
 
-    static void mybrary_sort(){
+    App.home_02_02_ArrayList.clear();
 
-        App.list.clear();
+    for (int i = 0; i < App.list.size(); i++) {
 
-        for (int i = App.home_02_02_ArrayList.size(); 0 < i; i--) {
+      Log.d("체크", "잘 넣음");
 
-            App.list.add(App.home_02_02_ArrayList.get(i - 1));
-
-        }
-
-        App.home_02_02_ArrayList.clear();
-
-        for (int i = 0; i < App.list.size(); i++) {
-
-            Log.d("체크", "잘 넣음");
-
-            App.home_02_02_ArrayList.add(App.list.get(i));
-
-        }
+      App.home_02_02_ArrayList.add(App.list.get(i));
 
     }
 
-    static void heart_sort(){
+  }
+
+  static void heart_sort(){
 
 
-            App.list_01.clear();
+    App.list_01.clear();
 
-            for (int i = App.heart_book_ArrayList.size(); 0 < i; i--) {
+    for (int i = App.heart_book_ArrayList.size(); 0 < i; i--) {
 
-                App.list_01.add(App.heart_book_ArrayList.get(i - 1));
-
-            }
-
-            App.heart_book_ArrayList.clear();
-
-            for (int i = 0; i < App.list_01.size(); i++) {
-
-                Log.d("체크", "잘 넣음");
-
-                App.heart_book_ArrayList.add(App.list_01.get(i));
-
-            }
+      App.list_01.add(App.heart_book_ArrayList.get(i - 1));
 
     }
 
-    //비트맵 -> 스트링 변환
-    static String getBase64String(Bitmap bitmap) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    App.heart_book_ArrayList.clear();
 
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+    for (int i = 0; i < App.list_01.size(); i++) {
 
-        byte[] imageBytes = byteArrayOutputStream.toByteArray();
+      Log.d("체크", "잘 넣음");
 
-        return Base64.encodeToString(imageBytes, Base64.NO_WRAP);
-    }
-
-    //스트링 -> 비트맵 전환
-    static Bitmap getBitmap(String zz) {
-
-        byte[] decodedByteArray = Base64.decode(zz, Base64.NO_WRAP);
-        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
-
-        return decodedBitmap;
-    }
-
-    static String user_UID_get(){
-
-        //해당 UID 캐치
-        FirebaseUser user;
-        user = FirebaseAuth.getInstance().getCurrentUser();
-
-        String uid = user.getUid();
-
-        return uid;
+      App.heart_book_ArrayList.add(App.list_01.get(i));
 
     }
+
+  }
+
+  //비트맵 -> 스트링 변환
+  static String getBase64String(Bitmap bitmap) {
+    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+
+    byte[] imageBytes = byteArrayOutputStream.toByteArray();
+
+    return Base64.encodeToString(imageBytes, Base64.NO_WRAP);
+  }
+
+  //스트링 -> 비트맵 전환
+  static Bitmap getBitmap(String zz) {
+
+    byte[] decodedByteArray = Base64.decode(zz, Base64.NO_WRAP);
+    Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+
+    return decodedBitmap;
+  }
+
+  static String user_UID_get(){
+
+    //해당 UID 캐치
+    FirebaseUser user;
+    user = FirebaseAuth.getInstance().getCurrentUser();
+
+    String uid = user.getUid();
+
+    return uid;
+
+  }
 }

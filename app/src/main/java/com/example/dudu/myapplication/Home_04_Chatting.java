@@ -32,6 +32,7 @@ public class Home_04_Chatting extends AppCompatActivity {
     TextView home_04_chatting_nick; //유저 닉네임 (방제)
     EditText home_04_chatting_ET;   //텍스트 적기
     ImageView home_04_chatting_send;    //보내기
+    ImageView Home_04_chatting_camera;   //카메라
 
     Home_04_Chatting_Adapter myAdapter;
 
@@ -53,6 +54,7 @@ public class Home_04_Chatting extends AppCompatActivity {
         home_04_chatting_nick = findViewById(R.id.home_04_chatting_nick);
         home_04_chatting_ET = findViewById(R.id.home_04_chatting_ET);
         home_04_chatting_send = findViewById(R.id.home_04_chatting_send);
+        Home_04_chatting_camera = findViewById(R.id.home_04_chatting_camera);
 
         //글라이드 오류 방지
         mGlideRequestManager = Glide.with(this);
@@ -89,7 +91,8 @@ public class Home_04_Chatting extends AppCompatActivity {
         });
 
         //---------------------------리싸이클러뷰---------------------------------
-
+        final RecyclerView mRecyclerView;
+        final RecyclerView.LayoutManager mLayoutManager;
 
         mRecyclerView = findViewById(R.id.home_04_chatting_re);
         mRecyclerView.setHasFixedSize(true);
@@ -97,26 +100,27 @@ public class Home_04_Chatting extends AppCompatActivity {
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        myAdapter = new Home_04_Chatting_Adapter(getApplicationContext(), App.now_chat_Contents);
-
         //채팅 내용
         FirebaseDatabase.getInstance().getReference("User_Message").child("User_Chat").child(App.now_chat_user.room_key).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Home_04_ChattingList contents = new Home_04_ChattingList();
-
                 App.now_chat_Contents.clear();
+
+                Home_04_ChattingList contents = new Home_04_ChattingList();
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     contents = snapshot.getValue(Home_04_ChattingList.class);
                     App.now_chat_Contents.add(contents);
                 }
 
+                Home_04_Chatting_Adapter myAdapter = new Home_04_Chatting_Adapter(getApplicationContext(), App.now_chat_Contents);
+
                 mRecyclerView.setAdapter(myAdapter);
 
-                mRecyclerView.scrollToPosition(chatlist.size() - 1);
+                mRecyclerView.scrollToPosition(App.now_chat_Contents.size() - 1);
 
+                System.out.println(App.now_chat_Contents.size());
 
             }
 

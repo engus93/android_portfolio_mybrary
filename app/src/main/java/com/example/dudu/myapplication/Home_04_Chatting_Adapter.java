@@ -28,10 +28,6 @@ public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatt
     Context context;
     ArrayList<Home_04_ChattingList> chatlist = new ArrayList<>();
 
-    boolean overlabe;
-
-    String uid = App.user_UID_get();
-
     //글라이드 오류 방지
     public RequestManager mGlideRequestManager;
 
@@ -62,6 +58,7 @@ public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatt
         holder.user_profile.setVisibility(View.VISIBLE);
         holder.user_nick.setVisibility(View.VISIBLE);
         holder.time_you.setVisibility(View.VISIBLE);
+        holder.read.setVisibility(View.VISIBLE);
 
         //글라이드 오류 방지
         mGlideRequestManager = Glide.with(context);
@@ -74,6 +71,7 @@ public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatt
             holder.getUser_contents_me.setVisibility(View.GONE);
             holder.time_you.setVisibility(View.GONE);
             holder.time_me.setVisibility(View.GONE);
+            holder.read.setVisibility(View.GONE);
 
 
         } else if (!(App.user_UID_get().equals(now_uid))) {
@@ -90,21 +88,14 @@ public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatt
             mGlideRequestManager.load(App.opponent.opponent_profile).into(holder.user_profile);
             //시간
             holder.time_you.setText(time);
-
             holder.user_contents.setText(msg);
 
-            System.out.println(holder.user_contents.toString());
-
         } else {
-
-                System.out.println("내꺼");
-                Log.d("가자", "내꺼");
-
-
             holder.user_profile.setVisibility(View.GONE);
             holder.user_nick.setVisibility(View.GONE);
             holder.user_contents.setVisibility(View.GONE);
             holder.time_you.setVisibility(View.GONE);
+            holder.read.setVisibility(View.GONE);
 
             holder.getUser_contents_me.setText(msg);
             holder.time_me.setText(time);
@@ -124,6 +115,7 @@ public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatt
         TextView getUser_contents_me;
         TextView time_you;
         TextView time_me;
+        TextView read;
 
         home_04_friend_re(View view) {
             super(view);
@@ -133,6 +125,7 @@ public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatt
             getUser_contents_me = view.findViewById(R.id.home_04_chat_main_me);
             time_you = view.findViewById(R.id.time_you);
             time_me = view.findViewById(R.id.time_me);
+            read = view.findViewById(R.id.home_04_chat_read);
 
         }
 
