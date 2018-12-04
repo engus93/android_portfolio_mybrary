@@ -50,11 +50,18 @@ public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatt
 
     //묶어주기
     @Override
-    public void onBindViewHolder(home_04_friend_re holder, int position) {
+    public void onBindViewHolder(home_04_friend_re holder, final int position) {
 
-        String msg = chatlist.get(position).message;
-        String time = chatlist.get(position).time;
-        String now_uid = chatlist.get(position).wright_uid;
+        String msg = App.now_chat_Contents.get(position).message;
+        String time = App.now_chat_Contents.get(position).time;
+        String now_uid = App.now_chat_Contents.get(position).wright_uid;
+
+        holder.user_contents.setVisibility(View.VISIBLE);
+        holder.getUser_contents_me.setVisibility(View.VISIBLE);
+        holder.time_me.setVisibility(View.VISIBLE);
+        holder.user_profile.setVisibility(View.VISIBLE);
+        holder.user_nick.setVisibility(View.VISIBLE);
+        holder.time_you.setVisibility(View.VISIBLE);
 
         //글라이드 오류 방지
         mGlideRequestManager = Glide.with(context);
@@ -69,8 +76,7 @@ public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatt
 //            holder.time_me.setVisibility(View.GONE);
 //
 //
-//        } else
-            if (!(uid.equals(now_uid))) {
+        } elseif (!(App.user_UID_get().equals(now_uid))) {
 
                 System.out.println("너꺼");
                 Log.d("가자", "너꺼");
@@ -78,23 +84,22 @@ public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatt
             holder.getUser_contents_me.setVisibility(View.GONE);
             holder.time_me.setVisibility(View.GONE);
 
-                holder.user_profile.setVisibility(View.GONE);
-                holder.user_nick.setVisibility(View.GONE);
-                holder.time_you.setVisibility(View.GONE);
-
             //닉네임
-//            holder.user_nick.setText(App.opponent.opponent_nick);
-//            //사진
-//            mGlideRequestManager.load(App.opponent.opponent_profile).into(holder.user_profile);
-//            //시간
-//            holder.time_you.setText(time);
+            holder.user_nick.setText(App.opponent.opponent_nick);
+            //사진
+            mGlideRequestManager.load(App.opponent.opponent_profile).into(holder.user_profile);
+            //시간
+            holder.time_you.setText(time);
 
             holder.user_contents.setText(msg);
+
+            System.out.println(holder.user_contents.toString());
 
         } else {
 
                 System.out.println("내꺼");
                 Log.d("가자", "내꺼");
+
 
             holder.user_profile.setVisibility(View.GONE);
             holder.user_nick.setVisibility(View.GONE);
@@ -109,9 +114,7 @@ public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatt
 
     //현재 위치
     @Override
-    public int getItemCount() {
-        return chatlist.size();
-    }
+    public int getItemCount() { return App.now_chat_Contents.size(); }
 
     public static class home_04_friend_re extends RecyclerView.ViewHolder {
 

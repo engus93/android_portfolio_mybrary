@@ -97,14 +97,11 @@ public class Home_04_Chatting extends AppCompatActivity {
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        myAdapter = new Home_04_Chatting_Adapter(getApplicationContext(), chatlist);
+        myAdapter = new Home_04_Chatting_Adapter(getApplicationContext(), App.now_chat_Contents);
 
-        mRecyclerView.setAdapter(myAdapter);
+//        mRecyclerView.setAdapter(myAdapter);
 
-        mRecyclerView.scrollToPosition(chatlist.size() - 1);
-
-
-
+//        mRecyclerView.scrollToPosition(chatlist.size() - 1);
 
         //채팅 내용
         FirebaseDatabase.getInstance().getReference("User_Message").child("User_Chat").child(App.now_chat_user.room_key).addValueEventListener(new ValueEventListener() {
@@ -113,16 +110,19 @@ public class Home_04_Chatting extends AppCompatActivity {
 
                 Home_04_ChattingList contents = new Home_04_ChattingList();
 
+                App.now_chat_Contents.clear();
+
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     contents = snapshot.getValue(Home_04_ChattingList.class);
-                    chatlist.add(contents);
+                    App.now_chat_Contents.add(contents);
                 }
 
                 mRecyclerView.setAdapter(myAdapter);
 
                 mRecyclerView.scrollToPosition(chatlist.size() - 1);
 
-                System.out.println(chatlist.size());
+//                System.out.println(chatlist.size());
+
             }
 
             @Override

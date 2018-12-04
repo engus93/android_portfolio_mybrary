@@ -57,7 +57,7 @@ public class App extends Application {
 
     static ArrayList<Search_01_ArrayList> search_book_ArrayList = new ArrayList<>();    //검색용 어레이 리스트
 
-    static String opponent_uid; //상대방 uid
+    static opponent_uid opponent = new opponent_uid(); //상대방 uid
 
 //    static FirebaseDatabase FB = FirebaseDatabase.getInstance();
 //    static DatabaseReference FB_DB = FB.getReference();
