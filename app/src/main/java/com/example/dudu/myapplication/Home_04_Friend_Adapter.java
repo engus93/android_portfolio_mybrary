@@ -105,7 +105,7 @@ public class Home_04_Friend_Adapter extends RecyclerView.Adapter<Home_04_Friend_
 
                     //파이어베이스에 저장
                     myRef.child("User_Room").child(key).setValue(chatroom); //채팅 방 생성
-                    Home_04_ChattingList none = new Home_04_ChattingList("Null", "Null","NULL");   //오류 방지용
+                    Home_04_ChattingList none = new Home_04_ChattingList("Null", "Null","Null");   //오류 방지용
 
                     myRef.child("User_Chat").child(key).push().setValue(none);    //채팅 방 안에 내용 담는 그릇 생성
 

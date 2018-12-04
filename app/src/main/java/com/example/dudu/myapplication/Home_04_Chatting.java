@@ -80,8 +80,6 @@ public class Home_04_Chatting extends AppCompatActivity {
 
                 home_04_chatting_nick.setText(App.opponent.opponent_nick);
 
-                //프사가 있을 경우 경우
-
             }
 
             @Override
@@ -114,6 +112,13 @@ public class Home_04_Chatting extends AppCompatActivity {
                     App.now_chat_Contents.add(contents);
                 }
 
+                //읽음 표시로 변환하기
+                if (App.now_chat_Contents.get(App.now_chat_Contents.size() - 1).getRead_user().equals("false")) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        FirebaseDatabase.getInstance().getReference("User_Message").child("User_Chat").child(App.now_chat_user.room_key).setValue("true");
+
+                    }
+                }
                 Home_04_Chatting_Adapter myAdapter = new Home_04_Chatting_Adapter(getApplicationContext(), App.now_chat_Contents);
 
                 mRecyclerView.setAdapter(myAdapter);

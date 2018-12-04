@@ -5,12 +5,14 @@ public class Home_04_ChattingList {
     public String time;
     public String wright_uid;
     public String message;
+    private String read_user;
 
     Home_04_ChattingList(String time, String wright_uid, String message){
 
         this.time = time;
         this.wright_uid = wright_uid;
         this.message = message;
+        this.read_user = "false";
 
     }
 
@@ -34,5 +36,19 @@ public class Home_04_ChattingList {
         this.message = message;
     }
 
+    public String getTime() {
+        return time;
+    }
 
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getRead_user() {
+        return read_user;
+    }
+
+    public void setRead_user(String read_user) {
+        this.read_user = read_user;
+    }
 }
