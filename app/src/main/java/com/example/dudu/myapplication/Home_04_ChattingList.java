@@ -9,12 +9,14 @@ public class Home_04_ChattingList {
     public String wright_uid;
     public String message;
     public Map<String,Object> read = new HashMap<>();
+    public String picture;
 
-    Home_04_ChattingList(String time, String wright_uid, String message){
+    Home_04_ChattingList(String time, String wright_uid, String message, String picture){
 
         this.time = time;
         this.wright_uid = wright_uid;
         this.message = message;
+        this.picture = picture;
 
     }
 
@@ -46,4 +48,11 @@ public class Home_04_ChattingList {
         this.time = time;
     }
 
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPucture(String picture) {
+        this.picture = picture;
+    }
 }

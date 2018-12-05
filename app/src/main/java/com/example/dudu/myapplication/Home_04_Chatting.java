@@ -111,28 +111,30 @@ public class Home_04_Chatting extends AppCompatActivity {
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String key = snapshot.getKey();
-                    Home_04_ChattingList contents;
-                    contents = snapshot.getValue(Home_04_ChattingList.class);
-                    contents.read.put(App.user_UID_get(), true);
+                    Home_04_ChattingList contents_origin = snapshot.getValue(Home_04_ChattingList.class);
+                    Home_04_ChattingList contents_motify = snapshot.getValue(Home_04_ChattingList.class);
+                    contents_motify.read.put(App.user_UID_get(), true);
 
-                    read.put(key,contents);
-                    App.now_chat_Contents.add(contents);
+                    read.put(key,contents_motify);
+                    App.now_chat_Contents.add(contents_origin);
                 }
 
-                FirebaseDatabase.getInstance().getReference().child("User_Message").child("User_Chat").child(App.now_chat_user.room_key).updateChildren(read).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+                if (!(App.now_chat_Contents.get(App.now_chat_Contents.size() - 1).read.containsKey(App.user_UID_get()))) {
+                    FirebaseDatabase.getInstance().getReference().child("User_Message").child("User_Chat").child(App.now_chat_user.room_key).updateChildren(read).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Home_04_Chatting_Adapter myAdapter = new Home_04_Chatting_Adapter(getApplicationContext(), App.now_chat_Contents);
+                            mRecyclerView.setAdapter(myAdapter);
+                            mRecyclerView.scrollToPosition(App.now_chat_Contents.size() - 1);
 
-                        Home_04_Chatting_Adapter myAdapter = new Home_04_Chatting_Adapter(getApplicationContext(), App.now_chat_Contents);
+                        }
+                    });
+                } else {
+                    Home_04_Chatting_Adapter myAdapter = new Home_04_Chatting_Adapter(getApplicationContext(), App.now_chat_Contents);
+                    mRecyclerView.setAdapter(myAdapter);
+                    mRecyclerView.scrollToPosition(App.now_chat_Contents.size() - 1);
 
-                        mRecyclerView.setAdapter(myAdapter);
-
-                        mRecyclerView.scrollToPosition(App.now_chat_Contents.size() - 1);
-
-                        System.out.println(App.now_chat_Contents.size());
-
-                    }
-                });
+                }
 
             }
 
@@ -189,6 +191,14 @@ public class Home_04_Chatting extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                //서재 등록 날짜 세팅
+                Date date = new Date();
+                final SimpleDateFormat dateFormat = new SimpleDateFormat("HH시 mm분", java.util.Locale.getDefault());
+                String set_date = dateFormat.format(date);
+
+                Home_04_ChattingList chat_contents = new Home_04_ChattingList(set_date, App.user_UID_get(), "", "https://firebasestorage.googleapis.com/v0/b/mybrary-4084f.appspot.com/o/MyBrary%2FDefault%2FUser_Default_Profile.png?alt=media&token=9c0e3cd1-f0d1-4df7-a98e-3fa64c6312df");
+                FirebaseDatabase.getInstance().getReference("User_Message").child("User_Chat").child(App.now_chat_user.room_key).push().setValue(chat_contents);
+
                 MainActivity.showToast(Home_04_Chatting.this, "사진!");
 
             }
@@ -205,7 +215,7 @@ public class Home_04_Chatting extends AppCompatActivity {
                     final SimpleDateFormat dateFormat = new SimpleDateFormat("HH시 mm분", java.util.Locale.getDefault());
                     String set_date = dateFormat.format(date);
 
-                    Home_04_ChattingList chat_contents = new Home_04_ChattingList(set_date, App.user_UID_get(), home_04_chatting_ET.getText().toString());
+                    Home_04_ChattingList chat_contents = new Home_04_ChattingList(set_date, App.user_UID_get(), home_04_chatting_ET.getText().toString(), "");
                     FirebaseDatabase.getInstance().getReference("User_Message").child("User_Chat").child(App.now_chat_user.room_key).push().setValue(chat_contents);
                     home_04_chatting_ET.setText(null);
 
