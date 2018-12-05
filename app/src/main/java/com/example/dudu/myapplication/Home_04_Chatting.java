@@ -2,6 +2,7 @@ package com.example.dudu.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,9 +14,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -24,6 +28,8 @@ import org.mozilla.javascript.tools.jsc.Main;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Home_04_Chatting extends AppCompatActivity {
 
@@ -32,14 +38,10 @@ public class Home_04_Chatting extends AppCompatActivity {
     TextView home_04_chatting_nick; //유저 닉네임 (방제)
     EditText home_04_chatting_ET;   //텍스트 적기
     ImageView home_04_chatting_send;    //보내기
-    ImageView Home_04_chatting_camera;   //카메라
+    ImageView home_04_chatting_camera;   //카메라
 
-    Home_04_Chatting_Adapter myAdapter;
-
-    RecyclerView mRecyclerView;
-    RecyclerView.LayoutManager mLayoutManager;
-
-    ArrayList<Home_04_ChattingList> chatlist = new ArrayList<Home_04_ChattingList>();
+    private DatabaseReference databaseReference;
+    private ValueEventListener valueEventListener;
 
     //글라이드 오류 방지
     public RequestManager mGlideRequestManager;
@@ -54,7 +56,7 @@ public class Home_04_Chatting extends AppCompatActivity {
         home_04_chatting_nick = findViewById(R.id.home_04_chatting_nick);
         home_04_chatting_ET = findViewById(R.id.home_04_chatting_ET);
         home_04_chatting_send = findViewById(R.id.home_04_chatting_send);
-        Home_04_chatting_camera = findViewById(R.id.home_04_chatting_camera);
+        home_04_chatting_camera = findViewById(R.id.home_04_chatting_camera);
 
         //글라이드 오류 방지
         mGlideRequestManager = Glide.with(this);
@@ -99,33 +101,38 @@ public class Home_04_Chatting extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         //채팅 내용
-        FirebaseDatabase.getInstance().getReference("User_Message").child("User_Chat").child(App.now_chat_user.room_key).addValueEventListener(new ValueEventListener() {
+        databaseReference = FirebaseDatabase.getInstance().getReference("User_Message").child("User_Chat").child(App.now_chat_user.room_key);
+        valueEventListener = databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 App.now_chat_Contents.clear();
-
-                Home_04_ChattingList contents = new Home_04_ChattingList();
+                Map<String, Object> read = new HashMap<>();
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String key = snapshot.getKey();
+                    Home_04_ChattingList contents;
                     contents = snapshot.getValue(Home_04_ChattingList.class);
+                    contents.read.put(App.user_UID_get(), true);
+
+                    read.put(key,contents);
                     App.now_chat_Contents.add(contents);
                 }
 
-                //읽음 표시로 변환하기
-                if (App.now_chat_Contents.get(App.now_chat_Contents.size() - 1).getRead_user().equals("false")) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        FirebaseDatabase.getInstance().getReference("User_Message").child("User_Chat").child(App.now_chat_user.room_key).setValue("true");
+                FirebaseDatabase.getInstance().getReference().child("User_Message").child("User_Chat").child(App.now_chat_user.room_key).updateChildren(read).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                        Home_04_Chatting_Adapter myAdapter = new Home_04_Chatting_Adapter(getApplicationContext(), App.now_chat_Contents);
+
+                        mRecyclerView.setAdapter(myAdapter);
+
+                        mRecyclerView.scrollToPosition(App.now_chat_Contents.size() - 1);
+
+                        System.out.println(App.now_chat_Contents.size());
 
                     }
-                }
-                Home_04_Chatting_Adapter myAdapter = new Home_04_Chatting_Adapter(getApplicationContext(), App.now_chat_Contents);
-
-                mRecyclerView.setAdapter(myAdapter);
-
-                mRecyclerView.scrollToPosition(App.now_chat_Contents.size() - 1);
-
-                System.out.println(App.now_chat_Contents.size());
+                });
 
             }
 
@@ -178,6 +185,15 @@ public class Home_04_Chatting extends AppCompatActivity {
             }
         });
 
+        home_04_chatting_camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                MainActivity.showToast(Home_04_Chatting.this, "사진!");
+
+            }
+        });
+
         home_04_chatting_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -201,8 +217,13 @@ public class Home_04_Chatting extends AppCompatActivity {
     }
 
 
+
     @Override
     public void onBackPressed() {
+
+        databaseReference.removeEventListener(valueEventListener);
+
+        finish();
 
         Intent intent1 = new Intent(this, Home_04.class);
         intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

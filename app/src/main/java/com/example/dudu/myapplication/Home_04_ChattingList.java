@@ -1,18 +1,20 @@
 package com.example.dudu.myapplication;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Home_04_ChattingList {
 
     public String time;
     public String wright_uid;
     public String message;
-    private String read_user;
+    public Map<String,Object> read = new HashMap<>();
 
     Home_04_ChattingList(String time, String wright_uid, String message){
 
         this.time = time;
         this.wright_uid = wright_uid;
         this.message = message;
-        this.read_user = "false";
 
     }
 
@@ -44,11 +46,4 @@ public class Home_04_ChattingList {
         this.time = time;
     }
 
-    public String getRead_user() {
-        return read_user;
-    }
-
-    public void setRead_user(String read_user) {
-        this.read_user = read_user;
-    }
 }

@@ -1,5 +1,8 @@
 package com.example.dudu.myapplication;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Home_04_Single_Chatting {
 
     public String user_1;
