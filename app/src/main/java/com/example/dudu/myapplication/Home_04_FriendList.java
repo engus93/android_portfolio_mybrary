@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -19,6 +20,8 @@ public class Home_04_FriendList extends AppCompatActivity {
 
     ImageView home_04_friend_send; //채팅방 만들기
     ImageView home_04_friendlist_back_B;  //뒤로가기 버튼
+
+    static String ykey;
 
     protected void onCreate(Bundle savedInstancesState) {
 
@@ -43,6 +46,14 @@ public class Home_04_FriendList extends AppCompatActivity {
         home_04_friendlist_back_B.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                //파이어베이스 데이터베이스 선언
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                final DatabaseReference myRef = database.getReference("User_Message");
+
+                //파이어베이스에 삭제
+                myRef.child("User_Room").child(ykey).removeValue(); //채팅 방 생성
+                myRef.child("User_Chat").child(ykey).removeValue();    //채팅 방 안에 내용 담는 그릇 생성
 
                 onBackPressed();
 
@@ -84,6 +95,8 @@ public class Home_04_FriendList extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+
+
 
             }
         });

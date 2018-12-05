@@ -1,6 +1,7 @@
 package com.example.dudu.myapplication;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
@@ -19,6 +20,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.signature.StringSignature;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.UUID;
 
 public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatting_Adapter.home_04_chatting_re> {
 
@@ -36,7 +39,7 @@ public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatt
     int user_count;
 
     //글라이드 오류 방지
-    public RequestManager mGlideRequestManager;
+    RequestManager mGlideRequestManager;
 
     public Home_04_Chatting_Adapter(Context context, ArrayList<Home_04_ChattingList> chatlist) {
         this.context = context;
@@ -52,70 +55,41 @@ public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatt
 
     //묶어주기
     @Override
-    public void onBindViewHolder(final home_04_chatting_re holder, final int position) {
+    public void onBindViewHolder(final home_04_chatting_re holder, int position) {
 
         String msg = App.now_chat_Contents.get(position).message;
         String time = App.now_chat_Contents.get(position).time;
         String now_uid = App.now_chat_Contents.get(position).wright_uid;
 
-        holder.user_contents.setVisibility(View.VISIBLE);
-        holder.getUser_contents_me.setVisibility(View.VISIBLE);
-        holder.time_me.setVisibility(View.VISIBLE);
-        holder.user_profile.setVisibility(View.VISIBLE);
-        holder.user_nick.setVisibility(View.VISIBLE);
-        holder.time_you.setVisibility(View.VISIBLE);
-        holder.read_you.setVisibility(View.VISIBLE);
-        holder.read_me.setVisibility(View.VISIBLE);
+        holder.user_profile.setVisibility(View.GONE);
+        holder.user_nick.setVisibility(View.GONE);
+        holder.user_contents.setVisibility(View.GONE);
+        holder.getUser_contents_me.setVisibility(View.GONE);
+        holder.time_you.setVisibility(View.GONE);
+        holder.time_me.setVisibility(View.GONE);
+        holder.read_you.setVisibility(View.GONE);
+        holder.read_me.setVisibility(View.GONE);
 
         //글라이드 오류 방지
         mGlideRequestManager = Glide.with(context);
 
+        holder.getUser_contents_me.setText("");
+        holder.user_contents.setText("");
+
         if (App.now_chat_Contents.get(position).wright_uid.equals("Null")) {
 
-            holder.user_profile.setVisibility(View.GONE);
-            holder.user_nick.setVisibility(View.GONE);
-            holder.user_contents.setVisibility(View.GONE);
-            holder.getUser_contents_me.setVisibility(View.GONE);
-            holder.time_you.setVisibility(View.GONE);
-            holder.time_me.setVisibility(View.GONE);
-            holder.read_you.setVisibility(View.GONE);
-            holder.read_me.setVisibility(View.GONE);
+            //사진이 없을 경우
+        } else if (App.now_chat_Contents.get(position).picture.equals("")) {
 
+            //내가 아닌 사람
+            if (!(App.user_UID_get().equals(now_uid))) {
 
-        } else if (!(App.user_UID_get().equals(now_uid))) {
+                holder.user_contents.setVisibility(View.VISIBLE);
+                holder.user_profile.setVisibility(View.VISIBLE);
+                holder.user_nick.setVisibility(View.VISIBLE);
+                holder.time_you.setVisibility(View.VISIBLE);
+                holder.read_you.setVisibility(View.VISIBLE);
 
-            //나 없애기
-            holder.getUser_contents_me.setVisibility(View.GONE);
-            holder.time_me.setVisibility(View.GONE);
-            holder.read_me.setVisibility(View.GONE);
-
-            //사진이 있는 경우
-            if (App.now_chat_Contents.get(position).message.equals("")) {
-
-                //닉네임
-                holder.user_nick.setText(App.opponent.opponent_nick);
-                //사진
-                mGlideRequestManager.load(App.opponent.opponent_profile).into(holder.user_profile);
-                //읽음표시
-                read_user_count(position, holder.read_you);
-                //시간
-                holder.time_you.setText(time);
-
-                //사진
-                mGlideRequestManager
-                        .load(App.now_chat_Contents.get(position).picture)
-                        .override(700, 1000)
-                        .fitCenter()
-                        .into(new SimpleTarget<GlideDrawable>() {
-                            @Override
-                            public void onResourceReady(GlideDrawable glideDrawable
-                                    , GlideAnimation<? super GlideDrawable> glideAnimation) {
-                                holder.user_contents.setText("");
-                                holder.user_contents.setBackground(glideDrawable.getCurrent());
-                            }
-                        });
-
-            } else {
                 //상대방
                 //닉네임
                 holder.user_nick.setText(App.opponent.opponent_nick);
@@ -128,39 +102,13 @@ public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatt
                 //메세지
                 holder.user_contents.setText(msg);
 
-            }
-
-        } else {
-            //상대방 없애기
-            holder.user_profile.setVisibility(View.GONE);
-            holder.user_nick.setVisibility(View.GONE);
-            holder.user_contents.setVisibility(View.GONE);
-            holder.time_you.setVisibility(View.GONE);
-            holder.read_you.setVisibility(View.GONE);
-
-            //사진이 있는 경우
-            if (App.now_chat_Contents.get(position).message.equals("")) {
-
                 //나
-                holder.time_me.setText(time);
-                //읽음표시
-                read_user_count(position, holder.read_me);
-
-                //사진
-                mGlideRequestManager
-                        .load(App.now_chat_Contents.get(position).picture)
-                        .override(700, 1000)
-                        .fitCenter()
-                        .into(new SimpleTarget<GlideDrawable>() {
-                            @Override
-                            public void onResourceReady(GlideDrawable glideDrawable
-                                    , GlideAnimation<? super GlideDrawable> glideAnimation) {
-                                holder.getUser_contents_me.setText("");
-                                holder.getUser_contents_me.setBackground(glideDrawable.getCurrent());
-                            }
-                        });
-
             } else {
+
+                holder.getUser_contents_me.setVisibility(View.VISIBLE);
+                holder.time_me.setVisibility(View.VISIBLE);
+                holder.read_me.setVisibility(View.VISIBLE);
+
                 //나
                 holder.getUser_contents_me.setText(msg);
                 holder.time_me.setText(time);
@@ -169,7 +117,46 @@ public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatt
 
             }
 
+        } else { //사진이 있는 경우
+
+            if (!(App.user_UID_get().equals(now_uid))) {
+
+                holder.user_contents.setVisibility(View.VISIBLE);
+                holder.user_profile.setVisibility(View.VISIBLE);
+                holder.user_nick.setVisibility(View.VISIBLE);
+                holder.time_you.setVisibility(View.VISIBLE);
+                holder.read_you.setVisibility(View.VISIBLE);
+
+                //닉네임
+                holder.user_nick.setText(App.opponent.opponent_nick);
+                //사진
+                mGlideRequestManager.load(App.opponent.opponent_profile).into(holder.user_profile);
+                //읽음표시
+                read_user_count(position, holder.read_you);
+                //시간
+                holder.time_you.setText(time);
+
+//                setGlideView(App.now_chat_Contents.get(position).picture, holder.user_contents);
+
+            } else {
+
+                holder.getUser_contents_me.setVisibility(View.VISIBLE);
+                holder.time_me.setVisibility(View.VISIBLE);
+                holder.read_me.setVisibility(View.VISIBLE);
+
+                //나
+                holder.time_me.setText(time);
+                //읽음표시
+                read_user_count(position, holder.read_me);
+
+//                setGlideView(App.now_chat_Contents.get(position).picture, holder.getUser_contents_me);
+
+            }
+
         }
+
+        System.out.println(position);
+        System.out.println(App.now_chat_Contents.get(position).picture);
 
     }
 
@@ -211,6 +198,19 @@ public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatt
 
         }
 
+    }
+
+
+    private void setGlideView(String path, final TextView iv) {
+        Glide.clear(iv);
+        Glide.with(context).load(path).fitCenter().override(700,1000).signature(new StringSignature(UUID.randomUUID().toString())).into(new SimpleTarget<GlideDrawable>() {
+            @Override
+            public void onResourceReady(GlideDrawable glideDrawable
+                    , GlideAnimation<? super GlideDrawable> glideAnimation) {
+                iv.setText("");
+                iv.setBackground(glideDrawable.getCurrent());
+            }
+        });
     }
 
 
