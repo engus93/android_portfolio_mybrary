@@ -1,19 +1,41 @@
 package com.example.dudu.myapplication;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
@@ -22,16 +44,47 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.mozilla.javascript.tools.jsc.Main;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Home_04_Chatting extends AppCompatActivity {
+
+    //파이어베이스
+    private FirebaseStorage storage;    //스토리지
+    public String change;
+    String key; //푸쉬 키
+
+    Uri downloadUri;
+
+    //사진 저장 변수
+    Bitmap bitmap_pic;  //사진 비트맵 저장
+    String string_pic;  //사진 스트링 변환
+
+    Context context;
+
+    //사진 추가하기
+
+    private static final int MY_PERMISSION_CAMERA = 1111;
+    private static final int REQUEST_TAKE_PHOTO = 1112;
+    private static final int REQUEST_TAKE_ALBUM = 1113;
+
+    private String currentPhotoPath;//실제 사진 파일 경로
+
+    Uri imageUri;
+
 
     ImageView home_04_chatting_joinlist; //채팅방 메뉴
     ImageView home_04_friendlist_back_B;  //뒤로가기 버튼
@@ -111,30 +164,28 @@ public class Home_04_Chatting extends AppCompatActivity {
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String key = snapshot.getKey();
-                    Home_04_ChattingList contents_origin = snapshot.getValue(Home_04_ChattingList.class);
-                    Home_04_ChattingList contents_motify = snapshot.getValue(Home_04_ChattingList.class);
-                    contents_motify.read.put(App.user_UID_get(), true);
+                    Home_04_ChattingList contents;
+                    contents = snapshot.getValue(Home_04_ChattingList.class);
+                    contents.read.put(App.user_UID_get(), true);
 
-                    read.put(key,contents_motify);
-                    App.now_chat_Contents.add(contents_origin);
+                    read.put(key,contents);
+                    App.now_chat_Contents.add(contents);
                 }
 
-                if (!(App.now_chat_Contents.get(App.now_chat_Contents.size() - 1).read.containsKey(App.user_UID_get()))) {
-                    FirebaseDatabase.getInstance().getReference().child("User_Message").child("User_Chat").child(App.now_chat_user.room_key).updateChildren(read).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Home_04_Chatting_Adapter myAdapter = new Home_04_Chatting_Adapter(getApplicationContext(), App.now_chat_Contents);
-                            mRecyclerView.setAdapter(myAdapter);
-                            mRecyclerView.scrollToPosition(App.now_chat_Contents.size() - 1);
+                FirebaseDatabase.getInstance().getReference().child("User_Message").child("User_Chat").child(App.now_chat_user.room_key).updateChildren(read).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
 
-                        }
-                    });
-                } else {
-                    Home_04_Chatting_Adapter myAdapter = new Home_04_Chatting_Adapter(getApplicationContext(), App.now_chat_Contents);
-                    mRecyclerView.setAdapter(myAdapter);
-                    mRecyclerView.scrollToPosition(App.now_chat_Contents.size() - 1);
+                        Home_04_Chatting_Adapter myAdapter = new Home_04_Chatting_Adapter(getApplicationContext(), App.now_chat_Contents);
 
-                }
+                        mRecyclerView.setAdapter(myAdapter);
+
+                        mRecyclerView.scrollToPosition(App.now_chat_Contents.size() - 1);
+
+                        System.out.println(App.now_chat_Contents.size());
+
+                    }
+                });
 
             }
 
@@ -191,15 +242,7 @@ public class Home_04_Chatting extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //서재 등록 날짜 세팅
-                Date date = new Date();
-                final SimpleDateFormat dateFormat = new SimpleDateFormat("HH시 mm분", java.util.Locale.getDefault());
-                String set_date = dateFormat.format(date);
-
-                Home_04_ChattingList chat_contents = new Home_04_ChattingList(set_date, App.user_UID_get(), "", "https://firebasestorage.googleapis.com/v0/b/mybrary-4084f.appspot.com/o/MyBrary%2FDefault%2FUser_Default_Profile.png?alt=media&token=9c0e3cd1-f0d1-4df7-a98e-3fa64c6312df");
-                FirebaseDatabase.getInstance().getReference("User_Message").child("User_Chat").child(App.now_chat_user.room_key).push().setValue(chat_contents);
-
-                MainActivity.showToast(Home_04_Chatting.this, "사진!");
+                showchat();
 
             }
         });
@@ -215,7 +258,7 @@ public class Home_04_Chatting extends AppCompatActivity {
                     final SimpleDateFormat dateFormat = new SimpleDateFormat("HH시 mm분", java.util.Locale.getDefault());
                     String set_date = dateFormat.format(date);
 
-                    Home_04_ChattingList chat_contents = new Home_04_ChattingList(set_date, App.user_UID_get(), home_04_chatting_ET.getText().toString(), "");
+                    Home_04_ChattingList chat_contents = new Home_04_ChattingList(set_date, App.user_UID_get(), home_04_chatting_ET.getText().toString(),  "");
                     FirebaseDatabase.getInstance().getReference("User_Message").child("User_Chat").child(App.now_chat_user.room_key).push().setValue(chat_contents);
                     home_04_chatting_ET.setText(null);
 
@@ -226,7 +269,348 @@ public class Home_04_Chatting extends AppCompatActivity {
 
     }
 
+    //------------------------책 사진 적용--------------
 
+    //사진 설정
+    void showchat() {
+
+        final List<String> ListItems = new ArrayList<>();
+        ListItems.add("사진 찍기");
+        ListItems.add("앨범 선택");
+        final CharSequence[] items = ListItems.toArray(new String[ListItems.size()]);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("서재 사진 등록");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int pos) {
+
+                        if (pos == 0) {
+                            selectPhoto();
+                        } else if (pos == 1) {
+                            selectGallery();
+                        } else {
+
+                        }
+
+
+                    }
+
+                }
+
+        );
+
+        builder.show();
+    }
+
+    //카메라로 찍은 사진 가져오기
+    private void selectPhoto() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+
+                }
+                if (photoFile != null) {
+                    imageUri = FileProvider.getUriForFile(this, getPackageName(), photoFile);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                    startActivityForResult(intent, REQUEST_TAKE_PHOTO);
+                }
+            }
+
+        }
+    }
+
+    //이미지 파일화 시키기
+    public File createImageFile() throws IOException {
+        File dir = new File(Environment.getExternalStorageDirectory() +  "/MyBrary/");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = timeStamp + ".png";
+
+        File storageDir = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/MyBrary/" + imageFileName);
+        currentPhotoPath = storageDir.getAbsolutePath();
+
+        return storageDir;
+
+    }
+
+    //    사진 가져오기
+    private void galleryAddPic() {
+        Log.i("galleryAddPic", "Call");
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        // 해당 경로에 있는 파일을 객체화(새로 파일을 만든다는 것으로 이해하면 안 됨)
+        File f = new File(currentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        sendBroadcast(mediaScanIntent);
+    }
+
+    //찍은 사진 가져오기
+    private void getPictureForPhoto() {
+        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(currentPhotoPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int exifOrientation;
+        int exifDegree;
+
+        if (exif != null) {
+            exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            exifDegree = exifOrientationToDegrees(exifOrientation);
+        } else {
+            exifDegree = 0;
+        }
+
+        bitmap_pic = rotate(bitmap, exifDegree);    //비트맵 회전
+        string_pic = App.getBase64String(bitmap_pic);   //비트맵 스트링 변환
+
+        Toast.makeText(Home_04_Chatting.this, "사진이 업로드 되는 동안 잠시만 기다려주세요. :)", Toast.LENGTH_SHORT).show();
+
+        //파이어 베이스 업로드
+        upload(currentPhotoPath);
+
+
+    }
+
+    //갤러리에서 가져오기
+    private void selectGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_TAKE_ALBUM);
+    }
+
+    //선택한 데이터 처리 1
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+
+            switch (requestCode) {
+
+                case REQUEST_TAKE_ALBUM:
+
+                    if (resultCode == Activity.RESULT_OK) {
+                        if (data.getData() != null) {
+                            sendPicture(data.getData());
+
+                        }
+                    }
+
+                    break;
+
+                case REQUEST_TAKE_PHOTO:
+
+                    if (resultCode == Activity.RESULT_OK) {
+                        try {
+                            Log.i("REQUEST_TAKE_PHOTO", "OK");
+                            galleryAddPic();
+
+                            getPictureForPhoto(); //카메라에서 가져오기
+
+                        } catch (Exception e) {
+                            Log.e("REQUEST_TAKE_PHOTO", e.toString());
+                        }
+                    } else {
+                        Toast.makeText(Home_04_Chatting.this, "사진찍기를 취소하였습니다.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    break;
+
+                default:
+                    break;
+            }
+
+        }
+    }
+
+    //선택한 데이터 처리 2
+    private void sendPicture(Uri imgUri) {
+
+        String imagePath = getRealPathFromURI(imgUri); // path 경로
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(imagePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        int exifDegree = exifOrientationToDegrees(exifOrientation);
+
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//경로를 통해 비트맵으로 전환
+
+        bitmap_pic = rotate(bitmap, exifDegree);    //비트맵 회전
+        string_pic = App.getBase64String(bitmap_pic);   //비트맵 스트링 변환
+
+        Toast.makeText(Home_04_Chatting.this, "사진이 업로드 되는 동안 잠시만 기다려주세요. :)", Toast.LENGTH_SHORT).show();
+
+        upload(imagePath);
+
+    }
+
+    //이미지 찍은 포커스 대로 가져오기
+    private int exifOrientationToDegrees(int exifOrientation) {
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            return 90;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            return 180;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            return 270;
+        }
+        return 0;
+    }
+
+    //이미지 정방향 맞춰주기
+    private Bitmap rotate(Bitmap src, float degree) {
+
+        // Matrix 객체 생성
+        Matrix matrix = new Matrix();
+        // 회전 각도 셋팅
+        matrix.postRotate(degree);
+        // 이미지와 Matrix 를 셋팅해서 Bitmap 객체 생성
+        return Bitmap.createBitmap(src, 0, 0, src.getWidth(),
+                src.getHeight(), matrix, true);
+    }
+
+    //경로 가져오기
+    private String getRealPathFromURI(Uri contentUri) {
+        int column_index = 0;
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+        if (cursor.moveToFirst()) {
+            column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        }
+
+        return cursor.getString(column_index);
+    }
+
+    //권한 체크 1
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // 처음 호출시엔 if()안의 부분은 false로 리턴 됨 -> else{..}의 요청으로 넘어감
+            if ((ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) ||
+                    (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA))) {
+
+                new android.app.AlertDialog.Builder(this)
+                        .setTitle("알림")
+                        .setMessage("저장소 권한이 거부되었습니다. 사용을 원하시면 설정에서 해당 권한을 직접 허용하셔야 합니다.")
+                        .setNeutralButton("설정", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                intent.setData(Uri.parse("package:" + getPackageName()));
+                                startActivity(intent);
+                            }
+                        })
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .setCancelable(false)
+                        .create()
+                        .show();
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, MY_PERMISSION_CAMERA);
+
+            }
+        } else {
+
+            //프로필 사진 바꾸기
+            showchat();
+
+        }
+
+    }
+
+    //권한 있으면 프사 기능
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSION_CAMERA: {
+                for (int i = 0; i < grantResults.length; i++) {
+                    // grantResults[] : 허용된 권한은 0, 거부한 권한은 -1
+                    if (grantResults[i] < 0) {
+                        Toast.makeText(this, "해당 권한을 활성화 하셔야 합니다.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+
+                showchat();
+
+                break;
+            }
+
+        }
+
+    }
+
+    public void upload(String uri){
+
+        storage = FirebaseStorage.getInstance();    //스토리지 객체
+
+        StorageReference storageRef = storage.getReference();
+
+        Uri file = Uri.fromFile(new File(uri));
+        final StorageReference riversRef = storageRef.child("MyBrary/User_Chat/"+file.getLastPathSegment());
+        UploadTask uploadTask = riversRef.putFile(file);
+
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+
+                // Continue with the task to get the download URL
+                return riversRef.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    downloadUri = task.getResult();
+
+                    System.out.println(downloadUri);
+
+                    //정보 삽입
+                    change = downloadUri.toString();
+
+                    System.out.println(change);
+
+                    //서재 등록 날짜 세팅
+                    Date date = new Date();
+                    final SimpleDateFormat dateFormat = new SimpleDateFormat("HH시 mm분", java.util.Locale.getDefault());
+                    String set_date = dateFormat.format(date);
+
+                    Home_04_ChattingList chat_contents = new Home_04_ChattingList(set_date, App.user_UID_get(), "", change );
+                    FirebaseDatabase.getInstance().getReference("User_Message").child("User_Chat").child(App.now_chat_user.room_key).push().setValue(chat_contents);
+
+
+                    Toast.makeText(Home_04_Chatting.this, "사진이 업로드 되었습니다.", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(Home_04_Chatting.this, "업로드 실패", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+
+    }
 
     @Override
     public void onBackPressed() {

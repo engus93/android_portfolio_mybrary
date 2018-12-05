@@ -8,8 +8,9 @@ public class Home_04_ChattingList {
     public String time;
     public String wright_uid;
     public String message;
-    public Map<String,Object> read = new HashMap<>();
     public String picture;
+    public Map<String,Object> read = new HashMap<>();
+
 
     Home_04_ChattingList(String time, String wright_uid, String message, String picture){
 
@@ -48,11 +49,4 @@ public class Home_04_ChattingList {
         this.time = time;
     }
 
-    public String getPicture() {
-        return picture;
-    }
-
-    public void setPucture(String picture) {
-        this.picture = picture;
-    }
 }
