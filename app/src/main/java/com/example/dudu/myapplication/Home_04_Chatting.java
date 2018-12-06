@@ -120,7 +120,13 @@ public class Home_04_Chatting extends AppCompatActivity {
                     message.wright_user = App.user_UID_get();
                     message.contents = home_04_chatting_ET.getText().toString();
 
-                    FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("Message").push().setValue(message);
+                    FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("Message").push().setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            //텍스트 창 초기화
+                            home_04_chatting_ET.setText(null);
+                        }
+                    });
                 }
 
             }
@@ -226,13 +232,10 @@ public class Home_04_Chatting extends AppCompatActivity {
                         chatroom_key = item.getKey();
                         home_04_chatting_send.setEnabled(true); //전송 버튼 살리기(활성화)
                         mRecyclerView.setAdapter(new Home_04_Chatting_Adapter());
-
+                    }
                     }
 
                 }
-
-
-            }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -284,7 +287,7 @@ public class Home_04_Chatting extends AppCompatActivity {
                         contents.add(item.getValue(Home_04_ChatRoom_Model.Message.class));
                     }
                     notifyDataSetChanged();
-
+                    mRecyclerView.scrollToPosition(contents.size() - 1);
                 }
 
                 @Override
@@ -316,11 +319,13 @@ public class Home_04_Chatting extends AppCompatActivity {
             //글라이드 오류 방지
             mGlideRequestManager = Glide.with(Home_04_Chatting.this);
 
+            //내가 보낸 메세지
             if(contents.get(position).wright_user.equals(App.user_UID_get())){
 
                 messageViewHolder.chat_me.setVisibility(View.VISIBLE);
                 messageViewHolder.getUser_contents_me.setText(contents.get(position).contents);
 
+                //상대방이 보낸 메세지
             }else{
 
                 messageViewHolder.chat_you.setVisibility(View.VISIBLE);
