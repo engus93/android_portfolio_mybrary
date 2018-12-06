@@ -22,16 +22,24 @@ import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 
 public class Home_04_Chatting extends AppCompatActivity {
 
@@ -43,6 +51,11 @@ public class Home_04_Chatting extends AppCompatActivity {
     private FirebaseStorage storage;    //스토리지
     public String change;
     String key; //푸쉬 키
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH시 mm분 ");
+
+    private DatabaseReference databaseReference;
+    private ValueEventListener valueEventListener;
+    int user_count = 0;
 
     Uri downloadUri;
 
@@ -68,9 +81,6 @@ public class Home_04_Chatting extends AppCompatActivity {
     EditText home_04_chatting_ET;   //텍스트 적기
     ImageView home_04_chatting_send;    //보내기
     ImageView home_04_chatting_camera;   //카메라
-
-    private DatabaseReference databaseReference;
-    private ValueEventListener valueEventListener;
 
     //글라이드 오류 방지
     public RequestManager mGlideRequestManager;
@@ -98,6 +108,7 @@ public class Home_04_Chatting extends AppCompatActivity {
 
         opponent_uid = getIntent().getStringExtra("opponent_uid");
 
+        //보내는 버튼
         home_04_chatting_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,19 +126,25 @@ public class Home_04_Chatting extends AppCompatActivity {
                             checkChatRoom();
                         }
                     });
-                }else{
-                    Home_04_ChatRoom_Model.Message message = new Home_04_ChatRoom_Model.Message();
-                    message.wright_user = App.user_UID_get();
-                    message.contents = home_04_chatting_ET.getText().toString();
+                } else {
+                    //빈 텍스트 보내기 막기
+                    if (!(home_04_chatting_ET.getText().length() <= 0)) {
+                        Home_04_ChatRoom_Model.Message message = new Home_04_ChatRoom_Model.Message();
+                        message.wright_user = App.user_UID_get();
+                        message.contents = home_04_chatting_ET.getText().toString();
+                        message.time = ServerValue.TIMESTAMP;
 
-                    FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("Message").push().setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            //텍스트 창 초기화
-                            home_04_chatting_ET.setText(null);
-                        }
-                    });
+                        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("Message").push().setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                //텍스트 창 초기화
+                                home_04_chatting_ET.setText(null);
+
+                            }
+                        });
+                    }
                 }
+
 
             }
         });
@@ -262,6 +279,9 @@ public class Home_04_Chatting extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     opponent_chat_info = dataSnapshot.getValue(Member_ArrayList.class);
+
+                    home_04_chatting_nick.setText(opponent_chat_info.user_nick);
+
                     getMessageList();
                 }
 
@@ -276,18 +296,37 @@ public class Home_04_Chatting extends AppCompatActivity {
 
         //메세지 내용 불러오는 메소드
         void getMessageList(){
-
-            FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("Message").addValueEventListener(new ValueEventListener() {
+            databaseReference = FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("Message");
+            valueEventListener = databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                     contents.clear();
+                    Map<String, Object> read_user_map = new HashMap<>();
 
                     for(DataSnapshot item : dataSnapshot.getChildren()){
-                        contents.add(item.getValue(Home_04_ChatRoom_Model.Message.class));
+                        String key = item.getKey();
+                        Home_04_ChatRoom_Model.Message message_origin = item.getValue(Home_04_ChatRoom_Model.Message.class);
+                        Home_04_ChatRoom_Model.Message message_modify = item.getValue(Home_04_ChatRoom_Model.Message.class);
+                        message_modify.read.put(App.user_UID_get(), true);
+
+                        read_user_map.put(key,message_modify);
+                        contents.add(message_origin);
                     }
-                    notifyDataSetChanged();
-                    mRecyclerView.scrollToPosition(contents.size() - 1);
+
+
+                    if (!(contents.get(contents.size() - 1).read.containsKey(App.user_UID_get()))) {
+                        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("Message").updateChildren(read_user_map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                notifyDataSetChanged();
+                                mRecyclerView.scrollToPosition(contents.size() - 1);
+                            }
+                        });
+                    } else {
+                        notifyDataSetChanged();
+                        mRecyclerView.scrollToPosition(contents.size() - 1);
+                    }
                 }
 
                 @Override
@@ -319,11 +358,20 @@ public class Home_04_Chatting extends AppCompatActivity {
             //글라이드 오류 방지
             mGlideRequestManager = Glide.with(Home_04_Chatting.this);
 
+            long unixTime = (long) contents.get(position).time;
+            Date date = new Date(unixTime);
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+            String message_time = simpleDateFormat.format(date);
+
             //내가 보낸 메세지
             if(contents.get(position).wright_user.equals(App.user_UID_get())){
 
                 messageViewHolder.chat_me.setVisibility(View.VISIBLE);
                 messageViewHolder.getUser_contents_me.setText(contents.get(position).contents);
+                messageViewHolder.time_me.setText(message_time);
+
+                read_user_count(position, messageViewHolder.read_me);
+
 
                 //상대방이 보낸 메세지
             }else{
@@ -332,7 +380,9 @@ public class Home_04_Chatting extends AppCompatActivity {
                 messageViewHolder.user_contents.setText(contents.get(position).contents);
                 messageViewHolder.user_nick.setText(opponent_chat_info.user_nick);
                 mGlideRequestManager.load(opponent_chat_info.user_profile).fitCenter().into(messageViewHolder.user_profile);
+                messageViewHolder.time_you.setText(message_time);
 
+                read_user_count(position, messageViewHolder.read_you);
 
             }
 
@@ -372,24 +422,53 @@ public class Home_04_Chatting extends AppCompatActivity {
             }
         }
 
+        void read_user_count(final int position, final TextView textView) {
+            if (user_count == 0) {
+
+                FirebaseDatabase.getInstance().getReference("Chatting_Room").child(chatroom_key).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        Map<String, String> chat_user = (Map<String, String>) dataSnapshot.getValue();
+                        user_count = chat_user.size();
+                        int count = user_count - contents.get(position).read.size();
+
+                        if (count > 0) {
+                            textView.setVisibility((View.VISIBLE));
+                            textView.setText(String.valueOf(count));
+                        } else {
+                            textView.setVisibility(View.INVISIBLE);
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+            }else{
+
+                int count = user_count - contents.get(position).read.size();
+
+                if (count > 0) {
+                    textView.setVisibility((View.VISIBLE));
+                    textView.setText(String.valueOf(count));
+                } else {
+                    textView.setVisibility(View.INVISIBLE);
+                }
+
+            }
+        }
+
     }
-
-
-
-
-//                    //서재 등록 날짜 세팅
-//                    Date date = new Date();
-//                    final SimpleDateFormat dateFormat = new SimpleDateFormat("HH시 mm분", java.util.Locale.getDefault());
-//                    String set_date = dateFormat.format(date);
-//
-//                    Home_04_ChattingList chat_contents = new Home_04_ChattingList(set_date, App.user_UID_get(), home_04_chatting_ET.getText().toString(),  "");
-//                    FirebaseDatabase.getInstance().getReference("User_Message").child("User_Chat").child(App.now_chat_user.room_key).push().setValue(chat_contents);
-//                    home_04_chatting_ET.setText(null);
-
 
 
     @Override
     public void onBackPressed() {
+
+        databaseReference.removeEventListener(valueEventListener);
 
         finish();
 

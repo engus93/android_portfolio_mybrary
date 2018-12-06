@@ -1,6 +1,7 @@
 package com.example.dudu.myapplication;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -32,10 +34,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 public class Home_04 extends AppCompatActivity {
@@ -52,6 +58,7 @@ public class Home_04 extends AppCompatActivity {
     int REQ_CALL_SELECT = 1300;
     int REQ_SMS_SELECT = 1400;
 
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH시 mm분 ");
 
     protected void onCreate(Bundle savedInstancesState) {
 
@@ -201,13 +208,14 @@ public class Home_04 extends AppCompatActivity {
     class Home_04_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private ArrayList<Home_04_ChatRoom_Model> chatRoom_model = new ArrayList<>();
+        private ArrayList<String> opponent_users = new ArrayList<>();
 
         //글라이드 오류 방지
         public RequestManager mGlideRequestManager;
 
         public Home_04_Adapter() {
 
-            FirebaseDatabase.getInstance().getReference().child("Chatting_Room").orderByChild("users/" + App.user_UID_get()).addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference().child("Chatting_Room").orderByChild("users/" + App.user_UID_get()).equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     chatRoom_model.clear();
@@ -238,7 +246,7 @@ public class Home_04 extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
             final home_04_re home_04_re_item = ((home_04_re)holder);
             String opponentuid = null;
 
@@ -251,6 +259,7 @@ public class Home_04 extends AppCompatActivity {
                 if(!(user_uid.equals(App.user_UID_get()))){
 
                     opponentuid = user_uid;
+                    opponent_users.add(opponentuid);
 
                 }
 
@@ -264,7 +273,6 @@ public class Home_04 extends AppCompatActivity {
                     mGlideRequestManager.load(opponent_info.user_profile).fitCenter().into(home_04_re_item.user_profile);
                     home_04_re_item.user_nick.setText(opponent_info.user_nick);
 
-
                 }
 
                 @Override
@@ -274,10 +282,31 @@ public class Home_04 extends AppCompatActivity {
             });
 
             //맵에 내용을 다 넣어서 메세지의 키 값을 스트링으로 뽑아서 그 것을 파이어 베이스에서 가져옴
-            Map<String, Home_04_ChatRoom_Model.Message> MessageMap = new TreeMap<>(Collections.reverseOrder());
+            Map<String, Home_04_ChatRoom_Model.Message> MessageMap = new TreeMap<>(Collections.<String>reverseOrder());
             MessageMap.putAll(chatRoom_model.get(position).messages);
-            String lastMessage = (String) MessageMap.keySet().toArray()[0];
-            home_04_re_item.user_main.setText(chatRoom_model.get(position).messages.get(lastMessage).contents);
+
+            System.out.println(chatRoom_model.get(position).messages);
+
+            String lastMessage = (String) Objects.requireNonNull(MessageMap.keySet().toArray())[0];
+            home_04_re_item.user_main.setText(Objects.requireNonNull(chatRoom_model.get(position).messages.get(lastMessage)).contents);
+
+            //시간
+            long unixTime = (long) Objects.requireNonNull(chatRoom_model.get(position).messages.get(lastMessage)).time;
+            Date date = new Date(unixTime);
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+            String message_time = simpleDateFormat.format(date);
+            home_04_re_item.user_time.setText(message_time);
+
+            home_04_re_item.click_item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(v.getContext(), Home_04_Chatting.class);
+                    intent.putExtra("opponent_uid", opponent_users.get(position));
+                    startActivity(intent);
+
+                }
+            });
 
 
         }
@@ -287,7 +316,7 @@ public class Home_04 extends AppCompatActivity {
             return chatRoom_model.size();
         }
 
-        private class home_04_re extends RecyclerView.ViewHolder {
+        public class home_04_re extends RecyclerView.ViewHolder {
 
             ImageView user_profile;
             TextView user_nick;
@@ -307,67 +336,6 @@ public class Home_04 extends AppCompatActivity {
 
             }
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//
-//        //---------------------------리싸이클러뷰---------------------------------
-//        final RecyclerView mRecyclerView;
-//        RecyclerView.LayoutManager mLayoutManager;
-//
-//        mRecyclerView = findViewById(R.id.home_04_re);
-//        mRecyclerView.setHasFixedSize(true);
-//        mLayoutManager = new LinearLayoutManager(this);
-//        ((LinearLayoutManager) mLayoutManager).setReverseLayout(true);
-//        ((LinearLayoutManager) mLayoutManager).setStackFromEnd(true);
-//        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
-//        mRecyclerView.setLayoutManager(mLayoutManager);
-//
-//        //모든 유저 리스트 불러오기
-//        FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                App.opponent_userslist.clear();
-//
-//                //채팅방 불러오기
-//                for (int i = 0; i < App.user_chat_room.size(); i++) {
-//
-//                    if (App.user_chat_room.get(i).user_1.equals(App.user_UID_get())) {
-//
-//                        App.opponent_userslist.add(dataSnapshot.child(App.user_chat_room.get(i).user_2).getValue(Member_ArrayList.class));
-//
-//                        System.out.println(App.user_chat_room.get(i).user_2);
-//
-//                        Log.d("체크", "1번");
-//
-//                    } else if (App.user_chat_room.get(i).user_2.equals(App.user_UID_get())) {
-//
-//                        App.opponent_userslist.add(dataSnapshot.child(App.user_chat_room.get(i).user_1).getValue(Member_ArrayList.class));
-//
-//                        System.out.println(App.user_chat_room.get(i).user_1);
-//
-//                        Log.d("체크", "2번");
-//
-//                    }
-//
-//                }
-//
-//                System.out.println(App.opponent_userslist.size());
-//
-//                Home_04_Adapter myAdapter = new Home_04_Adapter(getApplicationContext(), App.opponent_userslist);
-//                mRecyclerView.setAdapter(myAdapter);
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-
     }
 
 

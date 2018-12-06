@@ -61,6 +61,7 @@ public class App extends Application {
 
   static opponent_uid opponent = new opponent_uid(); //상대방 uid
 
+
 //    static FirebaseDatabase FB = FirebaseDatabase.getInstance();
 //    static DatabaseReference FB_DB = FB.getReference();
 

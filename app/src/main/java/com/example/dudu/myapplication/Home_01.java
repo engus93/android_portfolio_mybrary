@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -176,6 +177,7 @@ public class Home_01 extends AppCompatActivity {
         final Home_01_Adapter myAdapter = new Home_01_Adapter(best_book_info_ArrayList);
 
         mRecyclerView.setAdapter(myAdapter);
+
 
 //        //모든 유저 리스트 불러오기
 //        FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {

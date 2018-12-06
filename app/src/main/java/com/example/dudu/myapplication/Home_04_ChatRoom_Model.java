@@ -15,13 +15,14 @@ public class Home_04_ChatRoom_Model {
 
         String wright_user;
         String contents;
+        Object time;
+        public Map<String,Object> read = new HashMap<>();
 
     }
 
     Home_04_ChatRoom_Model() {
 
     }
-
 
     public Map<String, Boolean> getUsers() {
         return users;
@@ -54,4 +55,7 @@ public class Home_04_ChatRoom_Model {
     public void setOpponent_uid(String opponent_uid) {
         this.opponent_uid = opponent_uid;
     }
+
+
+
 }
