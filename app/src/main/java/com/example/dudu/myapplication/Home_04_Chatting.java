@@ -156,50 +156,6 @@ public class Home_04_Chatting extends AppCompatActivity {
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-
-
-//        //채팅 내용
-//        databaseReference = FirebaseDatabase.getInstance().getReference("User_Message").child("User_Chat").child(App.now_chat_user.room_key);
-//        valueEventListener = databaseReference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                App.now_chat_Contents.clear();
-//                Map<String, Object> read = new HashMap<>();
-//
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    String key = snapshot.getKey();
-//                    Home_04_ChattingList contents;
-//                    contents = snapshot.getValue(Home_04_ChattingList.class);
-//                    contents.read.put(App.user_UID_get(), true);
-//
-//                    read.put(key, contents);
-//                    App.now_chat_Contents.add(contents);
-//                }
-//
-//                FirebaseDatabase.getInstance().getReference().child("User_Message").child("User_Chat").child(App.now_chat_user.room_key).updateChildren(read).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//
-//                        Home_04_Chatting_Adapter myAdapter = new Home_04_Chatting_Adapter(getApplicationContext(), App.now_chat_Contents);
-//
-//                        mRecyclerView.setAdapter(myAdapter);
-//
-//                        mRecyclerView.scrollToPosition(App.now_chat_Contents.size() - 1);
-//
-//                        System.out.println(App.now_chat_Contents.size());
-//
-//                    }
-//                });
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-
         //메뉴창
         home_04_chatting_joinlist.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -314,18 +270,21 @@ public class Home_04_Chatting extends AppCompatActivity {
                         contents.add(message_origin);
                     }
 
+                    if(contents.size() > 0) {
 
-                    if (!(contents.get(contents.size() - 1).read.containsKey(App.user_UID_get()))) {
-                        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("message").updateChildren(read_user_map).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                notifyDataSetChanged();
-                                mRecyclerView.scrollToPosition(contents.size() - 1);
-                            }
-                        });
-                    } else {
-                        notifyDataSetChanged();
-                        mRecyclerView.scrollToPosition(contents.size() - 1);
+                        if (!(contents.get(contents.size() - 1).read.containsKey(App.user_UID_get()))) {
+                            FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("message").updateChildren(read_user_map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    notifyDataSetChanged();
+                                    mRecyclerView.scrollToPosition(contents.size() - 1);
+                                }
+                            });
+                        } else {
+                            notifyDataSetChanged();
+                            mRecyclerView.scrollToPosition(contents.size() - 1);
+                        }
+
                     }
                 }
 
@@ -468,8 +427,9 @@ public class Home_04_Chatting extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        databaseReference.removeEventListener(valueEventListener);
-
+        if(valueEventListener != null) {
+            databaseReference.removeEventListener(valueEventListener);
+        }
         finish();
 
         Intent intent1 = new Intent(this, Home_04.class);

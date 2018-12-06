@@ -274,35 +274,33 @@ public class Home_04 extends AppCompatActivity {
             });
 
             //맵에 내용을 다 넣어서 메세지의 키 값을 스트링으로 뽑아서 그 것을 파이어 베이스에서 가져옴
-            Map<String, Home_04_ChatRoom_Model.Message> MessageMap = new TreeMap<>(Collections.<String>reverseOrder());
-            MessageMap.putAll(chatRoom_model.get(position).message);
+            Map<String, Home_04_ChatRoom_Model.Message> messageMap = new TreeMap<>(Collections.<String>reverseOrder());
+            messageMap.putAll(chatRoom_model.get(position).message);
 
-            System.out.println(chatRoom_model.get(position));
-            System.out.println(chatRoom_model.get(position).message);
+            if (messageMap.keySet().toArray().length > 0) {
+                String lastMessage = (String) Objects.requireNonNull(messageMap.keySet().toArray())[0];
+                home_04_re_item.user_main.setText(Objects.requireNonNull(chatRoom_model.get(position).message.get(lastMessage)).contents);
 
-            String lastMessage = (String) Objects.requireNonNull(MessageMap.keySet().toArray())[0];
-            home_04_re_item.user_main.setText(Objects.requireNonNull(chatRoom_model.get(position).message.get(lastMessage)).contents);
+                //시간
+                long unixTime = (long) Objects.requireNonNull(chatRoom_model.get(position).message.get(lastMessage)).time;
+                Date date = new Date(unixTime);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh시 mm분");
+                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+                String message_time = simpleDateFormat.format(date);
+                home_04_re_item.user_time.setText(message_time);
 
-            //시간
-            long unixTime = (long) Objects.requireNonNull(chatRoom_model.get(position).message.get(lastMessage)).time;
-            Date date = new Date(unixTime);
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh시 mm분");
-            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
-            String message_time = simpleDateFormat.format(date);
-            home_04_re_item.user_time.setText(message_time);
+                home_04_re_item.click_item.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-            home_04_re_item.click_item.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), Home_04_Chatting.class);
+                        intent.putExtra("opponent_uid", opponent_users.get(position));
+                        startActivity(intent);
 
-                    Intent intent = new Intent(v.getContext(), Home_04_Chatting.class);
-                    intent.putExtra("opponent_uid", opponent_users.get(position));
-                    startActivity(intent);
+                    }
+                });
 
-                }
-            });
-
-
+            }
         }
 
         @Override

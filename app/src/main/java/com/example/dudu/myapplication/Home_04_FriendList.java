@@ -1,19 +1,33 @@
 package com.example.dudu.myapplication;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Home_04_FriendList extends AppCompatActivity {
 
@@ -21,7 +35,11 @@ public class Home_04_FriendList extends AppCompatActivity {
     ImageView home_04_friend_send; //채팅방 만들기
     ImageView home_04_friendlist_back_B;  //뒤로가기 버튼
 
-    static String ykey;
+    List<Member_ArrayList> all_user_info;
+    Home_04_ChatRoom_Model chatRoom_model = new Home_04_ChatRoom_Model();
+
+    //글라이드 오류 방지
+    public RequestManager mGlideRequestManager;
 
     protected void onCreate(Bundle savedInstancesState) {
 
@@ -37,7 +55,8 @@ public class Home_04_FriendList extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                onBackPressed();
+                chatRoom_model.users.put(App.user_UID_get(), true);
+                FirebaseDatabase.getInstance().getReference().child("Chatting_Room").push().setValue(chatRoom_model);
 
             }
         });
@@ -61,62 +80,132 @@ public class Home_04_FriendList extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(new Home_04_Friend_Adapter(getApplicationContext()));
-
-//        //리싸이클러뷰 파이어베이스 업데이트
-//        FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                App.all_userslist.clear();
-//
-//                Member_ArrayList user_list = new Member_ArrayList();
-//
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    user_list = snapshot.getValue(Member_ArrayList.class);
-//                    System.out.println(user_list.user_UID);
-//                    if(!(user_list.user_UID.equals(App.user_UID_get()))){
-//                        Log.d("체크", "친구 추가 되야 함");
-//                        App.all_userslist.add(user_list);
-//                    }
-//                }
-//
-//
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//
-//
-//            }
-//        });
-
-//        class Home_04_Friend_Adapter
-
+        mRecyclerView.setAdapter(new Home_04_Friend_Adapter());
 
     }
 
-}
+    public class Home_04_Friend_Adapter extends RecyclerView.Adapter<Home_04_Friend_Adapter.home_04_friend_re> {
 
-//        //리싸이클러뷰 파이어베이스 업데이트
-//        FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                App.user_chat_room.clear();
-//
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    Home_04_ChatRoom_Model single_chatting = snapshot.getValue(Home_04_ChatRoom_Model.class);
-//
-//                    App.user_chat_room.add(single_chatting);
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
+
+
+        public Home_04_Friend_Adapter() {
+
+            all_user_info = new ArrayList<>();
+
+            FirebaseDatabase.getInstance().getReference().child("User_Info").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    all_user_info.clear();
+
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Member_ArrayList member_arrayList = snapshot.getValue(Member_ArrayList.class);
+                        if (member_arrayList.user_UID.equals(App.user_UID_get())) {
+                            continue;
+                        } else {
+                            all_user_info.add(member_arrayList);
+                        }
+                    }
+
+                    notifyDataSetChanged();
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        }
+
+        //틀 생성
+        @Override
+        public Home_04_Friend_Adapter.home_04_friend_re onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_04_friendlist_re, parent, false);
+
+            return new Home_04_Friend_Adapter.home_04_friend_re(view);
+
+        }
+
+        //묶어주기
+        @Override
+        public void onBindViewHolder(home_04_friend_re holder, final int position) {
+
+            //글라이드 오류 방지
+            mGlideRequestManager = Glide.with(Home_04_FriendList.this);
+
+            mGlideRequestManager.load(all_user_info.get(position).user_profile).into(holder.user_profile);
+            holder.user_nick.setText(all_user_info.get(position).getUser_nick());
+            holder.user_id.setText(all_user_info.get(position).getMember_id());
+
+            final String key = FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").push().getKey();
+
+            //채팅 상대 클릭 채팅 시작
+            holder.click_item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(v.getContext(), Home_04_Chatting.class);
+                    intent.putExtra("opponent_uid", all_user_info.get(position).user_UID);
+                    startActivity(intent);
+
+                }
+            });
+
+            //단체 채팅을 위한 체크
+            holder.user_invite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    if (isChecked) {
+
+                        chatRoom_model.users.put(all_user_info.get(position).user_UID, true);
+                        Log.d("체크", "된다");
+
+                    } else if (!isChecked) {
+
+                        chatRoom_model.users.remove(all_user_info.get(position));
+                        Log.d("체크", "해제");
+
+                    } else {
+                        MainActivity.showToast(Home_04_FriendList.this, "오류");
+                    }
+                }
+            });
+
+        }
+
+
+        //현재 위치
+        @Override
+        public int getItemCount() {
+            return all_user_info.size();
+        }
+
+        public class home_04_friend_re extends RecyclerView.ViewHolder {
+
+            ImageView user_profile;
+            TextView user_nick;
+            TextView user_id;
+            CheckBox user_invite;
+            CardView click_item;
+
+            home_04_friend_re(View view) {
+                super(view);
+                user_profile = view.findViewById(R.id.home_04_friend_profile);
+                user_nick = view.findViewById(R.id.home_04_friend_nick);
+                user_id = view.findViewById(R.id.home_04_friend_id);
+                user_invite = view.findViewById(R.id.home_04_friend_invite);
+                click_item = view.findViewById(R.id.home_04_friend_cardview);
+
+
+            }
+
+        }
+
+    }
+
+
+}
