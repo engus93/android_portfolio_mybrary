@@ -25,7 +25,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -35,6 +37,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -195,7 +200,7 @@ public class Home_04_Chatting extends AppCompatActivity {
             }
         });
 
-        //모든 유저 리스트 불러오기
+        //모든 채팅방 리스트 불러오기
         FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -204,7 +209,7 @@ public class Home_04_Chatting extends AppCompatActivity {
 
                 App.user_chat_room.clear();
 
-                //모든 유저 리스트 불러오기
+                //모든 채팅방 리스트 불러오기
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     single_chatting = snapshot.getValue(Home_04_Single_Chatting.class);
 
@@ -220,6 +225,7 @@ public class Home_04_Chatting extends AppCompatActivity {
             }
         });
 
+        //메뉴창
         home_04_chatting_joinlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -229,6 +235,7 @@ public class Home_04_Chatting extends AppCompatActivity {
             }
         });
 
+        //뒤로가기
         home_04_friendlist_back_B.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -238,6 +245,7 @@ public class Home_04_Chatting extends AppCompatActivity {
             }
         });
 
+        //카메라 기능
         home_04_chatting_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

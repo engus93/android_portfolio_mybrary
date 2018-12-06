@@ -19,7 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class Home_04_Adapter extends RecyclerView.Adapter<Home_04_Adapter.home_04_friend_re> {
+public class Home_04_Adapter extends RecyclerView.Adapter<Home_04_Adapter.home_04_re> {
 
     Context context;
     ArrayList<Member_ArrayList> all_user_info;
@@ -36,15 +36,15 @@ public class Home_04_Adapter extends RecyclerView.Adapter<Home_04_Adapter.home_0
 
     //틀 생성
     @Override
-    public home_04_friend_re onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v1 = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_04_friendlist_re, parent, false);
-        return new home_04_friend_re(v1);
+    public home_04_re onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v1 = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_04_re, parent, false);
+        return new home_04_re(v1);
 
     }
 
     //묶어주기
     @Override
-    public void onBindViewHolder(home_04_friend_re holder, final int position) {
+    public void onBindViewHolder(home_04_re holder, final int position) {
 
         //글라이드 오류 방지
         mGlideRequestManager = Glide.with(context);
@@ -110,18 +110,19 @@ public class Home_04_Adapter extends RecyclerView.Adapter<Home_04_Adapter.home_0
         return all_user_info.size();
     }
 
-    public static class home_04_friend_re extends RecyclerView.ViewHolder {
+    public static class home_04_re extends RecyclerView.ViewHolder {
 
         ImageView user_profile;
         TextView user_nick;
         TextView user_id;
+        TextView us;
         CheckBox user_invite;
         CardView click_item;
 
-        home_04_friend_re(View view) {
+        home_04_re(View view) {
             super(view);
-            user_profile = view.findViewById(R.id.home_04_friend_profile);
-            user_nick = view.findViewById(R.id.home_04_friend_nick);
+            user_profile = view.findViewById(R.id.home_04_re_profile);
+            user_nick = view.findViewById(R.id.home_04_re_nick);
             user_id = view.findViewById(R.id.home_04_friend_id);
             user_invite = view.findViewById(R.id.home_04_friend_invite);
             click_item = view.findViewById(R.id.home_04_friend_cardview);

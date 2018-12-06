@@ -10,7 +10,7 @@
         android:layout_height="match_parent">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/home_04_friend_profile"
+            android:id="@+id/home_04_re_profile"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="15dp"
@@ -22,13 +22,35 @@
             android:src="@mipmap/ic_launcher_round" />
 
         <TextView
-            android:id="@+id/home_04_friend_nick"
+            android:id="@+id/home_04_re_nick"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
+            android:layout_marginTop="5dp"
             android:text="상대방 아이디"
-            app:layout_constraintBottom_toBottomOf="@+id/home_04_friend_profile"
-            app:layout_constraintStart_toEndOf="@+id/home_04_friend_profile"
-            app:layout_constraintTop_toTopOf="@+id/home_04_friend_profile" />
+            app:layout_constraintStart_toEndOf="@+id/home_04_re_profile"
+            app:layout_constraintTop_toTopOf="@+id/home_04_re_profile" />
+
+        <TextView
+            android:id="@+id/home_04_re_main"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="30dp"
+            android:maxLines="1"
+            android:text="내용"
+            app:layout_constraintEnd_toStartOf="@+id/home_04_re_time"
+            app:layout_constraintStart_toStartOf="@+id/home_04_re_nick"
+            app:layout_constraintTop_toBottomOf="@+id/home_04_re_nick" />
+
+        <TextView
+            android:id="@+id/home_04_re_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:text="TextView"
+            app:layout_constraintBottom_toBottomOf="@+id/home_04_re_profile"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/home_04_re_profile" />
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

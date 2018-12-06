@@ -37,6 +37,16 @@ public class Home_04_FriendList extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                //파이어베이스 데이터베이스 선언
+//                FirebaseDatabase database = FirebaseDatabase.getInstance();
+//                final DatabaseReference myRef = database.getReference("User_Message");
+//
+//                //파이어베이스에 저장
+//                myRef.child("User_Room").child(key).setValue(chatroom); //채팅 방 생성
+//                Home_04_ChattingList none = new Home_04_ChattingList("Null", "","", "");   //오류 방지용
+//
+//                myRef.child("User_Chat").child(key).push().setValue(none);    //채팅 방 안에 내용 담는 그릇 생성
+
                 onBackPressed();
 
             }

@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Home_04_Friend_Adapter extends RecyclerView.Adapter<Home_04_Friend_Adapter.home_04_friend_re> {
 
@@ -28,6 +31,7 @@ public class Home_04_Friend_Adapter extends RecyclerView.Adapter<Home_04_Friend_
 
     //글라이드 오류 방지
     public RequestManager mGlideRequestManager;
+
 
     public Home_04_Friend_Adapter(Context context, ArrayList<Member_ArrayList> all_user_info) {
         this.context = context;
@@ -54,6 +58,13 @@ public class Home_04_Friend_Adapter extends RecyclerView.Adapter<Home_04_Friend_
         holder.user_nick.setText(all_user_info.get(position).user_nick);
         holder.user_id.setText(all_user_info.get(position).member_id);
 
+        final String key = FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").push().getKey();
+
+        //단체채팅 해쉬맵 세팅
+        HashMap<String, String> chat_users_temp = new HashMap<>();
+        chat_users_temp.put("room_key" , key);
+        chat_users_temp.put("user_1", App.user_UID_get());
+
         holder.click_item.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -64,8 +75,7 @@ public class Home_04_Friend_Adapter extends RecyclerView.Adapter<Home_04_Friend_
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 final DatabaseReference myRef = database.getReference("User_Message");
 
-                final String key = myRef.child("User_Room").push().getKey();
-
+                //중복 채팅방 있는지 확인
                 for(int i = 0; i < App.user_chat_room.size(); i++){
 
                     if (App.user_chat_room.get(i).user_1.equals(App.user_UID_get()) && App.user_chat_room.get(i).user_2.equals(all_user_info.get(position).user_UID)) {
@@ -120,6 +130,44 @@ public class Home_04_Friend_Adapter extends RecyclerView.Adapter<Home_04_Friend_
 
         });
 
+        holder.user_invite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(isChecked) {
+
+                    Home_04_Single_Chatting temp = new Home_04_Single_Chatting(App.user_UID_get(), all_user_info.get(position).user_UID, key);
+
+                    //추가
+
+
+                    App.now_chat_users.add(temp);
+
+                    Log.d("채팅", "체크");
+
+                }else if(!isChecked){
+
+                    for(int i = 0; i < App.now_chat_users.size(); i++){
+
+                        if(App.now_chat_users.get(i).user_2.equals(all_user_info.get(position).user_UID)){
+
+                            Log.d("채팅", "체크 해제");
+
+                            App.now_chat_users.remove(i);
+                            break;
+
+                        }
+
+                    }
+
+                }else{
+                    MainActivity.showToast(context, "오류");
+                }
+            }
+        });
+
+
     }
 
     //현재 위치
@@ -139,7 +187,7 @@ public class Home_04_Friend_Adapter extends RecyclerView.Adapter<Home_04_Friend_
         home_04_friend_re(View view) {
             super(view);
             user_profile = view.findViewById(R.id.home_04_friend_profile);
-            user_nick = view.findViewById(R.id.home_04_friend_nick);
+            user_nick = view.findViewById(R.id.home_04_re_nick);
             user_id = view.findViewById(R.id.home_04_friend_id);
             user_invite = view.findViewById(R.id.home_04_friend_invite);
             click_item = view.findViewById(R.id.home_04_friend_cardview);
