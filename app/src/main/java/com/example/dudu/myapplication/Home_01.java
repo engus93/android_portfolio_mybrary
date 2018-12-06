@@ -178,46 +178,6 @@ public class Home_01 extends AppCompatActivity {
 
         mRecyclerView.setAdapter(myAdapter);
 
-
-//        //모든 유저 리스트 불러오기
-//        FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                //채팅방 불러오기
-//                for (int i = 0; i < App.user_chat_room.size(); i++) {
-//
-//                    if (App.user_chat_room.get(i).user_1.equals(App.user_UID_get())) {
-//
-//                        App.opponent_userslist.add(dataSnapshot.child(App.user_chat_room.get(i).user_2).getValue(Member_ArrayList.class));
-//
-//                        System.out.println(App.user_chat_room.get(i).user_2);
-//
-//                        Log.d("체크", "1번");
-//
-//                    } else if (App.user_chat_room.get(i).user_2.equals(App.user_UID_get())) {
-//
-//                        App.opponent_userslist.add(dataSnapshot.child(App.user_chat_room.get(i).user_1).getValue(Member_ArrayList.class));
-//
-//                        System.out.println(App.user_chat_room.get(i).user_1);
-//
-//                        Log.d("체크", "2번");
-//
-//                    }
-//
-//                }
-//
-//                System.out.println(App.opponent_userslist.size());
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-
-
         //------------------------왼쪽 상단 네비게이션 바------------------------------------
 
         // 전체화면인 DrawerLayout 객체 참조

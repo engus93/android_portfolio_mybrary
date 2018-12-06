@@ -31,12 +31,12 @@
 //public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatting_Adapter.home_04_chatting_re> {
 //
 //    Context context;
-//    ArrayList<Home_04_ChatRoom_Model.Message> contents = new ArrayList<>();
+//    ArrayList<Home_04_ChatRoom_Model.message> contents = new ArrayList<>();
 //
 //    //글라이드 오류 방지
 //    public RequestManager mGlideRequestManager;
 //
-//    public Home_04_Chatting_Adapter(Context context, ArrayList<Home_04_ChatRoom_Model.Message> contents) {
+//    public Home_04_Chatting_Adapter(Context context, ArrayList<Home_04_ChatRoom_Model.message> contents) {
 //        this.context = context;
 //        this.contents = contents;
 //    }

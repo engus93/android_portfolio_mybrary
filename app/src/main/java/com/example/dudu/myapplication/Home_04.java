@@ -1,7 +1,6 @@
 package com.example.dudu.myapplication;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,7 +8,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -18,11 +16,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,6 +28,7 @@ import com.bumptech.glide.RequestManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
@@ -57,8 +54,6 @@ public class Home_04 extends AppCompatActivity {
 
     int REQ_CALL_SELECT = 1300;
     int REQ_SMS_SELECT = 1400;
-
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH시 mm분 ");
 
     protected void onCreate(Bundle savedInstancesState) {
 
@@ -197,12 +192,6 @@ public class Home_04 extends AppCompatActivity {
             }
         });
 
-//        ---------------------------리싸이클러뷰---------------------------------
-        RecyclerView mRecyclerView = findViewById(R.id.home_04_re);
-        mRecyclerView.setAdapter(new Home_04_Adapter());
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
     }
 
     class Home_04_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -213,12 +202,15 @@ public class Home_04 extends AppCompatActivity {
         //글라이드 오류 방지
         public RequestManager mGlideRequestManager;
 
+        long now_time = 0;
+
         public Home_04_Adapter() {
 
             FirebaseDatabase.getInstance().getReference().child("Chatting_Room").orderByChild("users/" + App.user_UID_get()).equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     chatRoom_model.clear();
+
                     for (DataSnapshot item : dataSnapshot.getChildren()) {
 
                         chatRoom_model.add(item.getValue(Home_04_ChatRoom_Model.class));
@@ -283,16 +275,18 @@ public class Home_04 extends AppCompatActivity {
 
             //맵에 내용을 다 넣어서 메세지의 키 값을 스트링으로 뽑아서 그 것을 파이어 베이스에서 가져옴
             Map<String, Home_04_ChatRoom_Model.Message> MessageMap = new TreeMap<>(Collections.<String>reverseOrder());
-            MessageMap.putAll(chatRoom_model.get(position).messages);
+            MessageMap.putAll(chatRoom_model.get(position).message);
 
-            System.out.println(chatRoom_model.get(position).messages);
+            System.out.println(chatRoom_model.get(position));
+            System.out.println(chatRoom_model.get(position).message);
 
             String lastMessage = (String) Objects.requireNonNull(MessageMap.keySet().toArray())[0];
-            home_04_re_item.user_main.setText(Objects.requireNonNull(chatRoom_model.get(position).messages.get(lastMessage)).contents);
+            home_04_re_item.user_main.setText(Objects.requireNonNull(chatRoom_model.get(position).message.get(lastMessage)).contents);
 
             //시간
-            long unixTime = (long) Objects.requireNonNull(chatRoom_model.get(position).messages.get(lastMessage)).time;
+            long unixTime = (long) Objects.requireNonNull(chatRoom_model.get(position).message.get(lastMessage)).time;
             Date date = new Date(unixTime);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh시 mm분");
             simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
             String message_time = simpleDateFormat.format(date);
             home_04_re_item.user_time.setText(message_time);
@@ -338,6 +332,16 @@ public class Home_04 extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //        ---------------------------리싸이클러뷰---------------------------------
+        RecyclerView mRecyclerView = findViewById(R.id.home_04_re);
+        mRecyclerView.setAdapter(new Home_04_Adapter());
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    }
 
     //뒤로 두번 누르면 종료
     @Override

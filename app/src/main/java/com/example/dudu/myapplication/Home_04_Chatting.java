@@ -134,7 +134,7 @@ public class Home_04_Chatting extends AppCompatActivity {
                         message.contents = home_04_chatting_ET.getText().toString();
                         message.time = ServerValue.TIMESTAMP;
 
-                        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("Message").push().setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("message").push().setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 //텍스트 창 초기화
@@ -296,7 +296,7 @@ public class Home_04_Chatting extends AppCompatActivity {
 
         //메세지 내용 불러오는 메소드
         void getMessageList(){
-            databaseReference = FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("Message");
+            databaseReference = FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("message");
             valueEventListener = databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -316,7 +316,7 @@ public class Home_04_Chatting extends AppCompatActivity {
 
 
                     if (!(contents.get(contents.size() - 1).read.containsKey(App.user_UID_get()))) {
-                        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("Message").updateChildren(read_user_map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("message").updateChildren(read_user_map).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 notifyDataSetChanged();
