@@ -221,61 +221,61 @@ public class Home_04 extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        //---------------------------리싸이클러뷰---------------------------------
-        final RecyclerView mRecyclerView;
-        RecyclerView.LayoutManager mLayoutManager;
-
-        mRecyclerView = findViewById(R.id.home_04_re);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        ((LinearLayoutManager) mLayoutManager).setReverseLayout(true);
-        ((LinearLayoutManager) mLayoutManager).setStackFromEnd(true);
-        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        //모든 유저 리스트 불러오기
-        FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                App.opponent_userslist.clear();
-
-                //채팅방 불러오기
-                for (int i = 0; i < App.user_chat_room.size(); i++) {
-
-                    if (App.user_chat_room.get(i).user_1.equals(App.user_UID_get())) {
-
-                        App.opponent_userslist.add(dataSnapshot.child(App.user_chat_room.get(i).user_2).getValue(Member_ArrayList.class));
-
-                        System.out.println(App.user_chat_room.get(i).user_2);
-
-                        Log.d("체크", "1번");
-
-                    } else if (App.user_chat_room.get(i).user_2.equals(App.user_UID_get())) {
-
-                        App.opponent_userslist.add(dataSnapshot.child(App.user_chat_room.get(i).user_1).getValue(Member_ArrayList.class));
-
-                        System.out.println(App.user_chat_room.get(i).user_1);
-
-                        Log.d("체크", "2번");
-
-                    }
-
-                }
-
-                System.out.println(App.opponent_userslist.size());
-
-                Home_04_Adapter myAdapter = new Home_04_Adapter(getApplicationContext(), App.opponent_userslist);
-                mRecyclerView.setAdapter(myAdapter);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+//
+//        //---------------------------리싸이클러뷰---------------------------------
+//        final RecyclerView mRecyclerView;
+//        RecyclerView.LayoutManager mLayoutManager;
+//
+//        mRecyclerView = findViewById(R.id.home_04_re);
+//        mRecyclerView.setHasFixedSize(true);
+//        mLayoutManager = new LinearLayoutManager(this);
+//        ((LinearLayoutManager) mLayoutManager).setReverseLayout(true);
+//        ((LinearLayoutManager) mLayoutManager).setStackFromEnd(true);
+//        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
+//        mRecyclerView.setLayoutManager(mLayoutManager);
+//
+//        //모든 유저 리스트 불러오기
+//        FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                App.opponent_userslist.clear();
+//
+//                //채팅방 불러오기
+//                for (int i = 0; i < App.user_chat_room.size(); i++) {
+//
+//                    if (App.user_chat_room.get(i).user_1.equals(App.user_UID_get())) {
+//
+//                        App.opponent_userslist.add(dataSnapshot.child(App.user_chat_room.get(i).user_2).getValue(Member_ArrayList.class));
+//
+//                        System.out.println(App.user_chat_room.get(i).user_2);
+//
+//                        Log.d("체크", "1번");
+//
+//                    } else if (App.user_chat_room.get(i).user_2.equals(App.user_UID_get())) {
+//
+//                        App.opponent_userslist.add(dataSnapshot.child(App.user_chat_room.get(i).user_1).getValue(Member_ArrayList.class));
+//
+//                        System.out.println(App.user_chat_room.get(i).user_1);
+//
+//                        Log.d("체크", "2번");
+//
+//                    }
+//
+//                }
+//
+//                System.out.println(App.opponent_userslist.size());
+//
+//                Home_04_Adapter myAdapter = new Home_04_Adapter(getApplicationContext(), App.opponent_userslist);
+//                mRecyclerView.setAdapter(myAdapter);
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
 
     }
 

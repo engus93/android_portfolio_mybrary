@@ -44,14 +44,14 @@ public class App extends Application {
 
   static ArrayList<Member_ArrayList> all_userslist = new ArrayList<>();      //현재 가입 유저
 
-  static ArrayList<Home_04_Single_Chatting> user_chat_room = new ArrayList<>();   //모든 채팅방 리스트
+  static ArrayList<Home_04_ChatRoom_Model> user_chat_room = new ArrayList<>();   //모든 채팅방 리스트
 
-  static ArrayList<Home_04_Single_Chatting> my_chat_room = new ArrayList<>();   //내가 속한 채팅방 리스트
+  static ArrayList<Home_04_ChatRoom_Model> my_chat_room = new ArrayList<>();   //내가 속한 채팅방 리스트
   static ArrayList<Member_ArrayList> opponent_userslist = new ArrayList<>();      //내가 채팅중인 유저
 
-  static Home_04_Single_Chatting now_chat_user; //현재 개인 채팅 상대
+  static Home_04_ChatRoom_Model now_chat_user; //현재 개인 채팅 상대
 
-  static ArrayList<Home_04_Single_Chatting> now_chat_users = new ArrayList<>();
+  static ArrayList<Home_04_ChatRoom_Model> now_chat_users = new ArrayList<>();
 
   static ArrayList<Home_04_ChattingList> now_chat_Contents = new ArrayList<>();   //현재 채팅 내용
 

@@ -117,7 +117,7 @@ public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatt
             }
 
             //읽음표시
-            read_user_count(position, holder.read_you);
+//            read_user_count(position, holder.read_you);
 
         } else {
             //상대방
@@ -151,40 +151,40 @@ public class Home_04_Chatting_Adapter extends RecyclerView.Adapter<Home_04_Chatt
             //나
             holder.time_me.setText(time);
             //읽음표시
-            read_user_count(position, holder.read_me);
+//            read_user_count(position, holder.read_me);
 
         }
 
 
     }
 
-    void read_user_count(final int position, final TextView textView){
-
-        FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").child(App.now_chat_user.room_key).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                Map<String, String> chat_user = (Map<String, String>) dataSnapshot.getValue();
-
-                System.out.println(App.now_chat_Contents.get(position).read.size());
-
-                int count = (chat_user.size() - 1) - App.now_chat_Contents.get(position).read.size();
-                if(count > 0){
-                    textView.setVisibility((View.VISIBLE));
-                    textView.setText(String.valueOf(count));
-                }else{
-                    textView.setVisibility(View.INVISIBLE);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-    }
+//    void read_user_count(final int position, final TextView textView){
+//
+//        FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").child(App.now_chat_user.room_key).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                Map<String, String> chat_user = (Map<String, String>) dataSnapshot.getValue();
+//
+//                System.out.println(App.now_chat_Contents.get(position).read.size());
+//
+//                int count = (chat_user.size() - 1) - App.now_chat_Contents.get(position).read.size();
+//                if(count > 0){
+//                    textView.setVisibility((View.VISIBLE));
+//                    textView.setText(String.valueOf(count));
+//                }else{
+//                    textView.setVisibility(View.INVISIBLE);
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//
+//    }
 
 
     //현재 위치

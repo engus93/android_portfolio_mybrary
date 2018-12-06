@@ -84,32 +84,32 @@ public class Sign_in_02_Activity extends AppCompatActivity{
 
         }
 
-        //모든 유저 리스트 불러오기
-        FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                Home_04_Single_Chatting single_chatting = new Home_04_Single_Chatting();
-
-                App.user_chat_room.clear();
-
-                //모든 유저 리스트 불러오기
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    single_chatting = snapshot.getValue(Home_04_Single_Chatting.class);
-
-                    App.user_chat_room.add(single_chatting);
-
-                }
-
-                System.out.println(App.user_chat_room.size());
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+//        //모든 유저 리스트 불러오기
+//        FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                Home_04_ChatRoom_Model single_chatting = new Home_04_ChatRoom_Model();
+//
+//                App.user_chat_room.clear();
+//
+//                //모든 유저 리스트 불러오기
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    single_chatting = snapshot.getValue(Home_04_ChatRoom_Model.class);
+//
+//                    App.user_chat_room.add(single_chatting);
+//
+//                }
+//
+//                System.out.println(App.user_chat_room.size());
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
 
 
 //        ---------------------------구글 로그인---------------------------------

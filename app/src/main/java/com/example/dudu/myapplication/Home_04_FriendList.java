@@ -37,16 +37,6 @@ public class Home_04_FriendList extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                //파이어베이스 데이터베이스 선언
-//                FirebaseDatabase database = FirebaseDatabase.getInstance();
-//                final DatabaseReference myRef = database.getReference("User_Message");
-//
-//                //파이어베이스에 저장
-//                myRef.child("User_Room").child(key).setValue(chatroom); //채팅 방 생성
-//                Home_04_ChattingList none = new Home_04_ChattingList("Null", "","", "");   //오류 방지용
-//
-//                myRef.child("User_Chat").child(key).push().setValue(none);    //채팅 방 안에 내용 담는 그릇 생성
-
                 onBackPressed();
 
             }
@@ -56,14 +46,6 @@ public class Home_04_FriendList extends AppCompatActivity {
         home_04_friendlist_back_B.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //파이어베이스 데이터베이스 선언
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference myRef = database.getReference("User_Message");
-
-                //파이어베이스에 삭제
-                myRef.child("User_Room").child(ykey).removeValue(); //채팅 방 생성
-                myRef.child("User_Chat").child(ykey).removeValue();    //채팅 방 안에 내용 담는 그릇 생성
 
                 onBackPressed();
 
@@ -79,60 +61,62 @@ public class Home_04_FriendList extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(new Home_04_Friend_Adapter(getApplicationContext()));
 
-        //리싸이클러뷰 파이어베이스 업데이트
-        FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+//        //리싸이클러뷰 파이어베이스 업데이트
+//        FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                App.all_userslist.clear();
+//
+//                Member_ArrayList user_list = new Member_ArrayList();
+//
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    user_list = snapshot.getValue(Member_ArrayList.class);
+//                    System.out.println(user_list.user_UID);
+//                    if(!(user_list.user_UID.equals(App.user_UID_get()))){
+//                        Log.d("체크", "친구 추가 되야 함");
+//                        App.all_userslist.add(user_list);
+//                    }
+//                }
+//
+//
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//
+//
+//            }
+//        });
 
-                App.all_userslist.clear();
-
-                Member_ArrayList user_list = new Member_ArrayList();
-
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    user_list = snapshot.getValue(Member_ArrayList.class);
-                    System.out.println(user_list.user_UID);
-                    if(!(user_list.user_UID.equals(App.user_UID_get()))){
-                        Log.d("체크", "친구 추가 되야 함");
-                        App.all_userslist.add(user_list);
-                    }
-                }
-
-                Home_04_Friend_Adapter myAdapter = new Home_04_Friend_Adapter(getApplicationContext(), App.all_userslist);
-                mRecyclerView.setAdapter(myAdapter);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-
-
-            }
-        });
-
-        //리싸이클러뷰 파이어베이스 업데이트
-        FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                App.user_chat_room.clear();
-
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Home_04_Single_Chatting single_chatting = snapshot.getValue(Home_04_Single_Chatting.class);
-
-                    App.user_chat_room.add(single_chatting);
-
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+//        class Home_04_Friend_Adapter
 
 
     }
 
 }
+
+//        //리싸이클러뷰 파이어베이스 업데이트
+//        FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                App.user_chat_room.clear();
+//
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    Home_04_ChatRoom_Model single_chatting = snapshot.getValue(Home_04_ChatRoom_Model.class);
+//
+//                    App.user_chat_room.add(single_chatting);
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
