@@ -6,14 +6,22 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,7 +30,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Home_04_Chatting extends AppCompatActivity {
+
+    //리싸이클러뷰
+     RecyclerView mRecyclerView;
+     RecyclerView.LayoutManager mLayoutManager;
 
     //파이어베이스
     private FirebaseStorage storage;    //스토리지
@@ -111,6 +126,57 @@ public class Home_04_Chatting extends AppCompatActivity {
             }
         });
 
+        //---------------------------리싸이클러뷰---------------------------------
+        mRecyclerView = findViewById(R.id.home_04_chatting_re);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+
+
+//        //채팅 내용
+//        databaseReference = FirebaseDatabase.getInstance().getReference("User_Message").child("User_Chat").child(App.now_chat_user.room_key);
+//        valueEventListener = databaseReference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                App.now_chat_Contents.clear();
+//                Map<String, Object> read = new HashMap<>();
+//
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    String key = snapshot.getKey();
+//                    Home_04_ChattingList contents;
+//                    contents = snapshot.getValue(Home_04_ChattingList.class);
+//                    contents.read.put(App.user_UID_get(), true);
+//
+//                    read.put(key, contents);
+//                    App.now_chat_Contents.add(contents);
+//                }
+//
+//                FirebaseDatabase.getInstance().getReference().child("User_Message").child("User_Chat").child(App.now_chat_user.room_key).updateChildren(read).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//
+//                        Home_04_Chatting_Adapter myAdapter = new Home_04_Chatting_Adapter(getApplicationContext(), App.now_chat_Contents);
+//
+//                        mRecyclerView.setAdapter(myAdapter);
+//
+//                        mRecyclerView.scrollToPosition(App.now_chat_Contents.size() - 1);
+//
+//                        System.out.println(App.now_chat_Contents.size());
+//
+//                    }
+//                });
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+
         //메뉴창
         home_04_chatting_joinlist.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,6 +225,7 @@ public class Home_04_Chatting extends AppCompatActivity {
 
                         chatroom_key = item.getKey();
                         home_04_chatting_send.setEnabled(true); //전송 버튼 살리기(활성화)
+                        mRecyclerView.setAdapter(new Home_04_Chatting_Adapter());
 
                     }
 
@@ -174,6 +241,135 @@ public class Home_04_Chatting extends AppCompatActivity {
         });
 
     }
+
+    class Home_04_Chatting_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+
+        List<Home_04_ChatRoom_Model.Message> contents;
+        Member_ArrayList opponent_chat_info;
+
+        //글라이드 오류 방지
+        public RequestManager mGlideRequestManager;
+
+        public Home_04_Chatting_Adapter() {
+            contents = new ArrayList<>();
+
+            //유저의 정보 가져오기
+            FirebaseDatabase.getInstance().getReference().child("User_Info").child(opponent_uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    opponent_chat_info = dataSnapshot.getValue(Member_ArrayList.class);
+                    getMessageList();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
+        }
+
+        //메세지 내용 불러오는 메소드
+        void getMessageList(){
+
+            FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("Message").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    contents.clear();
+
+                    for(DataSnapshot item : dataSnapshot.getChildren()){
+                        contents.add(item.getValue(Home_04_ChatRoom_Model.Message.class));
+                    }
+                    notifyDataSetChanged();
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        }
+
+
+        @NonNull
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
+
+            View v1 = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_04_chatting_re, parent, false);
+
+            return new home_04_chatting_re(v1);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+            home_04_chatting_re messageViewHolder = ((home_04_chatting_re)holder);
+
+            //레이아웃 초기화
+            messageViewHolder.chat_you.setVisibility(View.GONE);
+            messageViewHolder.chat_me.setVisibility(View.GONE);
+
+            //글라이드 오류 방지
+            mGlideRequestManager = Glide.with(Home_04_Chatting.this);
+
+            if(contents.get(position).wright_user.equals(App.user_UID_get())){
+
+                messageViewHolder.chat_me.setVisibility(View.VISIBLE);
+                messageViewHolder.getUser_contents_me.setText(contents.get(position).contents);
+
+            }else{
+
+                messageViewHolder.chat_you.setVisibility(View.VISIBLE);
+                messageViewHolder.user_contents.setText(contents.get(position).contents);
+                messageViewHolder.user_nick.setText(opponent_chat_info.user_nick);
+                mGlideRequestManager.load(opponent_chat_info.user_profile).fitCenter().into(messageViewHolder.user_profile);
+
+
+            }
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return contents.size();
+        }
+
+
+        private class home_04_chatting_re extends RecyclerView.ViewHolder {
+            ImageView user_profile;
+            TextView user_nick;
+            TextView user_contents;
+            TextView getUser_contents_me;
+            TextView time_you;
+            TextView time_me;
+            TextView read_you;
+            TextView read_me;
+            ConstraintLayout chat_you;
+            ConstraintLayout chat_me;
+
+            home_04_chatting_re(View view) {
+                super(view);
+                user_profile = view.findViewById(R.id.home_04_chat_profile);
+                user_nick = view.findViewById(R.id.home_04_chat_nick);
+                user_contents = view.findViewById(R.id.home_04_chat_main);
+                getUser_contents_me = view.findViewById(R.id.home_04_chat_main_me);
+                time_you = view.findViewById(R.id.time_you);
+                time_me = view.findViewById(R.id.time_me);
+                read_you = view.findViewById(R.id.home_04_chat_read_you);
+                read_me = view.findViewById(R.id.home_04_chat_read_me);
+                chat_you = view.findViewById(R.id.home_04_chatting_re_you);
+                chat_me = view.findViewById(R.id.home_04_chatting_re_me);
+
+            }
+        }
+
+    }
+
+
 
 
 //                    //서재 등록 날짜 세팅
@@ -570,57 +766,7 @@ public class Home_04_Chatting extends AppCompatActivity {
 //            }
 //        });
 
-//        //---------------------------리싸이클러뷰---------------------------------
-//        final RecyclerView mRecyclerView;
-//        final RecyclerView.LayoutManager mLayoutManager;
-//
-//        mRecyclerView = findViewById(R.id.home_04_chatting_re);
-//        mRecyclerView.setHasFixedSize(true);
-//        mLayoutManager = new LinearLayoutManager(this);
-//        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
-//        mRecyclerView.setLayoutManager(mLayoutManager);
-//
-//        //채팅 내용
-//        databaseReference = FirebaseDatabase.getInstance().getReference("User_Message").child("User_Chat").child(App.now_chat_user.room_key);
-//        valueEventListener = databaseReference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                App.now_chat_Contents.clear();
-//                Map<String, Object> read = new HashMap<>();
-//
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    String key = snapshot.getKey();
-//                    Home_04_ChattingList contents;
-//                    contents = snapshot.getValue(Home_04_ChattingList.class);
-//                    contents.read.put(App.user_UID_get(), true);
-//
-//                    read.put(key,contents);
-//                    App.now_chat_Contents.add(contents);
-//                }
-//
-//                FirebaseDatabase.getInstance().getReference().child("User_Message").child("User_Chat").child(App.now_chat_user.room_key).updateChildren(read).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//
-//                        Home_04_Chatting_Adapter myAdapter = new Home_04_Chatting_Adapter(getApplicationContext(), App.now_chat_Contents);
-//
-//                        mRecyclerView.setAdapter(myAdapter);
-//
-//                        mRecyclerView.scrollToPosition(App.now_chat_Contents.size() - 1);
-//
-//                        System.out.println(App.now_chat_Contents.size());
-//
-//                    }
-//                });
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
+
 //
 //        //모든 채팅방 리스트 불러오기
 //        FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").addValueEventListener(new ValueEventListener() {
