@@ -19,7 +19,6 @@
             </intent-filter>
         </activity>
 
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/menu_04_01" />

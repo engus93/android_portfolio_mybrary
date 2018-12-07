@@ -340,17 +340,11 @@ public class Home_04 extends AppCompatActivity {
 
     }
 
-    void passPushTokenToServer(){
-
-        FirebaseInstanceId.getInstance().getInstanceId();
-
-    }
-
    @Override
     protected void onResume() {
         super.onResume();
 
-        //        ---------------------------리싸이클러뷰---------------------------------
+        //---------------------------리싸이클러뷰---------------------------------
         RecyclerView mRecyclerView = findViewById(R.id.home_04_re);
         mRecyclerView.setAdapter(new Home_04_Adapter());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
