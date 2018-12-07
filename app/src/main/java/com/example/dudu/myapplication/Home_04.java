@@ -262,10 +262,13 @@ public class Home_04 extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    Member_ArrayList opponent_info = dataSnapshot.getValue(Member_ArrayList.class);
-                    mGlideRequestManager.load(opponent_info.user_profile).fitCenter().into(home_04_re_item.user_profile);
-                    home_04_re_item.user_nick.setText(opponent_info.user_nick);
+                    if(chatRoom_model.get(position).users.size() > 2) {
 
+                    }else {
+                        Member_ArrayList opponent_info = dataSnapshot.getValue(Member_ArrayList.class);
+                        mGlideRequestManager.load(opponent_info.user_profile).fitCenter().into(home_04_re_item.user_profile);
+                        home_04_re_item.user_nick.setText(opponent_info.user_nick);
+                    }
                 }
 
                 @Override

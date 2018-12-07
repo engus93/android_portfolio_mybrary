@@ -19,9 +19,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -212,8 +209,8 @@ public class Home_04_Chatting extends AppCompatActivity {
         Gson gson = new Gson();
 
         NotificationModel notificationModel = new NotificationModel();
-        notificationModel.to = opponent_chat_info.push_Token;
-        notificationModel.notification.tile = "보낸이 아이디";
+        notificationModel.to = opponent_chat_info.user_token;
+        notificationModel.notification.tile = opponent_chat_info.user_nick;
         notificationModel.notification.text = home_04_chatting_ET.getText().toString();
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf8"), gson.toJson(notificationModel));

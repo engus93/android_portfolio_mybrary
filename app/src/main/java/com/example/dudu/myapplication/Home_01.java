@@ -275,13 +275,8 @@ public class Home_01 extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                String user_token = (String) dataSnapshot.getValue();
 
-                Map<String, String> token = new HashMap<>();
-
-                token.put(user_token);
-
-                FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()).child("user_token").child("token").updateChildren(token);
+                FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()).child("user_token").setValue(dataSnapshot.getValue());
 
             }
 
@@ -289,7 +284,7 @@ public class Home_01 extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        })
+        });
 
 
     }
