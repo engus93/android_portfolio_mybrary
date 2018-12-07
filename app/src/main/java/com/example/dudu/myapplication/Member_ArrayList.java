@@ -12,6 +12,7 @@ public class Member_ArrayList {
     public String user_nick;
     public String user_profile;
     public String user_talk;
+    public String push_Token;
 //    String user_key;
 
     public Member_ArrayList(String member_id, String member_password,String member_name,String member_birthday, String member_sex,String user_UID){

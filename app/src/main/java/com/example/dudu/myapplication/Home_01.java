@@ -22,16 +22,21 @@ import android.widget.ImageButton;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -260,11 +265,32 @@ public class Home_01 extends AppCompatActivity {
 
     void getToken(){
 
-        HashMap<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
 
         map.put("user_token", FirebaseInstanceId.getInstance().getInstanceId());
 
-        FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()).updateChildren(map);
+        FirebaseDatabase.getInstance().getReference().child("User_Token").child(App.user_UID_get()).setValue(map);
+
+        FirebaseDatabase.getInstance().getReference("User_Token").child(App.user_UID_get()).child("user_token").child("result").child("token").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                String user_token = (String) dataSnapshot.getValue();
+
+                Map<String, String> token = new HashMap<>();
+
+                token.put(user_token);
+
+                FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()).child("user_token").child("token").updateChildren(token);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        })
+
 
     }
 

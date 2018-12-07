@@ -32,7 +32,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,6 +42,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class Home_04_Chatting extends AppCompatActivity {
 
@@ -91,6 +101,9 @@ public class Home_04_Chatting extends AppCompatActivity {
     private String opponent_uid;
     private String chatroom_key;
 
+
+    Member_ArrayList opponent_chat_info;
+
     protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
@@ -137,6 +150,10 @@ public class Home_04_Chatting extends AppCompatActivity {
                         FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("message").push().setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
+
+                                //알림
+                                sendFcm();
+
                                 //텍스트 창 초기화
                                 home_04_chatting_ET.setText(null);
 
@@ -190,6 +207,36 @@ public class Home_04_Chatting extends AppCompatActivity {
 
     }
 
+    void sendFcm(){
+
+        Gson gson = new Gson();
+
+        NotificationModel notificationModel = new NotificationModel();
+        notificationModel.to = opponent_chat_info.push_Token;
+        notificationModel.notification.tile = "보낸이 아이디";
+        notificationModel.notification.text = home_04_chatting_ET.getText().toString();
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf8"), gson.toJson(notificationModel));
+
+        Request request = new Request.Builder().header("Content-Type", "application/json").addHeader("Authorization", "key=AIzaSyCVJJ2FRUYpnUY2cZrBJo5LsxYjezSJFko")
+                .url("https://fcm.googleapis.com/fcm/send")
+                .post(requestBody)
+                .build();
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+            }
+        });
+
+    }
+
     void checkChatRoom(){
 
         FirebaseDatabase.getInstance().getReference().child("Chatting_Room").orderByChild("users/"+App.user_UID_get()).equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -222,7 +269,6 @@ public class Home_04_Chatting extends AppCompatActivity {
 
 
         List<Home_04_ChatRoom_Model.Message> contents;
-        Member_ArrayList opponent_chat_info;
 
         //글라이드 오류 방지
         public RequestManager mGlideRequestManager;
@@ -422,7 +468,6 @@ public class Home_04_Chatting extends AppCompatActivity {
         }
 
     }
-
 
     @Override
     public void onBackPressed() {

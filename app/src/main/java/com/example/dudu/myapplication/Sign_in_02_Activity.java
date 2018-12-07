@@ -154,12 +154,6 @@ public class Sign_in_02_Activity extends AppCompatActivity{
 
                 } else {
 
-                    HashMap<String, Object> map = new HashMap<>();
-
-                    map.put("user_token", FirebaseInstanceId.getInstance().getInstanceId());
-
-                    FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()).updateChildren(map);
-
                     loginUser(sign_in_02_id.getText().toString(), sign_in_02_password.getText().toString());
 
                 }
