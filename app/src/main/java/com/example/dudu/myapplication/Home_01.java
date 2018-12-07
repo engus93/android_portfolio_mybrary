@@ -27,8 +27,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -64,6 +66,9 @@ public class Home_01 extends AppCompatActivity {
 
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_01);
+
+        //토큰 발행
+        getToken();
 
         //파베 객체선언
         mAuth = FirebaseAuth.getInstance();
@@ -250,6 +255,16 @@ public class Home_01 extends AppCompatActivity {
             }
         });
 
+
+    }
+
+    void getToken(){
+
+        HashMap<String, Object> map = new HashMap<>();
+
+        map.put("user_token", FirebaseInstanceId.getInstance().getInstanceId());
+
+        FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()).updateChildren(map);
 
     }
 

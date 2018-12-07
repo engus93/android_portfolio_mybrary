@@ -27,6 +27,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.HashMap;
 
@@ -83,34 +84,6 @@ public class Sign_in_02_Activity extends AppCompatActivity{
             auto_login.setChecked(true);
 
         }
-
-//        //모든 유저 리스트 불러오기
-//        FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                Home_04_ChatRoom_Model single_chatting = new Home_04_ChatRoom_Model();
-//
-//                App.user_chat_room.clear();
-//
-//                //모든 유저 리스트 불러오기
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    single_chatting = snapshot.getValue(Home_04_ChatRoom_Model.class);
-//
-//                    App.user_chat_room.add(single_chatting);
-//
-//                }
-//
-//                System.out.println(App.user_chat_room.size());
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-
 
 //        ---------------------------구글 로그인---------------------------------
 
@@ -180,6 +153,12 @@ public class Sign_in_02_Activity extends AppCompatActivity{
                     MainActivity.showToast(Sign_in_02_Activity.this, "비밀번호를 입력해주세요");
 
                 } else {
+
+                    HashMap<String, Object> map = new HashMap<>();
+
+                    map.put("user_token", FirebaseInstanceId.getInstance().getInstanceId());
+
+                    FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()).updateChildren(map);
 
                     loginUser(sign_in_02_id.getText().toString(), sign_in_02_password.getText().toString());
 

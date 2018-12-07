@@ -172,12 +172,10 @@ public class Home_04_FriendList extends AppCompatActivity {
                     if (isChecked) {
 
                         chatRoom_model.users.put(all_user_info.get(position).user_UID, true);
-                        Log.d("체크", "된다");
 
                     } else if (!isChecked) {
 
                         chatRoom_model.users.remove(all_user_info.get(position));
-                        Log.d("체크", "해제");
 
                     } else {
                         MainActivity.showToast(Home_04_FriendList.this, "오류");
