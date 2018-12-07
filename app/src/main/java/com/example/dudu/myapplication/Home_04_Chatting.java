@@ -200,7 +200,7 @@ public class Home_04_Chatting extends AppCompatActivity {
 
                     Home_04_ChatRoom_Model chatRoom_model = item.getValue(Home_04_ChatRoom_Model.class);
 
-                    if(chatRoom_model.users.containsKey(opponent_uid)){
+                    if(chatRoom_model.users.containsKey(opponent_uid) && chatRoom_model.users.size() == 2){
 
                         chatroom_key = item.getKey();
                         home_04_chatting_send.setEnabled(true); //전송 버튼 살리기(활성화)

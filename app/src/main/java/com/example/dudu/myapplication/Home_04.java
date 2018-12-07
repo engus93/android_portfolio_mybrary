@@ -197,6 +197,7 @@ public class Home_04 extends AppCompatActivity {
     class Home_04_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private ArrayList<Home_04_ChatRoom_Model> chatRoom_model = new ArrayList<>();
+        private ArrayList<String> room_keys = new ArrayList<>();
         private ArrayList<String> opponent_users = new ArrayList<>();
 
         //글라이드 오류 방지
@@ -214,7 +215,7 @@ public class Home_04 extends AppCompatActivity {
                     for (DataSnapshot item : dataSnapshot.getChildren()) {
 
                         chatRoom_model.add(item.getValue(Home_04_ChatRoom_Model.class));
-
+                        room_keys.add(item.getKey());
                     }
 
                     notifyDataSetChanged();
@@ -289,14 +290,22 @@ public class Home_04 extends AppCompatActivity {
                 String message_time = simpleDateFormat.format(date);
                 home_04_re_item.user_time.setText(message_time);
 
+                //채팅방 입장
                 home_04_re_item.click_item.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Intent intent = null;
+                        if(chatRoom_model.get(position).users.size() > 2){
 
-                        Intent intent = new Intent(v.getContext(), Home_04_Chatting.class);
-                        intent.putExtra("opponent_uid", opponent_users.get(position));
+                            intent = new Intent(v.getContext(), Home_04_Group_Chatting.class);
+                            intent.putExtra("chat_room_key", room_keys.get(position));
+
+                        }else {
+                            intent = new Intent(v.getContext(), Home_04_Chatting.class);
+                            intent.putExtra("opponent_uid", opponent_users.get(position));
+                        }
+
                         startActivity(intent);
-
                     }
                 });
 

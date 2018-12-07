@@ -20,10 +20,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -41,6 +43,8 @@ public class Home_04_FriendList extends AppCompatActivity {
     //글라이드 오류 방지
     public RequestManager mGlideRequestManager;
 
+    String roomkey;
+
     protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
@@ -56,7 +60,13 @@ public class Home_04_FriendList extends AppCompatActivity {
             public void onClick(View view) {
 
                 chatRoom_model.users.put(App.user_UID_get(), true);
-                FirebaseDatabase.getInstance().getReference().child("Chatting_Room").push().setValue(chatRoom_model);
+                FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(roomkey).setValue(chatRoom_model);
+
+                Intent intent = new Intent(view.getContext(), Home_04_Group_Chatting.class);
+                intent.putExtra("chat_room_key", roomkey);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                onBackPressed();
 
             }
         });
@@ -85,8 +95,6 @@ public class Home_04_FriendList extends AppCompatActivity {
     }
 
     public class Home_04_Friend_Adapter extends RecyclerView.Adapter<Home_04_Friend_Adapter.home_04_friend_re> {
-
-
 
         public Home_04_Friend_Adapter() {
 
@@ -132,6 +140,8 @@ public class Home_04_FriendList extends AppCompatActivity {
         @Override
         public void onBindViewHolder(home_04_friend_re holder, final int position) {
 
+            roomkey = null;
+
             //글라이드 오류 방지
             mGlideRequestManager = Glide.with(Home_04_FriendList.this);
 
@@ -139,7 +149,7 @@ public class Home_04_FriendList extends AppCompatActivity {
             holder.user_nick.setText(all_user_info.get(position).getUser_nick());
             holder.user_id.setText(all_user_info.get(position).getMember_id());
 
-            final String key = FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").push().getKey();
+            roomkey = FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").push().getKey();
 
             //채팅 상대 클릭 채팅 시작
             holder.click_item.setOnClickListener(new View.OnClickListener() {
@@ -206,6 +216,7 @@ public class Home_04_FriendList extends AppCompatActivity {
         }
 
     }
+
 
 
 }
