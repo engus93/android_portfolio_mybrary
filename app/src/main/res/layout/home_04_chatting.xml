@@ -30,6 +30,7 @@
         android:layout_marginEnd="10dp"
         android:layout_weight="5"
         android:gravity="center"
+        android:maxLines="1"
         android:text="User_Nick_Name"
         android:textAlignment="center"
         android:textColor="@color/mybrary_main"

@@ -203,7 +203,7 @@ public class Home_04 extends AppCompatActivity {
         //글라이드 오류 방지
         public RequestManager mGlideRequestManager;
 
-        long now_time = 0;
+        String group_chat_nick = null;
 
         public Home_04_Adapter() {
 
@@ -258,14 +258,37 @@ public class Home_04 extends AppCompatActivity {
 
             }
 
-            FirebaseDatabase.getInstance().getReference().child("User_Info").child(opponentuid).addListenerForSingleValueEvent(new ValueEventListener() {
+            final String finalOpponentuid = opponentuid;
+
+            FirebaseDatabase.getInstance().getReference().child("User_Info").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                    //개인인지 단체인지 구별
                     if(chatRoom_model.get(position).users.size() > 2) {
 
+                        Member_ArrayList opponent_info = new Member_ArrayList();
+
+                        //이름 더해주기
+                        for(int i = 0; i < chatRoom_model.get(position).users.size() - 1; i++){
+
+                            opponent_info = dataSnapshot.child(opponent_users.get(i)).getValue(Member_ArrayList.class);
+
+                            if(i == 0) {
+                                group_chat_nick = opponent_info.user_nick;
+                            }else{
+                                group_chat_nick += ", " + opponent_info.user_nick;
+                            }
+
+                        }
+
+                        group_chat_nick = group_chat_nick + " (" + chatRoom_model.get(position).users.size() + "명)";
+
+                        mGlideRequestManager.load(R.drawable.group_chat_profile).fitCenter().into(home_04_re_item.user_profile);
+                        home_04_re_item.user_nick.setText(group_chat_nick);
+
                     }else {
-                        Member_ArrayList opponent_info = dataSnapshot.getValue(Member_ArrayList.class);
+                        Member_ArrayList opponent_info = dataSnapshot.child(finalOpponentuid).getValue(Member_ArrayList.class);
                         mGlideRequestManager.load(opponent_info.user_profile).fitCenter().into(home_04_re_item.user_profile);
                         home_04_re_item.user_nick.setText(opponent_info.user_nick);
                     }
@@ -302,6 +325,7 @@ public class Home_04 extends AppCompatActivity {
 
                             intent = new Intent(v.getContext(), Home_04_Group_Chatting.class);
                             intent.putExtra("chat_room_key", room_keys.get(position));
+                            intent.putExtra("chat_room_name", group_chat_nick);
 
                         }else {
                             intent = new Intent(v.getContext(), Home_04_Chatting.class);

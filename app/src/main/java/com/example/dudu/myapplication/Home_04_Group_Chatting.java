@@ -38,6 +38,7 @@ import java.util.TimeZone;
 public class Home_04_Group_Chatting extends AppCompatActivity {
     Map<String, Member_ArrayList> all_user_info = new HashMap<>();
     String chat_room_key;
+    String chat_room_name;
 
     //채팅방 아이템
     ImageView home_04_chatting_joinlist; //채팅방 메뉴
@@ -78,6 +79,9 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.home_04_chatting_re);
 
         chat_room_key = getIntent().getStringExtra("chat_room_key");
+        chat_room_name = getIntent().getStringExtra("chat_room_name");
+
+        home_04_chatting_nick.setText(chat_room_name);
 
         FirebaseDatabase.getInstance().getReference().child("User_Info").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
