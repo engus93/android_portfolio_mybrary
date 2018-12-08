@@ -98,8 +98,10 @@ public class Home_04_Chatting extends AppCompatActivity {
     private String opponent_uid;
     private String chatroom_key;
 
+    private String room_key;
 
     Member_ArrayList opponent_chat_info;
+    String now_opponent_uid;
 
     protected void onCreate(Bundle savedInstancesState) {
 
@@ -117,6 +119,39 @@ public class Home_04_Chatting extends AppCompatActivity {
         mGlideRequestManager = Glide.with(this);
 
         opponent_uid = getIntent().getStringExtra("opponent_uid");
+        room_key = getIntent().getStringExtra("chat_room_key");
+
+        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(room_key).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot item : dataSnapshot.getChildren()){
+
+                    now_opponent_uid = item.getKey();
+
+                    System.out.println(now_opponent_uid);
+
+                    if(!(now_opponent_uid.equals(App.user_UID_get()))) {
+
+                        break;
+
+                    }
+
+                }
+
+//                mRecyclerView.setAdapter(new Home_04_Group_Chatting.Group_Message_Adapter());
+//                mRecyclerView.setLayoutManager(new LinearLayoutManager(Home_04_Group_Chatting.this));
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+
+
 
         //보내는 버튼
         home_04_chatting_send.setOnClickListener(new View.OnClickListener() {
@@ -126,7 +161,7 @@ public class Home_04_Chatting extends AppCompatActivity {
                 Home_04_ChatRoom_Model chatRoom_model = new Home_04_ChatRoom_Model();
 
                 chatRoom_model.users.put(App.user_UID_get(), true);
-                chatRoom_model.users.put(opponent_uid, true);
+                chatRoom_model.users.put(now_opponent_uid, true);
 
                 if (chatroom_key == null) {
                     home_04_chatting_send.setEnabled(false);    //전송버튼 비활성화 통신중에 잠시 대기
@@ -244,7 +279,7 @@ public class Home_04_Chatting extends AppCompatActivity {
 
                     Home_04_ChatRoom_Model chatRoom_model = item.getValue(Home_04_ChatRoom_Model.class);
 
-                    if(chatRoom_model.users.containsKey(opponent_uid) && chatRoom_model.users.size() == 2){
+                    if(chatRoom_model.users.containsKey(now_opponent_uid) && chatRoom_model.users.size() == 2){
 
                         chatroom_key = item.getKey();
                         home_04_chatting_send.setEnabled(true); //전송 버튼 살리기(활성화)
@@ -274,7 +309,7 @@ public class Home_04_Chatting extends AppCompatActivity {
             contents = new ArrayList<>();
 
             //유저의 정보 가져오기
-            FirebaseDatabase.getInstance().getReference().child("User_Info").child(opponent_uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference().child("User_Info").child(now_opponent_uid).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     opponent_chat_info = dataSnapshot.getValue(Member_ArrayList.class);

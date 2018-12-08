@@ -145,7 +145,6 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
 
         //메세지 내용 불러오는 메소드
         void getMessageList(){
-            System.out.println(chat_room_key);
             databaseReference = FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("message");
             valueEventListener = databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override

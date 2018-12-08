@@ -29,7 +29,9 @@ import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class Home_04_FriendList extends AppCompatActivity {
 
@@ -61,6 +63,44 @@ public class Home_04_FriendList extends AppCompatActivity {
 
                 chatRoom_model.users.put(App.user_UID_get(), true);
                 FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(roomkey).setValue(chatRoom_model);
+
+                FirebaseDatabase.getInstance().getReference().child("User_Info").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        String[] zz = new String[chatRoom_model.users.size()];
+
+                        Set key = chatRoom_model.users.keySet();
+
+                        String room_name = "";
+
+                        int i = 0;
+
+                        for (Iterator iterator = key.iterator(); iterator.hasNext();) {
+                            String keyName = (String) iterator.next();
+
+                            zz[i] = keyName;
+
+                            i += 1;
+                        }
+
+                        for(int j = 0; j < zz.length; i++){
+
+                            String a = (String) dataSnapshot.child(zz[j]).child("user_nick").getValue();
+
+                            room_name += a;
+
+                        }
+
+                        Log.d("체크", room_name);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
                 Intent intent = new Intent(view.getContext(), Home_04_Group_Chatting.class);
                 intent.putExtra("chat_room_key", roomkey);
@@ -154,12 +194,53 @@ public class Home_04_FriendList extends AppCompatActivity {
             //채팅 상대 클릭 채팅 시작
             holder.click_item.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(final View v) {
 
-                    Intent intent = new Intent(v.getContext(), Home_04_Chatting.class);
-                    intent.putExtra("opponent_uid", all_user_info.get(position).user_UID);
-                    startActivity(intent);
+                    FirebaseDatabase.getInstance().getReference().child("Chatting_Room").orderByChild("users/" + App.user_UID_get()).equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                            Boolean skip = true;
+
+                            for (DataSnapshot item : dataSnapshot.getChildren()) {
+
+                                Home_04_ChatRoom_Model chatRoom_model = item.getValue(Home_04_ChatRoom_Model.class);
+
+                                if (chatRoom_model.users.containsKey(all_user_info.get(position).user_UID) && chatRoom_model.users.size() == 2) {
+
+                                    roomkey = item.getKey();
+
+                                    Log.d("체크", "넌 되냐");
+
+                                    skip = false;
+
+                                }
+
+                            }
+
+                            if (skip) {
+                                chatRoom_model.users.put(App.user_UID_get(), true);
+                                chatRoom_model.users.put(all_user_info.get(position).user_UID, true);
+                                FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(roomkey).setValue(chatRoom_model);
+
+                                Log.d("체크", "뭐지");
+
+                            }
+
+                            Intent intent = new Intent(v.getContext(), Home_04_Chatting.class);
+                            intent.putExtra("opponent_uid", all_user_info.get(position).user_UID);
+                            intent.putExtra("chat_room_key", roomkey);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            startActivity(intent);
+                            finish();
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             });
 

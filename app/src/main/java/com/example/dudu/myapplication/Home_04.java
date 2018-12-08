@@ -329,6 +329,7 @@ public class Home_04 extends AppCompatActivity {
 
                         }else {
                             intent = new Intent(v.getContext(), Home_04_Chatting.class);
+                            intent.putExtra("chat_room_key", room_keys.get(position));
                             intent.putExtra("opponent_uid", opponent_users.get(position));
                         }
 
