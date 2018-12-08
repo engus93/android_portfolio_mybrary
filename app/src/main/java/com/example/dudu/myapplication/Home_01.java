@@ -72,9 +72,6 @@ public class Home_01 extends AppCompatActivity {
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_01);
 
-        //토큰 발행
-        getToken();
-
         //파베 객체선언
         mAuth = FirebaseAuth.getInstance();
 
@@ -145,6 +142,9 @@ public class Home_01 extends AppCompatActivity {
 
             }
         });
+
+        //토큰 발행
+        getToken();
 
         //드로어 프로필
         FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
@@ -280,26 +280,20 @@ public class Home_01 extends AppCompatActivity {
 
     void getToken(){
 
-        Map<String, Object> map = new HashMap<>();
-
-        map.put("user_token", FirebaseInstanceId.getInstance().getInstanceId());
-
-        FirebaseDatabase.getInstance().getReference().child("User_Token").child(App.user_UID_get()).setValue(map);
-
-        FirebaseDatabase.getInstance().getReference("User_Token").child(App.user_UID_get()).child("user_token").child("result").child("token").addValueEventListener(new ValueEventListener() {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
 
-                FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()).child("user_token").setValue(dataSnapshot.getValue());
+                Object token = task.getResult();
 
-            }
+                String user_token = ((InstanceIdResult) token).getToken();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d("체크", "" + user_token);
+
+                FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()).child("user_token").setValue(user_token);
 
             }
         });
-
 
     }
 

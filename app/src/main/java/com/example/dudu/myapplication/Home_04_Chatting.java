@@ -409,9 +409,7 @@ public class Home_04_Chatting extends AppCompatActivity {
 
                 read_user_count(position, messageViewHolder.read_me);
 
-
-                //상대방이 보낸 메세지
-            }else{
+            }else{  //상대방이 보낸 메세지
 
                 messageViewHolder.chat_you.setVisibility(View.VISIBLE);
                 messageViewHolder.user_contents.setText(contents.get(position).contents);

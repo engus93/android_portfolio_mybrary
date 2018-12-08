@@ -1,5 +1,8 @@
 package com.example.dudu.myapplication;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Home_02_02_ArrayList {
     public String book;
     public String name;
@@ -8,6 +11,10 @@ public class Home_02_02_ArrayList {
     public String main;
     public String user_key;
     public String user_uid;
+
+    public int like_count = 0;
+    public Map<String, Boolean> user_mybrary_like = new HashMap<>();
+
 
     public Home_02_02_ArrayList(String book, String name, String author, String finish, String main, String user_key, String user_uid) {
         this.book = book;
