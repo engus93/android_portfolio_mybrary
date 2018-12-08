@@ -260,6 +260,21 @@ public class Home_01 extends AppCompatActivity {
             }
         });
 
+        FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()).child("user_nick").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                App.my_nick = (String) dataSnapshot.getValue();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+
 
     }
 
@@ -274,7 +289,6 @@ public class Home_01 extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference("User_Token").child(App.user_UID_get()).child("user_token").child("result").child("token").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
 
                 FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()).child("user_token").setValue(dataSnapshot.getValue());
 

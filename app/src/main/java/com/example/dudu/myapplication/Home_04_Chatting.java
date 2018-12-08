@@ -72,6 +72,7 @@ public class Home_04_Chatting extends AppCompatActivity {
 
     Context context;
 
+
     //사진 추가하기
 
     private static final int MY_PERMISSION_CAMERA = 1111;
@@ -139,9 +140,6 @@ public class Home_04_Chatting extends AppCompatActivity {
 
                 }
 
-//                mRecyclerView.setAdapter(new Home_04_Group_Chatting.Group_Message_Adapter());
-//                mRecyclerView.setLayoutManager(new LinearLayoutManager(Home_04_Group_Chatting.this));
-
             }
 
             @Override
@@ -150,8 +148,6 @@ public class Home_04_Chatting extends AppCompatActivity {
             }
 
         });
-
-
 
         //보내는 버튼
         home_04_chatting_send.setOnClickListener(new View.OnClickListener() {
@@ -245,12 +241,17 @@ public class Home_04_Chatting extends AppCompatActivity {
 
         NotificationModel notificationModel = new NotificationModel();
         notificationModel.to = opponent_chat_info.user_token;
-        notificationModel.notification.tile = opponent_chat_info.user_nick;
+        //백그라운드용
+        notificationModel.notification.title = App.my_nick;
         notificationModel.notification.text = home_04_chatting_ET.getText().toString();
+        //포그라운드용
+        notificationModel.data.title = App.my_nick;
+        notificationModel.data.text = home_04_chatting_ET.getText().toString();
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf8"), gson.toJson(notificationModel));
 
-        Request request = new Request.Builder().header("Content-Type", "application/json").addHeader("Authorization", "key=AIzaSyCVJJ2FRUYpnUY2cZrBJo5LsxYjezSJFko")
+        Request request = new Request.Builder().header("Content-Type", "application/json")
+                .addHeader("Authorization", "key=AIzaSyCVJJ2FRUYpnUY2cZrBJo5LsxYjezSJFko")
                 .url("https://fcm.googleapis.com/fcm/send")
                 .post(requestBody)
                 .build();
@@ -298,7 +299,6 @@ public class Home_04_Chatting extends AppCompatActivity {
     }
 
     class Home_04_Chatting_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
 
         List<Home_04_ChatRoom_Model.Message> contents;
 

@@ -1,5 +1,6 @@
 package com.example.dudu.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,7 +27,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,6 +37,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class Home_04_Group_Chatting extends AppCompatActivity {
     Map<String, Member_ArrayList> all_user_info = new HashMap<>();
@@ -105,9 +116,39 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
 
         });
 
+        //메뉴창
+        home_04_chatting_joinlist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                MainActivity.showToast(Home_04_Group_Chatting.this, "메뉴 창!");
+
+            }
+        });
+
+        //뒤로가기
+        home_04_friendlist_back_B.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                onBackPressed();
+
+            }
+        });
+
+        //카메라 기능
+        home_04_chatting_camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+//                showchat();
+
+            }
+        });
+
     }
 
-    void init(){
+    void init() {
 
         //보내는 버튼
         home_04_chatting_send.setOnClickListener(new View.OnClickListener() {
@@ -119,15 +160,80 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
                 message.contents = home_04_chatting_ET.getText().toString();
                 message.time = ServerValue.TIMESTAMP;
 
-                FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("message").push().setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
+                FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("message").push().setValue(message);
+
+                FirebaseDatabase.getInstance().getReference("Chatting_Room").child(chat_room_key).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onSuccess(Void aVoid) {
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        Map<String, Boolean> map = (Map<String, Boolean>) dataSnapshot.getValue();
+
+                        for (String item : map.keySet()) {
+                            if (item.equals(App.user_UID_get())) {
+                                continue;
+                            } else {
+                                sendFcm(all_user_info.get(item).user_token);
+                            }
+                        }
                         //텍스트 창 초기화
                         home_04_chatting_ET.setText(null);
 
                     }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
                 });
 
+            }
+        });
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if(valueEventListener != null) {
+            databaseReference.removeEventListener(valueEventListener);
+        }
+        finish();
+
+        Intent intent1 = new Intent(this, Home_04.class);
+        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent1);
+
+    }
+
+    void sendFcm(String push_Token){
+
+        Gson gson = new Gson();
+
+        NotificationModel notificationModel = new NotificationModel();
+        notificationModel.to = push_Token;
+        //백그라운드용
+        notificationModel.notification.title = App.my_nick;
+        notificationModel.notification.text = home_04_chatting_ET.getText().toString();
+        //포그라운드용
+        notificationModel.data.title = App.my_nick;
+        notificationModel.data.text = home_04_chatting_ET.getText().toString();
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf8"), gson.toJson(notificationModel));
+
+        Request request = new Request.Builder().header("Content-Type", "application/json")
+                .addHeader("Authorization", "key=AIzaSyCVJJ2FRUYpnUY2cZrBJo5LsxYjezSJFko")
+                .url("https://fcm.googleapis.com/fcm/send")
+                .post(requestBody)
+                .build();
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
 
             }
         });
