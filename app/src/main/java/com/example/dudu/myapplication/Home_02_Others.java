@@ -1,0 +1,406 @@
+package com.example.dudu.myapplication;
+
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TimeZone;
+import java.util.TreeMap;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class Home_02_Others extends AppCompatActivity {
+
+    @BindView(R.id.home_02_others_back)
+    ImageButton home_02_others_back;
+
+    @BindView(R.id.home_02_others_profile)
+    ImageView home_02_others_profile;
+
+    @BindView(R.id.home_02_others_title)
+    TextView home_02_others_title;
+
+    @BindView(R.id.home_02_others_re_mini_1_T)
+    TextView home_02_others_book;
+
+    @BindView(R.id.home_02_others_re_mini_2_T)
+    TextView home_02_others_follower;
+
+    @BindView(R.id.home_02_others_re_mini_3_T)
+    TextView home_02_others_following;
+
+    @BindView(R.id.home_02_others_re_screen_T)
+    TextView home_02_others_screen;
+
+    @BindView(R.id.home_02_others_follow)
+    Button home_02_others_follow;
+
+    @BindView(R.id.home_02_others_message)
+    Button home_02_others_message;
+
+    //글라이드 오류 방지
+    public RequestManager mGlideRequestManager;
+
+    String other_user_uid;
+
+    String roomkey;
+
+    Member_ArrayList other_info = new Member_ArrayList();
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        super.setContentView(R.layout.home_02_others);
+        ButterKnife.bind(this);
+
+        //글라이드 오류 방지
+        mGlideRequestManager = Glide.with(Home_02_Others.this);
+
+        other_user_uid = getIntent().getStringExtra("user_uid");
+
+        //유저 정보 세팅
+        FirebaseDatabase.getInstance().getReference().child("User_Info").child(other_user_uid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                other_info = dataSnapshot.getValue(Member_ArrayList.class);
+
+                mGlideRequestManager.load(other_info.user_profile).fitCenter().into(home_02_others_profile);
+
+                home_02_others_title.setText(other_info.user_nick);
+
+                home_02_others_follower.setText(String.valueOf(other_info.user_follower.size()));
+
+                home_02_others_following.setText(String.valueOf(other_info.user_following.size()));
+
+                home_02_others_screen.setText(other_info.user_talk);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        //채팅방으로 이동
+        home_02_others_message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                FirebaseDatabase.getInstance().getReference().child("Chatting_Room").orderByChild("users/" + App.user_UID_get()).equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        Boolean skip = true;
+
+                        Home_04_ChatRoom_Model chatRoom_model = new Home_04_ChatRoom_Model();
+
+                        for (DataSnapshot item : dataSnapshot.getChildren()) {
+
+                            chatRoom_model = item.getValue(Home_04_ChatRoom_Model.class);
+
+                            if (chatRoom_model.users.containsKey(other_user_uid) && chatRoom_model.users.size() == 2) {
+
+                                roomkey = item.getKey();
+
+                                Log.d("체크", "넌 되냐");
+
+                                skip = false;
+
+                            }
+
+                        }
+
+                        if (skip) {
+                            chatRoom_model.users.put(App.user_UID_get(), true);
+                            chatRoom_model.users.put(other_user_uid, true);
+                            FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(roomkey).setValue(chatRoom_model);
+
+                            Log.d("체크", "뭐지");
+
+                        }
+
+                        Intent intent = new Intent(Home_02_Others.this, Home_04_Chatting.class);
+                        intent.putExtra("opponent_uid", other_user_uid);
+                        intent.putExtra("chat_room_key", roomkey);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        startActivity(intent);
+                        finish();
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+        });
+
+        //팔로우 버튼 트렌잭션
+        home_02_others_follow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //팔로우
+                onFollowerClicked(FirebaseDatabase.getInstance().getReference().child("User_Info").child(other_user_uid));
+
+                //팔로잉
+                onFollowingClicked(FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()));
+
+            }
+        });
+
+        FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Member_ArrayList temp = new Member_ArrayList();
+
+                temp = dataSnapshot.getValue(Member_ArrayList.class);
+
+                if (!(temp.user_following.containsKey(other_user_uid))) {
+                    // Unstar the post and remove self from stars
+                    home_02_others_follow.setSelected(false);
+                    home_02_others_follow.setTextColor(Color.parseColor("#FFFFFF"));
+                    home_02_others_follow.setText("팔로우");
+                } else {
+                    // Star the post and add self to stars
+                    home_02_others_follow.setSelected(true);
+                    home_02_others_follow.setTextColor(Color.parseColor("#e47700"));
+                    home_02_others_follow.setText("팔로잉");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    //팔로워 트렌잭션
+    private void onFollowerClicked(DatabaseReference postRef) {
+        postRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Member_ArrayList home_03_user_follower = mutableData.getValue(Member_ArrayList.class);
+                if (home_03_user_follower == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                if (home_03_user_follower.user_follower.containsKey(App.user_UID_get())) {
+                    // Unstar the post and remove self from stars
+                    home_03_user_follower.user_follower.remove(App.user_UID_get());
+
+                } else {
+                    // Star the post and add self to stars
+                    home_03_user_follower.user_follower.put(App.user_UID_get(), true);
+
+                }
+
+                // Set value and report transaction success
+                mutableData.setValue(home_03_user_follower);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+    }
+
+    //팔로잉 트렌잭션
+    private void onFollowingClicked(DatabaseReference postRef) {
+        postRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Member_ArrayList home_03_user_following = mutableData.getValue(Member_ArrayList.class);
+                if (home_03_user_following == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                if (home_03_user_following.user_following.containsKey(other_user_uid)) {
+                    // Unstar the post and remove self from stars
+                    home_03_user_following.user_following.remove(other_user_uid);
+                } else {
+                    // Star the post and add self to stars
+                    home_03_user_following.user_following.put(other_user_uid, true);
+                }
+
+                // Set value and report transaction success
+                mutableData.setValue(home_03_user_following);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+
+        //---------------------------리싸이클러뷰---------------------------------
+        final RecyclerView mRecyclerView;
+        RecyclerView.LayoutManager mLayoutManager;
+        Log.d("리싸이", "어댑터 - 파이어베이스 -1 ");
+
+        mRecyclerView = findViewById(R.id.home_02_others_Recycle);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new GridLayoutManager(this,3);
+        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        Home_02_Others_Adapter myAdapter = new Home_02_Others_Adapter();
+        mRecyclerView.setAdapter(myAdapter);
+
+    }
+
+    class Home_02_Others_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+        private ArrayList<Home_02_02_ArrayList> others_mybrary = new ArrayList<>();
+
+        //글라이드 오류 방지
+        public RequestManager mGlideRequestManager;
+
+        public Home_02_Others_Adapter() {
+
+            Log.d("리싸이", "어댑터 - 파이어베이스 0 ");
+
+            FirebaseDatabase.getInstance().getReference().child("Users_MyBrary").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    Log.d("리싸이", "어댑터 - 파이어베이스");
+
+                    others_mybrary.clear();
+
+                    Home_02_02_ArrayList temp = new Home_02_02_ArrayList();
+
+                    for (DataSnapshot item : dataSnapshot.getChildren()) {
+
+                        temp = item.getValue(Home_02_02_ArrayList.class);
+
+                        if(temp.user_uid.equals(other_user_uid)) {
+
+                            others_mybrary.add(item.getValue(Home_02_02_ArrayList.class));
+
+                        }else {
+
+                        }
+
+                    }
+
+                    notifyDataSetChanged();
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
+        }
+
+        @NonNull
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
+
+            Log.d("리싸이", "어댑터 - 생성");
+
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_02_re_02, parent, false);
+            return new home_02_other_re(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
+            Log.d("리싸이", "어댑터 - 바인드");
+            final home_02_other_re home_02_other_re = ((home_02_other_re)holder);
+
+            Log.d("리싸클", others_mybrary.get(position).book);
+
+//            mGlideRequestManager.load(others_mybrary.get(position).book).into(((home_02_other_re) holder).book_image);
+            ((home_02_other_re) holder).book_name.setText(others_mybrary.get(position).name);
+            ((home_02_other_re) holder).book_author.setText(others_mybrary.get(position).author);
+            ((home_02_other_re) holder).book_finish.setText(others_mybrary.get(position).finish);
+
+            ((home_02_other_re) holder).click_item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    MainActivity.showToast(Home_02_Others.this, "꾸욱");
+
+                }
+            });
+
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return others_mybrary.size();
+        }
+
+        public class home_02_other_re extends RecyclerView.ViewHolder {
+
+            ImageView book_image;
+            TextView book_name;
+            TextView book_author;
+            TextView book_finish;
+            CardView click_item;
+
+            public home_02_other_re(View view) {
+                super(view);
+
+                book_image = view.findViewById(R.id.home_02_re_book_I);
+                book_name = view.findViewById(R.id.home_02_re_book_name_T);
+                book_author = view.findViewById(R.id.home_02_re_book_author_T);
+                book_finish = view.findViewById(R.id.home_02_re_book_finish_T);
+                click_item = view.findViewById(R.id.home_02_cardview);
+
+
+            }
+        }
+
+    }
+
+}

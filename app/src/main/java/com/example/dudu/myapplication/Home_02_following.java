@@ -1,5 +1,6 @@
 package com.example.dudu.myapplication;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -187,6 +188,18 @@ public class Home_02_following extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            //미니홈피 가기
+            holder.click_item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(Home_02_following.this, Home_02_Others.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(intent);
 
                 }
             });

@@ -507,10 +507,6 @@ public class Home_04_Chatting extends AppCompatActivity {
         }
         finish();
 
-        Intent intent1 = new Intent(this, Home_04.class);
-        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent1);
-
     }
 
 //    //------------------------책 사진 적용--------------
