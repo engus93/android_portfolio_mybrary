@@ -193,6 +193,7 @@ public class Home_02 extends AppCompatActivity {
                 home_02_nick_title.setText((CharSequence) dataSnapshot.child(App.user_UID_get()).child("user_nick").getValue());
                 home_02_user_talk.setText((CharSequence) dataSnapshot.child(App.user_UID_get()).child("user_talk").getValue());
 
+
                 String change = (String) dataSnapshot.child(App.user_UID_get()).child("user_profile").getValue();
                 if(!(change.equals(""))){
                     mGlideRequestManager.load(change).into(mybrary_profile);

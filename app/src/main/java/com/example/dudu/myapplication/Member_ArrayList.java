@@ -1,5 +1,8 @@
 package com.example.dudu.myapplication;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Member_ArrayList {
 
     public String member_birthday;
@@ -13,7 +16,9 @@ public class Member_ArrayList {
     public String user_profile;
     public String user_talk;
     public String user_token;
-//    String user_key;
+
+    public Map<String, Boolean> user_follow = new HashMap<>();
+    public Map<String, Boolean> user_following = new HashMap<>();
 
     public Member_ArrayList(String member_id, String member_password,String member_name,String member_birthday, String member_sex,String user_UID){
 
@@ -27,7 +32,7 @@ public class Member_ArrayList {
         this.user_like = "좋아하는 책 없음";
         this.user_profile = "https://firebasestorage.googleapis.com/v0/b/mybrary-4084f.appspot.com/o/MyBrary%2FDefault%2FUser_Default_Profile.png?alt=media&token=9c0e3cd1-f0d1-4df7-a98e-3fa64c6312df";
         this.user_UID = user_UID;
-//        this.user_key = user_key;
+        
     }
 
     public Member_ArrayList(){

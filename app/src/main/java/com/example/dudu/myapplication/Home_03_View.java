@@ -55,6 +55,8 @@ public class Home_03_View extends AppCompatActivity {
     ImageView home_03_like_image;
     TextView home_03_like_text;
 
+    String opponent_uid;
+
     Context context;
 
     @Override
@@ -103,12 +105,13 @@ public class Home_03_View extends AppCompatActivity {
 
         //나의 게시물인지 확인 (내가 아니다)
         if (!(App.home_03_ArrayList.get(position).getUser_uid().equals(App.user_UID_get()))) {
-
+            home_03_view_follow_B.setVisibility(View.VISIBLE);
             home_02_02_remove_B.setVisibility(View.INVISIBLE);
             home_03_like_text.setVisibility(View.VISIBLE);
 
         }else{
             //나다
+            home_03_view_follow_B.setVisibility(View.GONE);
             home_02_02_remove_B.setVisibility(View.VISIBLE);
 //            home_03_like_text.setVisibility(View.GONE);
 
@@ -120,7 +123,10 @@ public class Home_03_View extends AppCompatActivity {
             home_03_like_image.setSelected(false);
         }
 
-        //리싸이클러뷰 파이어베이스 업데이트
+        //작성자 UID 가져오기
+        opponent_uid = App.home_03_ArrayList.get(position).getUser_uid();
+
+        //리싸이클러뷰 글쓴이 정보 파이어베이스에서 가져오기
         FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -136,6 +142,7 @@ public class Home_03_View extends AppCompatActivity {
             }
         });
 
+        //좋아요 트랜젝션
         FirebaseDatabase.getInstance().getReference().child("Users_MyBrary").child(App.home_03_ArrayList.get(position).user_key).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -148,6 +155,16 @@ public class Home_03_View extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        //팔로우 버튼 트렌잭션
+        home_03_view_follow_B.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                onFollowClicked(FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.home_03_ArrayList.get(position).getUser_uid()));
 
             }
         });
@@ -257,18 +274,49 @@ public class Home_03_View extends AppCompatActivity {
 
                 if (home_03_mybrary.user_mybrary_like.containsKey(App.user_UID_get())) {
                     // Unstar the post and remove self from stars
-                    home_03_mybrary.like_count = home_03_mybrary.like_count - 1;
+//                    home_03_mybrary.like_count = home_03_mybrary.like_count - 1;
                     home_03_mybrary.user_mybrary_like.remove(App.user_UID_get());
                     home_03_like_image.setSelected(false);
                 } else {
                     // Star the post and add self to stars
-                    home_03_mybrary.like_count = home_03_mybrary.like_count + 1;
+//                    home_03_mybrary.like_count = home_03_mybrary.like_count + 1;
                     home_03_mybrary.user_mybrary_like.put(App.user_UID_get(), true);
                     home_03_like_image.setSelected(true);
                 }
 
                 // Set value and report transaction success
                 mutableData.setValue(home_03_mybrary);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+    }
+
+    private void onFollowClicked(DatabaseReference postRef) {
+        postRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Member_ArrayList home_03_user_follow = mutableData.getValue(Member_ArrayList.class);
+                if (home_03_user_follow == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                if (home_03_user_follow.user_follow.containsKey(App.user_UID_get())) {
+                    // Unstar the post and remove self from stars
+                    home_03_user_follow.user_follow.remove(App.user_UID_get());
+//                    home_03_like_image.setSelected(false);
+                } else {
+                    // Star the post and add self to stars
+                    home_03_user_follow.user_follow.put(App.user_UID_get(), true);
+//                    home_03_like_image.setSelected(true);
+                }
+
+                // Set value and report transaction success
+                mutableData.setValue(home_03_user_follow);
                 return Transaction.success(mutableData);
             }
 
