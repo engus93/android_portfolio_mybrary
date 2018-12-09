@@ -3,6 +3,7 @@ package com.example.dudu.myapplication;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +13,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
@@ -24,15 +24,7 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
-import org.mozilla.javascript.tools.jsc.Main;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import de.hdodenhof.circleimageview.CircleImageView;
-
-import static com.example.dudu.myapplication.MainActivity.toast;
 
 public class Home_03_View extends AppCompatActivity {
 
@@ -56,6 +48,7 @@ public class Home_03_View extends AppCompatActivity {
     TextView home_03_like_text;
 
     String opponent_uid;
+    String my_uid;
 
     Context context;
 
@@ -82,6 +75,8 @@ public class Home_03_View extends AppCompatActivity {
         Intent intent1 = getIntent();
 
         final int position = intent1.getIntExtra("position", -1);
+
+        my_uid = App.user_UID_get();
 
         if (!(position == -1)) {
 
@@ -127,13 +122,30 @@ public class Home_03_View extends AppCompatActivity {
         opponent_uid = App.home_03_ArrayList.get(position).getUser_uid();
 
         //리싸이클러뷰 글쓴이 정보 파이어베이스에서 가져오기
-        FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("User_Info").child(App.home_03_ArrayList.get(position).getUser_uid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                home_03_wright_user_nick.setText((CharSequence) dataSnapshot.child(App.home_03_ArrayList.get(position).getUser_uid()).child("user_nick").getValue());
-                mGlideRequestManager.load(dataSnapshot.child(App.home_03_ArrayList.get(position).getUser_uid()).child("user_profile").getValue()).fitCenter().into(home_03_wright_user_profile);
+                Member_ArrayList temp = new Member_ArrayList();
 
+                temp = dataSnapshot.getValue(Member_ArrayList.class);
+
+                home_03_wright_user_nick.setText(temp.user_nick);
+                mGlideRequestManager.load(temp.user_profile).fitCenter().into(home_03_wright_user_profile);
+
+                if (temp.user_follower.containsKey(my_uid)) {
+
+                    home_03_view_follow_B.setSelected(true);
+                    home_03_view_follow_B.setTextColor(Color.parseColor("#e47700"));
+                    home_03_view_follow_B.setText("팔로잉");
+
+                } else {
+
+                    home_03_view_follow_B.setSelected(false);
+                    home_03_view_follow_B.setTextColor(Color.parseColor("#FFFFFF"));
+                    home_03_view_follow_B.setText("팔로우");
+
+                }
             }
 
             @Override
@@ -164,10 +176,42 @@ public class Home_03_View extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                onFollowClicked(FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.home_03_ArrayList.get(position).getUser_uid()));
+                //팔로우
+                onFollowerClicked(FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.home_03_ArrayList.get(position).getUser_uid()));
+
+                //팔로잉
+                onFollowingClicked(FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()));
 
             }
         });
+
+//        FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//                Member_ArrayList temp = new Member_ArrayList();
+//
+//                temp = dataSnapshot.getValue(Member_ArrayList.class);
+//
+//                if (!(temp.user_following.containsKey(App.home_03_ArrayList.get(position).getUser_uid()))) {
+//                    // Unstar the post and remove self from stars
+//                    home_03_view_follow_B.setSelected(false);
+//                    home_03_view_follow_B.setTextColor(Color.parseColor("#FFFFFF"));
+//                    home_03_view_follow_B.setText("팔로우");
+//                } else {
+//                    // Star the post and add self to stars
+//                    home_03_view_follow_B.setSelected(true);
+//                    home_03_view_follow_B.setTextColor(Color.parseColor("#e47700"));
+//                    home_03_view_follow_B.setText("팔로잉");
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
 
         home_03_like_image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -263,6 +307,7 @@ public class Home_03_View extends AppCompatActivity {
 
     }
 
+    //좋아요 트렌잭션
     private void onStarClicked(DatabaseReference postRef) {
         postRef.runTransaction(new Transaction.Handler() {
             @Override
@@ -296,27 +341,58 @@ public class Home_03_View extends AppCompatActivity {
         });
     }
 
-    private void onFollowClicked(DatabaseReference postRef) {
+    //팔로워 트렌잭션
+    private void onFollowerClicked(DatabaseReference postRef) {
         postRef.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-                Member_ArrayList home_03_user_follow = mutableData.getValue(Member_ArrayList.class);
-                if (home_03_user_follow == null) {
+                Member_ArrayList home_03_user_follower = mutableData.getValue(Member_ArrayList.class);
+                if (home_03_user_follower == null) {
                     return Transaction.success(mutableData);
                 }
 
-                if (home_03_user_follow.user_follow.containsKey(App.user_UID_get())) {
+                if (home_03_user_follower.user_follower.containsKey(my_uid)) {
                     // Unstar the post and remove self from stars
-                    home_03_user_follow.user_follow.remove(App.user_UID_get());
-//                    home_03_like_image.setSelected(false);
+                    home_03_user_follower.user_follower.remove(my_uid);
+
                 } else {
                     // Star the post and add self to stars
-                    home_03_user_follow.user_follow.put(App.user_UID_get(), true);
-//                    home_03_like_image.setSelected(true);
+                    home_03_user_follower.user_follower.put(my_uid, true);
+
                 }
 
                 // Set value and report transaction success
-                mutableData.setValue(home_03_user_follow);
+                mutableData.setValue(home_03_user_follower);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+    }
+
+    //팔로잉 트렌잭션
+    private void onFollowingClicked(DatabaseReference postRef) {
+        postRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Member_ArrayList home_03_user_following = mutableData.getValue(Member_ArrayList.class);
+                if (home_03_user_following == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                if (home_03_user_following.user_following.containsKey(opponent_uid)) {
+                    // Unstar the post and remove self from stars
+                    home_03_user_following.user_following.remove(opponent_uid);
+                } else {
+                    // Star the post and add self to stars
+                    home_03_user_following.user_following.put(opponent_uid, true);
+                }
+
+                // Set value and report transaction success
+                mutableData.setValue(home_03_user_following);
                 return Transaction.success(mutableData);
             }
 

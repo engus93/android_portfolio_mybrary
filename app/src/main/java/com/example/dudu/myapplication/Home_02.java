@@ -50,6 +50,8 @@ public class Home_02 extends AppCompatActivity {
     TextView home_02_user_talk; //대화명
 
     TextView home_02_book_count;  //내 서재 게시글 변수
+    TextView home_02_follow_count;  //내 서재 게시글 변수
+    TextView home_02_following_count;  //내 서재 게시글 변수
     ImageView drower_profile;   //드로어 프로필
     ImageView mybrary_profile;  //서재 프로필
 
@@ -77,6 +79,8 @@ public class Home_02 extends AppCompatActivity {
         mGlideRequestManager = Glide.with(this);
 
         home_02_book_count = findViewById(R.id.home_02_re_mini_1_T);  //내 서재 게시글 수
+        home_02_follow_count = findViewById(R.id.home_02_re_mini_2_T);  //내 서재 게시글 수
+        home_02_following_count = findViewById(R.id.home_02_re_mini_3_T);  //내 서재 게시글 수
         home_02_nick_title = findViewById(R.id.home_02_nick_title); //내 닉네임 글
         home_02_user_talk = findViewById(R.id.home_02_re_screen_T); //내 대화명
         drower_profile = findViewById(R.id.home_drawer_profile);    //드로어 프로필
@@ -89,7 +93,6 @@ public class Home_02 extends AppCompatActivity {
 
         //쉐어드 안에 있는 정보 가져오기
         String check = saveMember_info.getString(App.User_ID + "_MyBrary", "");
-
 
         //---------------------------리싸이클러뷰---------------------------------
         final RecyclerView mRecyclerView;
@@ -190,9 +193,13 @@ public class Home_02 extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                home_02_nick_title.setText((CharSequence) dataSnapshot.child(App.user_UID_get()).child("user_nick").getValue());
-                home_02_user_talk.setText((CharSequence) dataSnapshot.child(App.user_UID_get()).child("user_talk").getValue());
+                Member_ArrayList temp = new Member_ArrayList();
 
+                temp = dataSnapshot.child(App.user_UID_get()).getValue(Member_ArrayList.class);
+
+                home_02_nick_title.setText(temp.user_nick);
+                home_02_follow_count.setText(String.valueOf(temp.user_follower.size()));
+                home_02_following_count.setText(String.valueOf(temp.user_following.size()));
 
                 String change = (String) dataSnapshot.child(App.user_UID_get()).child("user_profile").getValue();
                 if(!(change.equals(""))){

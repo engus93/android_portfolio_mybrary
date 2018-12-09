@@ -17,7 +17,7 @@ public class Member_ArrayList {
     public String user_talk;
     public String user_token;
 
-    public Map<String, Boolean> user_follow = new HashMap<>();
+    public Map<String, Boolean> user_follower = new HashMap<>();
     public Map<String, Boolean> user_following = new HashMap<>();
 
     public Member_ArrayList(String member_id, String member_password,String member_name,String member_birthday, String member_sex,String user_UID){
