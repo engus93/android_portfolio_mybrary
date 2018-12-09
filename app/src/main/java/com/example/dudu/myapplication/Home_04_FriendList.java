@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
@@ -315,7 +316,6 @@ public class Home_04_FriendList extends AppCompatActivity {
                 user_id = view.findViewById(R.id.home_04_friend_id);
                 user_invite = view.findViewById(R.id.home_04_friend_invite);
                 click_item = view.findViewById(R.id.home_04_friend_cardview);
-
 
             }
 

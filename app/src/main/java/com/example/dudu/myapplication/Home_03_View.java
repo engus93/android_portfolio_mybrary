@@ -74,22 +74,22 @@ public class Home_03_View extends AppCompatActivity {
 
         Intent intent1 = getIntent();
 
-        final int position = intent1.getIntExtra("position", -1);
+        final int position_10 = intent1.getIntExtra("position", -1);
 
         my_uid = App.user_UID_get();
 
-        if (!(position == -1)) {
+        if (!(position_10 == -1)) {
 
-            if(App.home_03_ArrayList.get(position).book.equals("null")){
+            if(App.home_03_ArrayList.get(position_10).book.equals("null")){
                 home_02_02_book_image.setImageResource(R.drawable.home_02_default);
             }else{  //비트맵일 경우
-                mGlideRequestManager.load(App.home_03_ArrayList.get(position).book).into(home_02_02_book_image);
+                mGlideRequestManager.load(App.home_03_ArrayList.get(position_10).book).into(home_02_02_book_image);
             }
 
-            home_02_02_book_name.setText(App.home_03_ArrayList.get(position).getName());
-            home_02_02_book_author.setText(App.home_03_ArrayList.get(position).getAuthor());
-            home_02_02_book_date.setText(App.home_03_ArrayList.get(position).getFinish());
-            home_02_02_book_main.setText(App.home_03_ArrayList.get(position).getMain());
+            home_02_02_book_name.setText(App.home_03_ArrayList.get(position_10).getName());
+            home_02_02_book_author.setText(App.home_03_ArrayList.get(position_10).getAuthor());
+            home_02_02_book_date.setText(App.home_03_ArrayList.get(position_10).getFinish());
+            home_02_02_book_main.setText(App.home_03_ArrayList.get(position_10).getMain());
 
         } else {
 
@@ -99,7 +99,7 @@ public class Home_03_View extends AppCompatActivity {
         }
 
         //나의 게시물인지 확인 (내가 아니다)
-        if (!(App.home_03_ArrayList.get(position).getUser_uid().equals(App.user_UID_get()))) {
+        if (!(App.home_03_ArrayList.get(position_10).getUser_uid().equals(App.user_UID_get()))) {
             home_03_view_follow_B.setVisibility(View.VISIBLE);
             home_02_02_remove_B.setVisibility(View.INVISIBLE);
             home_03_like_text.setVisibility(View.VISIBLE);
@@ -112,17 +112,17 @@ public class Home_03_View extends AppCompatActivity {
 
         }
 
-        if (App.home_03_ArrayList.get(position).user_mybrary_like.containsKey(App.user_UID_get())) {
+        if (App.home_03_ArrayList.get(position_10).user_mybrary_like.containsKey(App.user_UID_get())) {
             home_03_like_image.setSelected(true);
         }else{
             home_03_like_image.setSelected(false);
         }
 
         //작성자 UID 가져오기
-        opponent_uid = App.home_03_ArrayList.get(position).getUser_uid();
+        opponent_uid = App.home_03_ArrayList.get(position_10).getUser_uid();
 
         //리싸이클러뷰 글쓴이 정보 파이어베이스에서 가져오기
-        FirebaseDatabase.getInstance().getReference("User_Info").child(App.home_03_ArrayList.get(position).getUser_uid()).addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("User_Info").child(App.home_03_ArrayList.get(position_10).getUser_uid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -155,7 +155,7 @@ public class Home_03_View extends AppCompatActivity {
         });
 
         //좋아요 트랜젝션
-        FirebaseDatabase.getInstance().getReference().child("Users_MyBrary").child(App.home_03_ArrayList.get(position).user_key).addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("Users_MyBrary").child(App.home_03_ArrayList.get(position_10).user_key).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -177,7 +177,7 @@ public class Home_03_View extends AppCompatActivity {
             public void onClick(View v) {
 
                 //팔로우
-                onFollowerClicked(FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.home_03_ArrayList.get(position).getUser_uid()));
+                onFollowerClicked(FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.home_03_ArrayList.get(position_10).getUser_uid()));
 
                 //팔로잉
                 onFollowingClicked(FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()));
@@ -185,45 +185,45 @@ public class Home_03_View extends AppCompatActivity {
             }
         });
 
-//        FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()).addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
-//                Member_ArrayList temp = new Member_ArrayList();
-//
-//                temp = dataSnapshot.getValue(Member_ArrayList.class);
-//
-//                if (!(temp.user_following.containsKey(App.home_03_ArrayList.get(position).getUser_uid()))) {
-//                    // Unstar the post and remove self from stars
-//                    home_03_view_follow_B.setSelected(false);
-//                    home_03_view_follow_B.setTextColor(Color.parseColor("#FFFFFF"));
-//                    home_03_view_follow_B.setText("팔로우");
-//                } else {
-//                    // Star the post and add self to stars
-//                    home_03_view_follow_B.setSelected(true);
-//                    home_03_view_follow_B.setTextColor(Color.parseColor("#e47700"));
-//                    home_03_view_follow_B.setText("팔로잉");
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
+        FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Member_ArrayList temp = new Member_ArrayList();
+
+                temp = dataSnapshot.getValue(Member_ArrayList.class);
+
+                if (!(temp.user_following.containsKey(App.home_03_ArrayList.get(position_10).getUser_uid()))) {
+                    // Unstar the post and remove self from stars
+                    home_03_view_follow_B.setSelected(false);
+                    home_03_view_follow_B.setTextColor(Color.parseColor("#FFFFFF"));
+                    home_03_view_follow_B.setText("팔로우");
+                } else {
+                    // Star the post and add self to stars
+                    home_03_view_follow_B.setSelected(true);
+                    home_03_view_follow_B.setTextColor(Color.parseColor("#e47700"));
+                    home_03_view_follow_B.setText("팔로잉");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         home_03_like_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (App.home_03_ArrayList.get(position).user_mybrary_like.containsKey(App.user_UID_get())) {
+                if (App.home_03_ArrayList.get(position_10).user_mybrary_like.containsKey(App.user_UID_get())) {
                     MainActivity.showToast(Home_03_View.this, "취소하셨습니다.");
                 } else {
                     MainActivity.showToast(Home_03_View.this, "좋아요를 눌렀습니다.");
                 }
 
-                onStarClicked(FirebaseDatabase.getInstance().getReference().child("Users_MyBrary").child(App.home_03_ArrayList.get(position).user_key));
+                onStarClicked(FirebaseDatabase.getInstance().getReference().child("Users_MyBrary").child(App.home_03_ArrayList.get(position_10).user_key));
 
             }
 
@@ -247,7 +247,7 @@ public class Home_03_View extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
-                                key = App.home_03_ArrayList.get(position).getUser_key();
+                                key = App.home_03_ArrayList.get(position_10).getUser_key();
 
                                 //파이어베이스 데이터베이스 선언
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();

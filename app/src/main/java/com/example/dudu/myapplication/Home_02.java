@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -79,8 +80,8 @@ public class Home_02 extends AppCompatActivity {
         mGlideRequestManager = Glide.with(this);
 
         home_02_book_count = findViewById(R.id.home_02_re_mini_1_T);  //내 서재 게시글 수
-        home_02_follow_count = findViewById(R.id.home_02_re_mini_2_T);  //내 서재 게시글 수
-        home_02_following_count = findViewById(R.id.home_02_re_mini_3_T);  //내 서재 게시글 수
+        home_02_follow_count = findViewById(R.id.home_02_re_mini_2_T);  //내 팔로워 수
+        home_02_following_count = findViewById(R.id.home_02_re_mini_3_T);  //내 팔로잉 수
         home_02_nick_title = findViewById(R.id.home_02_nick_title); //내 닉네임 글
         home_02_user_talk = findViewById(R.id.home_02_re_screen_T); //내 대화명
         drower_profile = findViewById(R.id.home_drawer_profile);    //드로어 프로필
@@ -187,6 +188,31 @@ public class Home_02 extends AppCompatActivity {
 
             }
         });
+
+        //팔로워 보기
+        findViewById(R.id.home_02_mini_2_B).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(Home_02.this, Home_02_follower.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+
+            }
+        });
+
+        //팔로잉 보기
+        findViewById(R.id.home_02_mini_3_B).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(Home_02.this, Home_02_following.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+
+            }
+        });
+
 
         //유저 정보 파이어 베이스
         FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {

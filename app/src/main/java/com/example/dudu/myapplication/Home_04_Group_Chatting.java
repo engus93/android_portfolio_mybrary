@@ -155,37 +155,39 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Home_04_ChatRoom_Model.Message message = new Home_04_ChatRoom_Model.Message();
-                message.wright_user = App.user_UID_get();
-                message.contents = home_04_chatting_ET.getText().toString();
-                message.time = ServerValue.TIMESTAMP;
+                if (!(home_04_chatting_ET.getText().length() <= 0)) {
 
-                FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("message").push().setValue(message);
+                    Home_04_ChatRoom_Model.Message message = new Home_04_ChatRoom_Model.Message();
+                    message.wright_user = App.user_UID_get();
+                    message.contents = home_04_chatting_ET.getText().toString();
+                    message.time = ServerValue.TIMESTAMP;
 
-                FirebaseDatabase.getInstance().getReference("Chatting_Room").child(chat_room_key).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("message").push().setValue(message);
 
-                        Map<String, Boolean> map = (Map<String, Boolean>) dataSnapshot.getValue();
+                    FirebaseDatabase.getInstance().getReference("Chatting_Room").child(chat_room_key).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        for (String item : map.keySet()) {
-                            if (item.equals(App.user_UID_get())) {
-                                continue;
-                            } else {
-                                sendFcm(all_user_info.get(item).user_token);
+                            Map<String, Boolean> map = (Map<String, Boolean>) dataSnapshot.getValue();
+
+                            for (String item : map.keySet()) {
+                                if (item.equals(App.user_UID_get())) {
+                                    continue;
+                                } else {
+                                    sendFcm(all_user_info.get(item).user_token);
+                                }
                             }
+                            //텍스트 창 초기화
+                            home_04_chatting_ET.setText(null);
+
                         }
-                        //텍스트 창 초기화
-                        home_04_chatting_ET.setText(null);
 
-                    }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
+                        }
+                    });
+                }
             }
         });
 

@@ -44,6 +44,10 @@
 
         <activity android:name=".Home_02"/>
 
+        <activity android:name=".Home_02_follower"/>
+
+        <activity android:name=".Home_02_following"/>
+
         <activity android:name=".Home_02_01"/>
 
         <activity android:name=".Home_02_02"/>
