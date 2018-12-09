@@ -29,14 +29,8 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TimeZone;
-import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -185,6 +179,18 @@ public class Home_02_Others extends AppCompatActivity {
             }
         });
 
+        //---------------------------리싸이클러뷰---------------------------------
+        //리싸이클러뷰
+        RecyclerView mRecyclerView;
+        RecyclerView.LayoutManager mLayoutManager;
+        mRecyclerView = findViewById(R.id.home_02_others_Recycle);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new GridLayoutManager(this,3);
+        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        Home_02_Others_Adapter myAdapter = new Home_02_Others_Adapter();
+        mRecyclerView.setAdapter(myAdapter);
+
         FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -212,7 +218,6 @@ public class Home_02_Others extends AppCompatActivity {
 
             }
         });
-
 
     }
 
@@ -277,20 +282,6 @@ public class Home_02_Others extends AppCompatActivity {
             }
         });
 
-        //---------------------------리싸이클러뷰---------------------------------
-        final RecyclerView mRecyclerView;
-        RecyclerView.LayoutManager mLayoutManager;
-        Log.d("리싸이", "어댑터 - 파이어베이스 -1 ");
-
-        mRecyclerView = findViewById(R.id.home_02_others_Recycle);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new GridLayoutManager(this,3);
-        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        Home_02_Others_Adapter myAdapter = new Home_02_Others_Adapter();
-        mRecyclerView.setAdapter(myAdapter);
-
     }
 
     class Home_02_Others_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -304,7 +295,7 @@ public class Home_02_Others extends AppCompatActivity {
 
             Log.d("리싸이", "어댑터 - 파이어베이스 0 ");
 
-            FirebaseDatabase.getInstance().getReference().child("Users_MyBrary").addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference().child("Users_MyBrary").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -320,13 +311,19 @@ public class Home_02_Others extends AppCompatActivity {
 
                         if(temp.user_uid.equals(other_user_uid)) {
 
+//                            Collections.reverse(others_mybrary);
+
                             others_mybrary.add(item.getValue(Home_02_02_ArrayList.class));
+
+//                            Collections.reverse(others_mybrary);
 
                         }else {
 
                         }
 
                     }
+
+                    Collections.reverse(others_mybrary);
 
                     notifyDataSetChanged();
 
@@ -356,7 +353,7 @@ public class Home_02_Others extends AppCompatActivity {
             Log.d("리싸이", "어댑터 - 바인드");
             final home_02_other_re home_02_other_re = ((home_02_other_re)holder);
 
-            Log.d("리싸클", others_mybrary.get(position).book);
+            Log.d("리싸클", "" + others_mybrary.get(position).book);
 
 //            mGlideRequestManager.load(others_mybrary.get(position).book).into(((home_02_other_re) holder).book_image);
             ((home_02_other_re) holder).book_name.setText(others_mybrary.get(position).name);
