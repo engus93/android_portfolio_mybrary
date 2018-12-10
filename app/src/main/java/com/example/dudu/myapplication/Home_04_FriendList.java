@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +43,7 @@ public class Home_04_FriendList extends AppCompatActivity {
     Button home_04_friend_search_B;
 
     List<Member_ArrayList> all_user_info;
+    List<Member_ArrayList> search_user_info = new ArrayList<>();
     Home_04_ChatRoom_Model chatRoom_model = new Home_04_ChatRoom_Model();
 
     //글라이드 오류 방지
@@ -48,6 +51,8 @@ public class Home_04_FriendList extends AppCompatActivity {
 
     String roomkey;
     String room_name = "";
+
+    Home_04_Friend_Adapter home_04_friend_adapter = new Home_04_Friend_Adapter();
 
     protected void onCreate(Bundle savedInstancesState) {
 
@@ -140,6 +145,27 @@ public class Home_04_FriendList extends AppCompatActivity {
             }
         });
 
+        home_04_friend_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                String searchText = home_04_friend_search.getText().toString();
+                home_04_friend_adapter.filter(searchText);
+
+            }
+
+        });
+
         //뒤로가기
         home_04_friendlist_back_B.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,9 +185,13 @@ public class Home_04_FriendList extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(new Home_04_Friend_Adapter());
+
+        mRecyclerView.setAdapter(home_04_friend_adapter);
+
+
 
     }
+
 
     public class Home_04_Friend_Adapter extends RecyclerView.Adapter<Home_04_Friend_Adapter.home_04_friend_re> {
 
@@ -326,6 +356,29 @@ public class Home_04_FriendList extends AppCompatActivity {
             }
 
         }
+
+        //검색 아이템
+        void filter(String searchText) {
+            search_user_info.clear();
+
+            if(searchText.length() == 0) {
+                search_user_info.addAll(all_user_info);
+            }
+            else {
+
+                for(Member_ArrayList item : all_user_info) {
+                    if(item.getUser_nick().contains(searchText)) {
+
+                        search_user_info.add(item);
+
+                    }
+                }
+            }
+
+            notifyDataSetChanged();
+
+        }
+
 
     }
 

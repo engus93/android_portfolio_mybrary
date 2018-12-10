@@ -13,12 +13,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 
 public class Search_02 extends AppCompatActivity {
+
+    //글라이드 오류 방지
+    public RequestManager mGlideRequestManager;
 
     Boolean book_check = false;
 
@@ -46,6 +51,9 @@ public class Search_02 extends AppCompatActivity {
         search_02_date = findViewById(R.id.search_02_date);
         search_02_price = findViewById(R.id.search_02_price);
 
+        //글라이드 오류 방지
+        mGlideRequestManager = Glide.with(Search_02.this);
+
         Intent intent1 = getIntent();
 
         final int position = intent1.getIntExtra("position",-1);
@@ -55,7 +63,7 @@ public class Search_02 extends AppCompatActivity {
         System.out.println(position);
 
         if(!(position == -1)) {
-            search_02_book.setImageResource(App.search_book_ArrayList.get(position).getDrawableId());
+            mGlideRequestManager.load(App.search_book_ArrayList.get(position).drawableId).fitCenter().into(search_02_book);
             search_02_name.setText(App.search_book_ArrayList.get(position).getName());
             search_02_author.setText(App.search_book_ArrayList.get(position).getAuthor());
             search_02_publisher = findViewById(R.id.search_02_publisher);
@@ -175,9 +183,23 @@ public class Search_02 extends AppCompatActivity {
             }
         });
 
+        //MyBrary로 가져가서 쓰기
+        findViewById(R.id.search_02_mybrary_B).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(Search_02.this, Home_02_01.class);
+                intent.putExtra("search_book_image", App.search_book_ArrayList.get(position).getDrawableId());
+                intent.putExtra("search_book_name", App.search_book_ArrayList.get(position).getName());
+                intent.putExtra("search_book_author", App.search_book_ArrayList.get(position).getAuthor());
+                startActivity(intent);
+
+            }
+        });
 
 
 
+        //찜목록 추가
         findViewById(R.id.search_02_Go_B).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

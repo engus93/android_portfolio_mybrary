@@ -3,7 +3,7 @@ package com.example.dudu.myapplication;
 import java.util.Comparator;
 
 public class Home_05_ArrayList {
-    public int heart_book;
+    public String heart_book;
     public String heart_name;
     public String heart_author;
     public String heart_price;
@@ -13,7 +13,7 @@ public class Home_05_ArrayList {
     public String login_user_uid;
 
 
-    public Home_05_ArrayList(int book, String name, String author, String price, double rank, int heart_heart, String user_key, String login_user_uid) {
+    public Home_05_ArrayList(String book, String name, String author, String price, double rank, int heart_heart, String user_key, String login_user_uid) {
         this.heart_book = book;
         this.heart_name = name;
         this.heart_author = author;
@@ -28,11 +28,11 @@ public class Home_05_ArrayList {
 
     }
 
-    public int getHeart_book() {
+    public String getHeart_book() {
         return heart_book;
     }
 
-    public void setHeart_book(int heart_book) {
+    public void setHeart_book(String heart_book) {
         this.heart_book = heart_book;
     }
 

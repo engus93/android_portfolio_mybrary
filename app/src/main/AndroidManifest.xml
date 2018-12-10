@@ -74,7 +74,8 @@
 
         <activity android:name=".Home_05"/>
 
-        <activity android:name=".Search_01"/>
+        <activity android:name=".Search_01"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <activity android:name=".Search_02"/>
 

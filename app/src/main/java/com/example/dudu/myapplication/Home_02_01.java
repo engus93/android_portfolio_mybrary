@@ -31,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.github.ybq.android.spinkit.sprite.Sprite;
@@ -73,7 +74,7 @@ public class Home_02_01 extends AppCompatActivity {
 
     //파이어베이스
     private FirebaseStorage storage;    //스토리지
-    public String change;
+    public String change = "https://firebasestorage.googleapis.com/v0/b/mybrary-4084f.appspot.com/o/MyBrary%2FDefault%2Fhome_02_default.png?alt=media&token=41370ddd-23c6-4ae2-a2c1-68db57c9ae2f";
     String key; //푸쉬 키
 
     Uri downloadUri;
@@ -113,6 +114,10 @@ public class Home_02_01 extends AppCompatActivity {
     String set_date;
     Boolean Regeneration = false;
 
+    String search_book_name;
+    String search_book_author;
+    String search_book_image;
+
     protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
@@ -132,6 +137,9 @@ public class Home_02_01 extends AppCompatActivity {
         home_02_01_book_image_progress.setVisibility(View.GONE);
 
         storage = FirebaseStorage.getInstance();    //스토리지 객체
+
+        //글라이드 오류 방지
+        mGlideRequestManager = Glide.with(Home_02_01.this);
 
         //뒤로가기
         home_02_01_back_B.setOnClickListener(new View.OnClickListener() {
@@ -209,17 +217,9 @@ public class Home_02_01 extends AppCompatActivity {
                                     //랜덤 키 생성
                                     key = myRef.push().getKey();
 
-                                    if(change == null) {
-                                        Log.d("체크", "널");
-                                        //정보 삽입
-                                        App.home_02_02_ArrayList.add(new Home_02_02_ArrayList("https://firebasestorage.googleapis.com/v0/b/mybrary-4084f.appspot.com/o/MyBrary%2FDefault%2Fhome_02_default.png?alt=media&token=41370ddd-23c6-4ae2-a2c1-68db57c9ae2f", home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID_get()));
-                                        mybrary_plus = new Home_02_02_ArrayList("null", home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID_get());
-                                    }else{
-                                        Log.d("체크", "잘");
-                                        //정보 삽입
-                                        App.home_02_02_ArrayList.add(new Home_02_02_ArrayList(change, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID_get()));
-                                        mybrary_plus = new Home_02_02_ArrayList(change, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID_get());
-                                    }
+                                    //정보 삽입
+                                    App.home_02_02_ArrayList.add(new Home_02_02_ArrayList(change, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID_get()));
+                                    mybrary_plus = new Home_02_02_ArrayList(change, home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID_get());
 
                                     //파이어베이스에 저장
                                     myRef.child(key).setValue(mybrary_plus);
@@ -298,6 +298,24 @@ public class Home_02_01 extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        search_book_image = getIntent().getStringExtra("search_book_image");
+        search_book_name = getIntent().getStringExtra("search_book_name");
+        search_book_author = getIntent().getStringExtra("search_book_author");
+
+        Log.d("체크", "리즘1"+search_book_name+search_book_author);
+
+        if(search_book_name != null && search_book_author != null && search_book_image != null){
+
+            Log.d("체크", "리즘2" + search_book_name);
+
+            home_02_01_book_name.setText(search_book_name);
+            home_02_01_book_author.setText(search_book_author);
+            mGlideRequestManager.load(search_book_image).fitCenter().into(home_02_01_book_image);
+
+            change = search_book_image;
+
+        }
+
         if (Regeneration) {
 
             Regeneration = false;
@@ -316,6 +334,7 @@ public class Home_02_01 extends AppCompatActivity {
                 }
 
             }).setNegativeButton("네",
+
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -452,9 +471,9 @@ public class Home_02_01 extends AppCompatActivity {
                         }else if (pos == 2) {
 
                             //검색해서 가져오기 (틀만 구현)
-                            Toast.makeText(Home_02_01.this, "검색하러 가즈아ㅏㅏ", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(Home_02_01.this, Search_01.class);
-                            startActivityForResult(intent, 4747);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
 
                         }
                     }

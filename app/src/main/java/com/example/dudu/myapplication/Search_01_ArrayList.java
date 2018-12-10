@@ -3,13 +3,13 @@ package com.example.dudu.myapplication;
 import android.graphics.drawable.Drawable;
 
 public class Search_01_ArrayList {
-    public int drawableId;
+    public String drawableId;
     public String name;
     public String author;
     public String price;
     public double star;
 
-    public Search_01_ArrayList(int drawableId, String name, String author, String price, double star){
+    public Search_01_ArrayList(String drawableId, String name, String author, String price, double star){
         this.drawableId = drawableId;
         this.name = name;
         this.author = author;
@@ -17,11 +17,11 @@ public class Search_01_ArrayList {
         this.star = star;
     }
 
-    public int getDrawableId() {
+    public String getDrawableId() {
         return drawableId;
     }
 
-    public void setDrawableId(int drawableId) {
+    public void setDrawableId(String drawableId) {
 
         this.drawableId = drawableId;
     }
@@ -57,4 +57,5 @@ public class Search_01_ArrayList {
     public void setStar(double star) {
         this.star = star;
     }
+
 }

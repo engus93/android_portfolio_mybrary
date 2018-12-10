@@ -17,6 +17,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -37,6 +39,8 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
 
     ArrayList<Search_01_ArrayList> search_book_Array;
 
+    //글라이드 오류 방지
+    public RequestManager mGlideRequestManager;
 
     Search_01_Adapter(Context context,ArrayList<Search_01_ArrayList> searchInfoArrayList){
         this.context = context;
@@ -54,9 +58,12 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
+        //글라이드 오류 방지
+        mGlideRequestManager = Glide.with(context);
+
         final String selItem = search_book_Array.get(position).name;
 
-        holder.book_image.setImageResource(search_book_Array.get(position).drawableId);
+        mGlideRequestManager.load(search_book_Array.get(position).drawableId).fitCenter().into(holder.book_image);
         holder.book_name.setText(search_book_Array.get(position).name);
         holder.book_author.setText(search_book_Array.get(position).author);
         holder.book_price.setText(search_book_Array.get(position).price);

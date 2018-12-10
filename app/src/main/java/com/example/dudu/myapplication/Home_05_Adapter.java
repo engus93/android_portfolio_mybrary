@@ -14,6 +14,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +35,9 @@ public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_H
 
     private ArrayList<Home_05_ArrayList> heart_book_ArrayList;
 
+    //글라이드 오류 방지
+    public RequestManager mGlideRequestManager;
+
     Home_05_Adapter(Context context,ArrayList<Home_05_ArrayList> heartInfoArrayList){
         this.context = context;
         this.heart_book_ArrayList = heartInfoArrayList;
@@ -49,7 +54,10 @@ public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_H
     @Override
     public void onBindViewHolder(final Home_Heart_ViewHolder holder, final int position) {
 
-        holder.heart_book_image.setImageResource(heart_book_ArrayList.get(position).heart_book);
+        //글라이드 오류 방지
+        mGlideRequestManager = Glide.with(context);
+
+        mGlideRequestManager.load(heart_book_ArrayList.get(position).heart_book).fitCenter().into(holder.heart_book_image);
         holder.heart_book_name.setText(heart_book_ArrayList.get(position).heart_name);
         holder.heart_book_author.setText(heart_book_ArrayList.get(position).heart_author);
         holder.heart_book_price.setText(heart_book_ArrayList.get(position).heart_price);
