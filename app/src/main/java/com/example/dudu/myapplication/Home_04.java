@@ -338,7 +338,7 @@ public class Home_04 extends AppCompatActivity {
 
             if (messageMap.keySet().toArray().length > 0) {
                 String lastMessage = (String) Objects.requireNonNull(messageMap.keySet().toArray())[0];
-                if(Objects.requireNonNull(chatRoom_model.get(position).message.get(lastMessage)).contents.equals("")){
+                if(Objects.requireNonNull(chatRoom_model.get(position).message.get(lastMessage)).picture.length() > 5){
                     home_04_re_item.user_main.setText("사진");
                 }else{
                     home_04_re_item.user_main.setText(Objects.requireNonNull(chatRoom_model.get(position).message.get(lastMessage)).contents);
