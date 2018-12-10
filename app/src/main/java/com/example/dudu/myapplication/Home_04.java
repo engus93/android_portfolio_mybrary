@@ -239,7 +239,7 @@ public class Home_04 extends AppCompatActivity {
 
         public Home_04_Adapter() {
 
-            FirebaseDatabase.getInstance().getReference().child("Chatting_Room").orderByChild("users/" + App.user_UID_get()).equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference().child("Chatting_Room").orderByChild("users/" + App.user_UID_get()).equalTo(true).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     chatRoom_model.clear();
@@ -353,13 +353,13 @@ public class Home_04 extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Intent intent = null;
-                        if(chatRoom_model.get(position).users.size() > 2){
+                        if (chatRoom_model.get(position).users.size() > 2) {
 
                             intent = new Intent(v.getContext(), Home_04_Group_Chatting.class);
                             intent.putExtra("chat_room_key", room_keys.get(position));
                             intent.putExtra("chat_room_name", group_chat_nick);
 
-                        }else {
+                        } else {
                             intent = new Intent(v.getContext(), Home_04_Chatting.class);
                             intent.putExtra("chat_room_key", room_keys.get(position));
                             intent.putExtra("opponent_uid", opponent_users.get(position));
@@ -370,6 +370,7 @@ public class Home_04 extends AppCompatActivity {
                 });
 
             }
+
         }
 
         @Override

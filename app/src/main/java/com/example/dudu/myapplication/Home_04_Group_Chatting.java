@@ -94,6 +94,8 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
 
         home_04_chatting_nick.setText(chat_room_name);
 
+        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("now_login").child(App.user_UID_get()).setValue(false);
+
         FirebaseDatabase.getInstance().getReference().child("User_Info").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -164,17 +166,24 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
 
                     FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("message").push().setValue(message);
 
-                    FirebaseDatabase.getInstance().getReference("Chatting_Room").child(chat_room_key).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                    FirebaseDatabase.getInstance().getReference("Chatting_Room").child(chat_room_key).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                            Map<String, Boolean> map = (Map<String, Boolean>) dataSnapshot.getValue();
+                            Home_04_ChatRoom_Model temp = dataSnapshot.getValue(Home_04_ChatRoom_Model.class);
 
-                            for (String item : map.keySet()) {
+                            for (String item : temp.users.keySet()) {
                                 if (item.equals(App.user_UID_get())) {
                                     continue;
                                 } else {
-                                    sendFcm(all_user_info.get(item).user_token);
+
+                                    Boolean check = temp.now_login.get(item);
+
+                                    if (check) {
+
+                                        sendFcm(all_user_info.get(item).user_token);
+
+                                    }
                                 }
                             }
                             //텍스트 창 초기화
@@ -199,11 +208,14 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
         if(valueEventListener != null) {
             databaseReference.removeEventListener(valueEventListener);
         }
+
+        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("now_login").child(App.user_UID_get()).setValue(true);
+
         finish();
 
-        Intent intent1 = new Intent(this, Home_04.class);
-        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent1);
+//        Intent intent1 = new Intent(this, Home_04.class);
+//        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        startActivity(intent1);
 
     }
 
@@ -419,4 +431,7 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
 
         }
     }
+
+
+
 }

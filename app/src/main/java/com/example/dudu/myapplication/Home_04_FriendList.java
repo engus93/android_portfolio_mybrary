@@ -60,6 +60,7 @@ public class Home_04_FriendList extends AppCompatActivity {
             public void onClick(final View view) {
 
                 chatRoom_model.users.put(App.user_UID_get(), true);
+                chatRoom_model.now_login.put(App.user_UID_get(), true);
                 FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(roomkey).setValue(chatRoom_model);
 
                 final Iterator<Map.Entry<String, Boolean>> entries = chatRoom_model.users.entrySet().iterator();
@@ -227,6 +228,9 @@ public class Home_04_FriendList extends AppCompatActivity {
                             if (skip) {
                                 chatRoom_model.users.put(App.user_UID_get(), true);
                                 chatRoom_model.users.put(all_user_info.get(position).user_UID, true);
+                                chatRoom_model.now_login.put(App.user_UID_get(), true);
+                                chatRoom_model.now_login.put(all_user_info.get(position).user_UID, true);
+
                                 FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(roomkey).setValue(chatRoom_model);
 
                                 Log.d("체크", "뭐지");
@@ -259,10 +263,12 @@ public class Home_04_FriendList extends AppCompatActivity {
                     if (isChecked) {
 
                         chatRoom_model.users.put(all_user_info.get(position).user_UID, true);
+                        chatRoom_model.now_login.put(all_user_info.get(position).user_UID, true);
 
                     } else if (!isChecked) {
 
                         chatRoom_model.users.remove(all_user_info.get(position));
+                        chatRoom_model.now_login.remove(all_user_info.get(position));
 
                     } else {
                         MainActivity.showToast(Home_04_FriendList.this, "오류");

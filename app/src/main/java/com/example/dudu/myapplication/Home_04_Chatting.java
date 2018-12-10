@@ -122,7 +122,7 @@ public class Home_04_Chatting extends AppCompatActivity {
         opponent_uid = getIntent().getStringExtra("opponent_uid");
         room_key = getIntent().getStringExtra("chat_room_key");
 
-//        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(room_key).child("users").child(App.user_UID_get()).setValue(false);
+        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(room_key).child("now_login").child(App.user_UID_get()).setValue(false);
 
         FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(room_key).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -179,10 +179,29 @@ public class Home_04_Chatting extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void aVoid) {
 
-                                sendFcm();
+                                FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("now_login").child(opponent_uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                //텍스트 창 초기화
-                                home_04_chatting_ET.setText(null);
+                                        Boolean temp = dataSnapshot.getValue(Boolean.class);
+
+                                        if(temp){
+
+                                            sendFcm();
+
+                                        }
+
+                                        //텍스트 창 초기화
+                                        home_04_chatting_ET.setText(null);
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
 
                             }
                         });
@@ -505,7 +524,7 @@ public class Home_04_Chatting extends AppCompatActivity {
             databaseReference.removeEventListener(valueEventListener);
         }
 
-        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(room_key).child("users").child(App.user_UID_get()).setValue(true);
+        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(room_key).child("now_login").child(App.user_UID_get()).setValue(true);
 
         finish();
 
