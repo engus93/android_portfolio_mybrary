@@ -33,6 +33,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             sendNotification(title, text);
         }
 
+
     }
 
     @Override
@@ -66,7 +67,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setDefaults(Notification.DEFAULT_VIBRATE)
                         .setContentIntent(pendingIntent);
-
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

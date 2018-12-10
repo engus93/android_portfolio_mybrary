@@ -35,11 +35,15 @@ import com.bumptech.glide.RequestManager;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,8 +51,19 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class Home_02_01 extends AppCompatActivity {
 
@@ -178,7 +193,7 @@ public class Home_02_01 extends AppCompatActivity {
 //                                    Collections.reverse(App.home_02_02_ArrayList);
 
                                     //파이어베이스 데이터베이스 선언
-                                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                    final FirebaseDatabase database = FirebaseDatabase.getInstance();
                                     DatabaseReference myRef = database.getReference("Users_MyBrary");
 
                                     //랜덤 키 생성
@@ -198,6 +213,37 @@ public class Home_02_01 extends AppCompatActivity {
 
                                     //파이어베이스에 저장
                                     myRef.child(key).setValue(mybrary_plus);
+
+                                    FirebaseDatabase.getInstance().getReference().child("User_Info").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                            Member_ArrayList temp = dataSnapshot.child(App.user_UID_get()).getValue(Member_ArrayList.class);
+
+                                            Set set = temp.user_follower.entrySet();
+
+                                            Iterator iterator = set.iterator();
+
+                                            while(iterator.hasNext()){
+
+                                                Map.Entry entry = (Map.Entry)iterator.next();
+
+                                                String key = (String)entry.getKey();
+
+                                                String user_token = dataSnapshot.child(key).child("user_token").getValue(String.class);
+
+                                                sendFcm(user_token);
+
+                                            }
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
 
 //                                    //정보 -> 해쉬맵에 삽입
 //                                    for(int i = 0; i < App.home_02_02_ArrayList.size(); i++){
@@ -273,6 +319,44 @@ public class Home_02_01 extends AppCompatActivity {
 
             alert.show();
         }
+
+    }
+
+    void sendFcm(String to_user){
+
+        Log.d("메세지", "되고있니");
+
+        Gson gson = new Gson();
+
+        NotificationModel notificationModel = new NotificationModel();
+        notificationModel.to = to_user;
+        //백그라운드용
+        notificationModel.notification.title = App.my_nick;
+        notificationModel.notification.text = App.my_nick + "님이 글을 작성하였습니다.";
+
+        //포그라운드용
+        notificationModel.data.title = App.my_nick;
+        notificationModel.notification.text = App.my_nick + "님이 글을 작성하였습니다.";
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf8"), gson.toJson(notificationModel));
+
+        Request request = new Request.Builder().header("Content-Type", "application/json")
+                .addHeader("Authorization", "key=AIzaSyCVJJ2FRUYpnUY2cZrBJo5LsxYjezSJFko")
+                .url("https://fcm.googleapis.com/fcm/send")
+                .post(requestBody)
+                .build();
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+            }
+        });
 
     }
 

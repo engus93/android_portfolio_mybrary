@@ -26,11 +26,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.DoubleBounce;
+import com.github.ybq.android.spinkit.style.FadingCircle;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -62,6 +66,7 @@ public class Home_00_my_info extends AppCompatActivity {
     TextView user_nick;
     TextView user_like;
     TextView user_talk;
+    ProgressBar my_info_progress;
     CircleImageView user_profile;
 
     Uri downloadUri;
@@ -105,7 +110,12 @@ public class Home_00_my_info extends AppCompatActivity {
         user_like = findViewById(R.id.home_00_my_info_genre);
         user_talk = findViewById(R.id.home_00_my_info_talk);
         user_profile = findViewById(R.id.my_info_profile);
+        my_info_progress = findViewById(R.id.my_info_progress);
 
+        Sprite FadingCircle = new FadingCircle();
+        my_info_progress.setIndeterminateDrawable(FadingCircle);
+
+        my_info_progress.setVisibility(View.GONE);
 
         //내 정보 수정 - > 닉네임 수정
         bt_02 = findViewById(R.id.my_info_nick_B);
@@ -166,6 +176,9 @@ public class Home_00_my_info extends AppCompatActivity {
 
                 String profile = dataSnapshot.child(App.user_UID_get()).child("user_profile").getValue().toString();
                 mGlideRequestManager.load(profile).into(iv_view);
+
+                my_info_progress.setVisibility(View.GONE);
+                user_profile.setVisibility(View.VISIBLE);
 
             }
 
@@ -606,6 +619,9 @@ public class Home_00_my_info extends AppCompatActivity {
     }
 
     public void upload(String uri){
+
+        user_profile.setVisibility(View.INVISIBLE);
+        my_info_progress.setVisibility(View.VISIBLE);
 
         StorageReference storageRef = storage.getReference();
 
