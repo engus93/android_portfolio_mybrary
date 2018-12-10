@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,6 +40,9 @@ public class Home_02_following extends AppCompatActivity {
     ImageView home_04_friendlist_back_B;  //뒤로가기 버튼
     TextView home_04_friendlist_title;  //타이틀 제목
 
+    EditText home_04_friend_search;
+    ImageView home_04_friend_search_image;
+
     List<Member_ArrayList> following_user_info;
 
     //글라이드 오류 방지
@@ -52,6 +56,11 @@ public class Home_02_following extends AppCompatActivity {
         home_04_friend_send = findViewById(R.id.home_04_friend_send);
         home_04_friendlist_back_B = findViewById(R.id.home_04_friendlist_back_B);
         home_04_friendlist_title = findViewById(R.id.home_04_friendlist_title);
+        home_04_friend_search = findViewById(R.id.home_04_friend_search_ET);
+        home_04_friend_search_image = findViewById(R.id.home_04_friend_search_image);
+
+        home_04_friend_search.setVisibility(View.GONE);
+        home_04_friend_search_image.setVisibility(View.GONE);
 
         //세팅
         home_04_friendlist_title.setText("Following");
@@ -166,7 +175,7 @@ public class Home_02_following extends AppCompatActivity {
 
                     temp = dataSnapshot.getValue(Member_ArrayList.class);
 
-                    if(following_user_info.size() > 0) {
+                    if(following_user_info.size() > position) {
 
                         if (temp.user_follower.containsKey(following_user_info.get(position).user_UID)) {
 

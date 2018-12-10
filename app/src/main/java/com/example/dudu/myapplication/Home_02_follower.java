@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,6 +40,9 @@ public class Home_02_follower extends AppCompatActivity {
     ImageView home_04_friendlist_back_B;  //뒤로가기 버튼
     TextView home_04_friendlist_title;  //타이틀 제목
 
+    EditText home_04_friend_search;
+    ImageView home_04_friend_search_image;
+
     List<Member_ArrayList> follower_user_info;
 
     //글라이드 오류 방지
@@ -52,6 +56,11 @@ public class Home_02_follower extends AppCompatActivity {
         home_04_friend_send = findViewById(R.id.home_04_friend_send);
         home_04_friendlist_back_B = findViewById(R.id.home_04_friendlist_back_B);
         home_04_friendlist_title = findViewById(R.id.home_04_friendlist_title);
+        home_04_friend_search = findViewById(R.id.home_04_friend_search_ET);
+        home_04_friend_search_image = findViewById(R.id.home_04_friend_search_image);
+
+        home_04_friend_search.setVisibility(View.GONE);
+        home_04_friend_search_image.setVisibility(View.GONE);
 
         //세팅
         home_04_friendlist_title.setText("Follower");
@@ -83,6 +92,7 @@ public class Home_02_follower extends AppCompatActivity {
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(new Home_04_Friend_Adapter());
+
 
     }
 

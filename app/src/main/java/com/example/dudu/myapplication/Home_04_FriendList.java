@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Home_04_FriendList extends AppCompatActivity {
 
@@ -40,9 +41,9 @@ public class Home_04_FriendList extends AppCompatActivity {
     ImageView home_04_friend_send; //채팅방 만들기
     ImageView home_04_friendlist_back_B;  //뒤로가기 버튼
     EditText home_04_friend_search;
-    Button home_04_friend_search_B;
 
     List<Member_ArrayList> all_user_info;
+    List<Member_ArrayList> my_following;
     List<Member_ArrayList> search_user_info = new ArrayList<>();
     Home_04_ChatRoom_Model chatRoom_model = new Home_04_ChatRoom_Model();
 
@@ -63,7 +64,6 @@ public class Home_04_FriendList extends AppCompatActivity {
         home_04_friend_send = findViewById(R.id.home_04_friend_send);
         home_04_friendlist_back_B = findViewById(R.id.home_04_friendlist_back_B);
         home_04_friend_search = findViewById(R.id.home_04_friend_search_ET);
-        home_04_friend_search_B = findViewById(R.id.home_04_friend_search_B);
 
         //다중 사용자 채팅시
         home_04_friend_send.setOnClickListener(new View.OnClickListener() {
@@ -136,15 +136,6 @@ public class Home_04_FriendList extends AppCompatActivity {
             }
         });
 
-        home_04_friend_search_B.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                MainActivity.showToast(Home_04_FriendList.this, "검색");
-
-            }
-        });
-
         home_04_friend_search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -189,7 +180,6 @@ public class Home_04_FriendList extends AppCompatActivity {
         mRecyclerView.setAdapter(home_04_friend_adapter);
 
 
-
     }
 
 
@@ -198,6 +188,7 @@ public class Home_04_FriendList extends AppCompatActivity {
         public Home_04_Friend_Adapter() {
 
             all_user_info = new ArrayList<>();
+            my_following = new ArrayList<>();
 
             FirebaseDatabase.getInstance().getReference().child("User_Info").addValueEventListener(new ValueEventListener() {
                 @Override
@@ -208,11 +199,34 @@ public class Home_04_FriendList extends AppCompatActivity {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         Member_ArrayList member_arrayList = snapshot.getValue(Member_ArrayList.class);
                         if (member_arrayList.user_UID.equals(App.user_UID_get())) {
-                            continue;
+
+                            Member_ArrayList temp = member_arrayList;
+
+                            Set set = temp.user_following.entrySet();
+
+                            Iterator iterator = set.iterator();
+
+                            while(iterator.hasNext()){
+
+                                Map.Entry entry = (Map.Entry)iterator.next();
+
+                                String key = (String)entry.getKey();
+
+                                my_following.add(dataSnapshot.child(key).getValue(Member_ArrayList.class));
+
+                            }
+
+
                         } else {
+
                             all_user_info.add(member_arrayList);
+
                         }
                     }
+
+                    search_user_info.clear();
+
+                    search_user_info.addAll(my_following);
 
                     notifyDataSetChanged();
 
@@ -244,9 +258,9 @@ public class Home_04_FriendList extends AppCompatActivity {
             //글라이드 오류 방지
             mGlideRequestManager = Glide.with(Home_04_FriendList.this);
 
-            mGlideRequestManager.load(all_user_info.get(position).user_profile).into(holder.user_profile);
-            holder.user_nick.setText(all_user_info.get(position).getUser_nick());
-            holder.user_id.setText(all_user_info.get(position).getMember_id());
+            mGlideRequestManager.load(search_user_info.get(position).user_profile).into(holder.user_profile);
+            holder.user_nick.setText(search_user_info.get(position).getUser_nick());
+            holder.user_id.setText(search_user_info.get(position).getMember_id());
 
             roomkey = FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").push().getKey();
 
@@ -265,7 +279,7 @@ public class Home_04_FriendList extends AppCompatActivity {
 
                                 Home_04_ChatRoom_Model chatRoom_model = item.getValue(Home_04_ChatRoom_Model.class);
 
-                                if (chatRoom_model.users.containsKey(all_user_info.get(position).user_UID) && chatRoom_model.users.size() == 2) {
+                                if (chatRoom_model.users.containsKey(search_user_info.get(position).user_UID) && chatRoom_model.users.size() == 2) {
 
                                     roomkey = item.getKey();
 
@@ -279,9 +293,9 @@ public class Home_04_FriendList extends AppCompatActivity {
 
                             if (skip) {
                                 chatRoom_model.users.put(App.user_UID_get(), true);
-                                chatRoom_model.users.put(all_user_info.get(position).user_UID, true);
+                                chatRoom_model.users.put(search_user_info.get(position).user_UID, true);
                                 chatRoom_model.now_login.put(App.user_UID_get(), true);
-                                chatRoom_model.now_login.put(all_user_info.get(position).user_UID, true);
+                                chatRoom_model.now_login.put(search_user_info.get(position).user_UID, true);
 
                                 FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(roomkey).setValue(chatRoom_model);
 
@@ -290,7 +304,7 @@ public class Home_04_FriendList extends AppCompatActivity {
                             }
 
                             Intent intent = new Intent(v.getContext(), Home_04_Chatting.class);
-                            intent.putExtra("opponent_uid", all_user_info.get(position).user_UID);
+                            intent.putExtra("opponent_uid", search_user_info.get(position).user_UID);
                             intent.putExtra("chat_room_key", roomkey);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             startActivity(intent);
@@ -314,13 +328,13 @@ public class Home_04_FriendList extends AppCompatActivity {
 
                     if (isChecked) {
 
-                        chatRoom_model.users.put(all_user_info.get(position).user_UID, true);
-                        chatRoom_model.now_login.put(all_user_info.get(position).user_UID, true);
+                        chatRoom_model.users.put(search_user_info.get(position).user_UID, true);
+                        chatRoom_model.now_login.put(search_user_info.get(position).user_UID, true);
 
                     } else if (!isChecked) {
 
-                        chatRoom_model.users.remove(all_user_info.get(position));
-                        chatRoom_model.now_login.remove(all_user_info.get(position));
+                        chatRoom_model.users.remove(search_user_info.get(position));
+                        chatRoom_model.now_login.remove(search_user_info.get(position));
 
                     } else {
                         MainActivity.showToast(Home_04_FriendList.this, "오류");
@@ -334,7 +348,7 @@ public class Home_04_FriendList extends AppCompatActivity {
         //현재 위치
         @Override
         public int getItemCount() {
-            return all_user_info.size();
+            return search_user_info.size();
         }
 
         public class home_04_friend_re extends RecyclerView.ViewHolder {
@@ -362,7 +376,7 @@ public class Home_04_FriendList extends AppCompatActivity {
             search_user_info.clear();
 
             if(searchText.length() == 0) {
-                search_user_info.addAll(all_user_info);
+                search_user_info.addAll(my_following);
             }
             else {
 
