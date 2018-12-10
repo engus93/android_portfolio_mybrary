@@ -19,7 +19,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -39,21 +42,30 @@ public class Home_05 extends AppCompatActivity {
     ImageButton home_05_menu_05_b;
     ImageButton home_05_search; //검색창 버튼
 
+    ImageView drower_profile;   //드로어 프로필
+
     private long backPressedTime = 0;
 
     int REQ_CALL_SELECT = 1300;
     int REQ_SMS_SELECT = 1400;
+
+    //글라이드 오류 방지
+    public RequestManager mGlideRequestManager;
 
     protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_05);
 
-        //         리싸이클러뷰
+        //글라이드 오류 방지
+        mGlideRequestManager = Glide.with(this);
 
+        //파인드
+        drower_profile = findViewById(R.id.home_drawer_profile);
+
+        //리싸이클러뷰
         final RecyclerView mRecyclerView;
         RecyclerView.LayoutManager mLayoutManager;
-
         mRecyclerView = findViewById(R.id.home_05_RE);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
@@ -117,6 +129,27 @@ public class Home_05 extends AppCompatActivity {
                 Intent intent1 = new Intent(Home_05.this, Search_01.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
+
+            }
+        });
+
+        //유저 정보 파이어 베이스
+        FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Member_ArrayList temp = new Member_ArrayList();
+
+                temp = dataSnapshot.child(App.user_UID_get()).getValue(Member_ArrayList.class);
+
+                Log.d("체크", "" + temp.user_profile);
+
+                mGlideRequestManager.load(temp.user_profile).fitCenter().into(drower_profile);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });

@@ -101,7 +101,7 @@ public class Home_02 extends AppCompatActivity {
 
         mRecyclerView = findViewById(R.id.home_02_RE);
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new GridLayoutManager(this,3);
+        mLayoutManager = new GridLayoutManager(this, 3);
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
@@ -114,7 +114,7 @@ public class Home_02 extends AppCompatActivity {
                 Intent intent1 = new Intent(Home_02.this, Home_01.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
-                overridePendingTransition(0,0 );
+                overridePendingTransition(0, 0);
             }
         });
 
@@ -126,7 +126,7 @@ public class Home_02 extends AppCompatActivity {
                 Intent intent1 = new Intent(Home_02.this, Home_03.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
-                overridePendingTransition(0,0 );
+                overridePendingTransition(0, 0);
 
             }
         });
@@ -139,7 +139,7 @@ public class Home_02 extends AppCompatActivity {
                 Intent intent1 = new Intent(Home_02.this, Home_04.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
-                overridePendingTransition(0,0 );
+                overridePendingTransition(0, 0);
 
             }
         });
@@ -152,7 +152,7 @@ public class Home_02 extends AppCompatActivity {
                 Intent intent1 = new Intent(Home_02.this, Home_05.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
-                overridePendingTransition(0,0 );
+                overridePendingTransition(0, 0);
             }
         });
 
@@ -169,10 +169,10 @@ public class Home_02 extends AppCompatActivity {
         });
 
         //메뉴 2 -> 서재 등록
-        findViewById(R.id.home_02_mini_4_B).setOnClickListener(new View.OnClickListener(){
+        findViewById(R.id.home_02_mini_4_B).setOnClickListener(new View.OnClickListener() {
 
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 Intent intent1 = new Intent(Home_02.this, Home_02_01.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
@@ -228,7 +228,7 @@ public class Home_02 extends AppCompatActivity {
                 home_02_following_count.setText(String.valueOf(temp.user_following.size()));
 
                 String change = (String) dataSnapshot.child(App.user_UID_get()).child("user_profile").getValue();
-                if(!(change.equals(""))){
+                if (!(change.equals(""))) {
                     mGlideRequestManager.load(change).into(mybrary_profile);
                     mGlideRequestManager.load(change).into(drower_profile);
                 }
@@ -289,7 +289,6 @@ public class Home_02 extends AppCompatActivity {
             public void onClick(View v) {
                 drawerLayout.openDrawer(drawerView);
 
-                System.out.println("드로어 열기");
 
             }
         });
@@ -300,8 +299,6 @@ public class Home_02 extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent1 = new Intent(Home_02.this, Home_00_my_info.class);
                 startActivity(intent1);
-
-                System.out.println("내정보 변경");
 
             }
         });
@@ -346,10 +343,7 @@ public class Home_02 extends AppCompatActivity {
             }
         });
 
-
-
     }
-
 
 
     @Override
@@ -460,11 +454,7 @@ public class Home_02 extends AppCompatActivity {
 //            String a = String.valueOf(App.home_02_02_ArrayList.size());
 //            home_02_book_count.setText(a);
 
-
-
-
-
-        }
+    }
 
 
     //뒤로 두번 누르면 종료

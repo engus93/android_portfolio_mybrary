@@ -16,9 +16,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -37,15 +41,25 @@ public class Home_03 extends AppCompatActivity {
     ImageButton home_03_menu_05_b;
     ImageButton home_03_search; //검색창 버튼
 
+    ImageView drower_profile;   //드로어 프로필
+
     private long backPressedTime = 0;
 
     int REQ_CALL_SELECT = 1300;
     int REQ_SMS_SELECT = 1400;
 
+    //글라이드 오류 방지
+    public RequestManager mGlideRequestManager;
+
     protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_03);
+
+        drower_profile = findViewById(R.id.home_drawer_profile);
+
+        //글라이드 오류 방지
+        mGlideRequestManager = Glide.with(this);
 
         //---------------------------리싸이클러뷰---------------------------------
         final RecyclerView mRecyclerView;
@@ -119,6 +133,27 @@ public class Home_03 extends AppCompatActivity {
             }
         });
 
+        //유저 정보 파이어 베이스
+        FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Member_ArrayList temp = new Member_ArrayList();
+
+                temp = dataSnapshot.child(App.user_UID_get()).getValue(Member_ArrayList.class);
+
+                Log.d("체크", "" + temp.user_profile);
+
+                mGlideRequestManager.load(temp.user_profile).fitCenter().into(drower_profile);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         //리싸이클러뷰 파이어베이스 업데이트
         FirebaseDatabase.getInstance().getReference("Users_MyBrary").addValueEventListener(new ValueEventListener() {
             @Override
@@ -154,11 +189,8 @@ public class Home_03 extends AppCompatActivity {
         // Drawer 화면(뷰) 객체 참조
         final View drawerView = (View) findViewById(R.id.home_drawer_01);
 
-        // 드로어 화면을 열고 닫을 버튼 객체 참조
-        ImageButton btnOpenDrawer = (ImageButton) findViewById(R.id.home_menu_01_B);
-
         // 드로어 여는 버튼 리스너
-        btnOpenDrawer.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.home_menu_01_B).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 drawerLayout.openDrawer(drawerView);

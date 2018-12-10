@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.github.ybq.android.spinkit.SpinKitView;
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.FadingCircle;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,6 +38,7 @@ public class Home_02_02 extends AppCompatActivity {
     TextView home_02_02_book_main;
     ImageButton home_02_02_back_B;
     Button home_02_02_remove_B;
+    SpinKitView home_02_01_book_image_progress;
 
     @Override
     protected void onCreate(Bundle savedInstancesState) {
@@ -50,6 +54,11 @@ public class Home_02_02 extends AppCompatActivity {
         home_02_02_book_date = findViewById(R.id.home_02_01_date);
         home_02_02_book_main = findViewById(R.id.home_02_01_main);
         home_02_02_remove_B = findViewById(R.id.home_02_01_plus_B);
+        home_02_01_book_image_progress = findViewById(R.id.my_info_progress);
+
+        Sprite FadingCircle = new FadingCircle();
+        home_02_01_book_image_progress.setIndeterminateDrawable(FadingCircle);
+        home_02_01_book_image_progress.setVisibility(View.GONE);
 
         home_02_02_book_name.setKeyListener(null);
         home_02_02_book_author.setKeyListener(null);

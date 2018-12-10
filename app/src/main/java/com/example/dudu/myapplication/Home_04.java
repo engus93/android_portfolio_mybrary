@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,15 +51,25 @@ public class Home_04 extends AppCompatActivity {
     ImageButton home_04_menu_05_b;
     ImageButton home_04_friend_plus; //검색창 버튼
 
+    ImageView drower_profile;   //드로어 프로필
+
     private long backPressedTime = 0;
 
     int REQ_CALL_SELECT = 1300;
     int REQ_SMS_SELECT = 1400;
 
+    //글라이드 오류 방지
+    public RequestManager mGlideRequestManager;
+
     protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_04);
+
+        //글라이드 오류 방지
+        mGlideRequestManager = Glide.with(this);
+
+        drower_profile = findViewById(R.id.home_drawer_profile);
 
         //메뉴 4 - > 메뉴 1
         home_04_menu_01_b = findViewById(R.id.home_04_menu_01_B);
@@ -118,6 +129,27 @@ public class Home_04 extends AppCompatActivity {
                 Intent intent1 = new Intent(Home_04.this, Home_04_FriendList.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
+
+            }
+        });
+
+        //유저 정보 파이어 베이스
+        FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Member_ArrayList temp = new Member_ArrayList();
+
+                temp = dataSnapshot.child(App.user_UID_get()).getValue(Member_ArrayList.class);
+
+                Log.d("체크", "" + temp.user_profile);
+
+                mGlideRequestManager.load(temp.user_profile).fitCenter().into(drower_profile);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });

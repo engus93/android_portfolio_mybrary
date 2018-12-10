@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.github.ybq.android.spinkit.SpinKitView;
 import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.github.ybq.android.spinkit.style.FadingCircle;
@@ -66,7 +67,7 @@ public class Home_00_my_info extends AppCompatActivity {
     TextView user_nick;
     TextView user_like;
     TextView user_talk;
-    ProgressBar my_info_progress;
+    SpinKitView my_info_progress;
     CircleImageView user_profile;
 
     Uri downloadUri;
@@ -114,7 +115,6 @@ public class Home_00_my_info extends AppCompatActivity {
 
         Sprite FadingCircle = new FadingCircle();
         my_info_progress.setIndeterminateDrawable(FadingCircle);
-
         my_info_progress.setVisibility(View.GONE);
 
         //내 정보 수정 - > 닉네임 수정

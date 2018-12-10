@@ -10,19 +10,21 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/home_drawer_profile"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="5dp"
+            android:clickable="true"
+            android:padding="30dp"
+            android:src="@drawable/user_profile"
             app:layout_constraintBottom_toTopOf="@+id/guideline11"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="spread"
-            android:src ="@drawable/user_profile" />
+            app:layout_constraintVertical_chainStyle="spread" />
 
         <View
             android:id="@+id/view9"

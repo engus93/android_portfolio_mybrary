@@ -32,6 +32,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.RequestManager;
+import com.github.ybq.android.spinkit.SpinKitView;
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.FadingCircle;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -57,6 +60,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -87,6 +91,7 @@ public class Home_02_01 extends AppCompatActivity {
     EditText home_02_01_book_main;
     Button home_02_01_book_plus_B;
     ImageButton home_02_01_back_B;
+    SpinKitView home_02_01_book_image_progress;
 
     Home_02_02_ArrayList mybrary_plus;  //파이어베이스 넣을 객체
 
@@ -120,6 +125,11 @@ public class Home_02_01 extends AppCompatActivity {
         home_02_01_book_main = findViewById(R.id.home_02_01_main);
         home_02_01_book_plus_B = findViewById(R.id.home_02_01_plus_B);
         home_02_01_back_B = findViewById(R.id.home_02_01_back_B);
+        home_02_01_book_image_progress = findViewById(R.id.my_info_progress);
+
+        Sprite FadingCircle = new FadingCircle();
+        home_02_01_book_image_progress.setIndeterminateDrawable(FadingCircle);
+        home_02_01_book_image_progress.setVisibility(View.GONE);
 
         storage = FirebaseStorage.getInstance();    //스토리지 객체
 
@@ -528,7 +538,7 @@ public class Home_02_01 extends AppCompatActivity {
         bitmap_pic = rotate(bitmap, exifDegree);    //비트맵 회전
         string_pic = App.getBase64String(bitmap_pic);   //비트맵 스트링 변환
 
-        home_02_01_book_image.setImageBitmap(bitmap_pic);//이미지 뷰에 비트맵 넣기
+//        home_02_01_book_image.setImageBitmap(bitmap_pic);//이미지 뷰에 비트맵 넣기
 
 //        //쉐어드 생성
 //        SharedPreferences savenick_info = getSharedPreferences("member_info_00", MODE_PRIVATE);
@@ -647,7 +657,6 @@ public class Home_02_01 extends AppCompatActivity {
         bitmap_pic = rotate(bitmap, exifDegree);    //비트맵 회전
         string_pic = App.getBase64String(bitmap_pic);   //비트맵 스트링 변환
 
-        home_02_01_book_image.setImageBitmap(bitmap_pic);
 
         Toast.makeText(Home_02_01.this, "사진이 업로드 되는 동안 잠시만 기다려주세요. :)", Toast.LENGTH_SHORT).show();
 
@@ -724,7 +733,7 @@ public class Home_02_01 extends AppCompatActivity {
             }
         } else {
 
-            //프로필 사진 바꾸기
+            //책 사진 바꾸기
             showmybrary();
 
         }
@@ -741,6 +750,7 @@ public class Home_02_01 extends AppCompatActivity {
                     if (grantResults[i] < 0) {
                         Toast.makeText(this, "해당 권한을 활성화 하셔야 합니다.", Toast.LENGTH_SHORT).show();
                         return;
+
                     }
                 }
 
@@ -754,6 +764,9 @@ public class Home_02_01 extends AppCompatActivity {
     }
 
     public void upload(String uri){
+
+        home_02_01_book_image.setVisibility(View.INVISIBLE);
+        home_02_01_book_image_progress.setVisibility(View.VISIBLE);
 
         StorageReference storageRef = storage.getReference();
 
@@ -782,10 +795,11 @@ public class Home_02_01 extends AppCompatActivity {
                     //정보 삽입
                     change = downloadUri.toString();
 
-                    System.out.println(change);
-//
-//                    //파이어베이스에 저장
-//                    FirebaseDatabase.getInstance().getReference("Users_MyBrary").child(key).child("book").setValue(change);
+
+                    home_02_01_book_image_progress.setVisibility(View.GONE);
+
+                    home_02_01_book_image.setImageBitmap(bitmap_pic);
+                    home_02_01_book_image.setVisibility(View.VISIBLE);
 
                     Toast.makeText(Home_02_01.this, "사진이 업로드 되었습니다.", Toast.LENGTH_SHORT).show();
 
