@@ -187,7 +187,7 @@ public class Home_02_01 extends AppCompatActivity {
                                     if(change == null) {
                                         Log.d("체크", "널");
                                         //정보 삽입
-                                        App.home_02_02_ArrayList.add(new Home_02_02_ArrayList("null", home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID_get()));
+                                        App.home_02_02_ArrayList.add(new Home_02_02_ArrayList("https://firebasestorage.googleapis.com/v0/b/mybrary-4084f.appspot.com/o/MyBrary%2FDefault%2Fhome_02_default.png?alt=media&token=41370ddd-23c6-4ae2-a2c1-68db57c9ae2f", home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID_get()));
                                         mybrary_plus = new Home_02_02_ArrayList("null", home_02_01_book_name.getText().toString(), home_02_01_book_author.getText().toString(), home_02_01_book_date.getText().toString(), home_02_01_book_main.getText().toString(), key, App.user_UID_get());
                                     }else{
                                         Log.d("체크", "잘");

@@ -152,7 +152,6 @@ public class Home_02_Others extends AppCompatActivity {
                         intent.putExtra("chat_room_key", roomkey);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         startActivity(intent);
-                        finish();
 
                     }
 
@@ -364,7 +363,11 @@ public class Home_02_Others extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    MainActivity.showToast(Home_02_Others.this, "꾸욱");
+                    Intent intent = new Intent(Home_02_Others.this, Home_03_View.class);
+                    intent.putExtra("mybrary_key", others_mybrary.get(position).user_key);
+                    intent.putExtra("now_mybrary_uid", others_mybrary.get(position).user_uid);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(intent);
 
                 }
             });

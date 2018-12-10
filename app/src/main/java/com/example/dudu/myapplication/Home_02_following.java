@@ -198,6 +198,7 @@ public class Home_02_following extends AppCompatActivity {
                 public void onClick(View v) {
 
                     Intent intent = new Intent(Home_02_following.this, Home_02_Others.class);
+                    intent.putExtra("user_uid", following_user_info.get(position).user_UID);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(intent);
 

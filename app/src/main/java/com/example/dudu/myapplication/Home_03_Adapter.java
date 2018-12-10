@@ -68,6 +68,8 @@ public class Home_03_Adapter extends RecyclerView.Adapter<Home_03_Adapter.home_0
 //                Toast.makeText(context, selItem, Toast.LENGTH_SHORT).show();
                 Intent intent1 = new Intent(context, Home_03_View.class);
                 intent1.putExtra("position", position);
+                intent1.putExtra("mybrary_key", home_02_02_Array.get(position).user_key);
+                intent1.putExtra("now_mybrary_uid", home_02_02_Array.get(position).user_uid);
                 context.startActivity(intent1);
             }
 
