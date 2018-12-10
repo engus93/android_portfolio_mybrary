@@ -11,8 +11,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,6 +24,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.mozilla.javascript.tools.jsc.Main;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -33,7 +37,8 @@ public class Home_04_FriendList extends AppCompatActivity {
 
     ImageView home_04_friend_send; //채팅방 만들기
     ImageView home_04_friendlist_back_B;  //뒤로가기 버튼
-    android.widget.SearchView home_04_friend_search;
+    EditText home_04_friend_search;
+    Button home_04_friend_search_B;
 
     List<Member_ArrayList> all_user_info;
     Home_04_ChatRoom_Model chatRoom_model = new Home_04_ChatRoom_Model();
@@ -52,68 +57,85 @@ public class Home_04_FriendList extends AppCompatActivity {
 
         home_04_friend_send = findViewById(R.id.home_04_friend_send);
         home_04_friendlist_back_B = findViewById(R.id.home_04_friendlist_back_B);
-        home_04_friend_search = findViewById(R.id.home_04_friend_search);
+        home_04_friend_search = findViewById(R.id.home_04_friend_search_ET);
+        home_04_friend_search_B = findViewById(R.id.home_04_friend_search_B);
 
         //다중 사용자 채팅시
         home_04_friend_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
 
-                chatRoom_model.users.put(App.user_UID_get(), true);
-                chatRoom_model.now_login.put(App.user_UID_get(), true);
-                FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(roomkey).setValue(chatRoom_model);
+                if (chatRoom_model.users.size() > 1) {
 
-                final Iterator<Map.Entry<String, Boolean>> entries = chatRoom_model.users.entrySet().iterator();
+                    chatRoom_model.users.put(App.user_UID_get(), true);
+                    chatRoom_model.now_login.put(App.user_UID_get(), true);
+                    FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(roomkey).setValue(chatRoom_model);
 
-                final String[] zz = new String[chatRoom_model.users.size() - 1];
+                    final Iterator<Map.Entry<String, Boolean>> entries = chatRoom_model.users.entrySet().iterator();
 
-                int i = 0;
+                    final String[] zz = new String[chatRoom_model.users.size() - 1];
 
-                while (entries.hasNext()) {
+                    int i = 0;
 
-                    final Map.Entry<String, Boolean> entry = (Map.Entry<String, Boolean>) entries.next();
+                    while (entries.hasNext()) {
 
-                    System.out.println("key : " + entry.getKey() + " , value : " + entry.getValue());
+                        final Map.Entry<String, Boolean> entry = (Map.Entry<String, Boolean>) entries.next();
 
-                    if (!(entry.getKey().equals(App.user_UID_get()))) {
-                        zz[i] = entry.getKey();
-                        i += 1;
-                    }
+                        System.out.println("key : " + entry.getKey() + " , value : " + entry.getValue());
 
-                }
-
-
-                FirebaseDatabase.getInstance().getReference("User_Info").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                        for (int i = 0; i < zz.length; i++) {
-
-                            String temp = zz[i];
-
-                            if (i == chatRoom_model.users.size() - 2) {
-                                room_name += dataSnapshot.child(temp).child("user_nick").getValue() + " (" + chatRoom_model.users.size() + "명)";
-                                Log.d("체크", "4번 타자");
-                            } else {
-                                room_name += dataSnapshot.child(temp).child("user_nick").getValue() + ", ";
-                                Log.d("체크", "1번 타자");
-                            }
+                        if (!(entry.getKey().equals(App.user_UID_get()))) {
+                            zz[i] = entry.getKey();
+                            i += 1;
                         }
 
-                        Intent intent = new Intent(view.getContext(), Home_04_Group_Chatting.class);
-                        intent.putExtra("chat_room_key", roomkey);
-                        intent.putExtra("chat_room_name", room_name);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        startActivity(intent);
-                        onBackPressed();
-
                     }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    FirebaseDatabase.getInstance().getReference("User_Info").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    }
-                });
+                            for (int i = 0; i < zz.length; i++) {
+
+                                String temp = zz[i];
+
+                                if (i == chatRoom_model.users.size() - 2) {
+                                    room_name += dataSnapshot.child(temp).child("user_nick").getValue() + " (" + chatRoom_model.users.size() + "명)";
+                                    Log.d("체크", "4번 타자");
+                                } else {
+                                    room_name += dataSnapshot.child(temp).child("user_nick").getValue() + ", ";
+                                    Log.d("체크", "1번 타자");
+                                }
+                            }
+
+                            Intent intent = new Intent(view.getContext(), Home_04_Group_Chatting.class);
+                            intent.putExtra("chat_room_key", roomkey);
+                            intent.putExtra("chat_room_name", room_name);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            startActivity(intent);
+                            onBackPressed();
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+                }else{
+
+                    MainActivity.showToast(Home_04_FriendList.this, "단체 채팅은 2명 이상의 친구를 초대해주세요.");
+
+                }
+            }
+        });
+
+        home_04_friend_search_B.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                MainActivity.showToast(Home_04_FriendList.this, "검색");
 
             }
         });

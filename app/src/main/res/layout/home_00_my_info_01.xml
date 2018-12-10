@@ -61,6 +61,7 @@
         android:hint="닉네임 변경"
         android:inputType="text"
         android:maxLines="1"
+        android:maxLength="12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
