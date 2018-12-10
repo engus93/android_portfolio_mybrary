@@ -6,6 +6,58 @@
     android:layout_height="wrap_content">
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/home_04_chatting_re_me"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline25"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.7" />
+
+        <TextView
+            android:id="@+id/time_me"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="3dp"
+            android:text="TextView"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="@+id/home_04_chat_main_me"
+            app:layout_constraintEnd_toStartOf="@+id/home_04_chat_main_me" />
+
+        <TextView
+            android:id="@+id/home_04_chat_main_me"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/chat_me"
+            android:maxWidth="200dp"
+            android:padding="7dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:textAlignment="textStart"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/home_04_chat_read_me"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:text="0"
+            android:textColor="@color/mybrary_main"
+            android:textSize="8sp"
+            app:layout_constraintBottom_toTopOf="@+id/time_me"
+            app:layout_constraintEnd_toEndOf="@+id/time_me" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/home_04_chatting_re_you"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -77,36 +129,92 @@
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/home_04_chatting_re_me"
+        android:id="@+id/home_04_chatting_re_you_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline25"
+        <TextView
+            android:id="@+id/time_you_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.7" />
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="3dp"
+            android:text="몇시 몇분"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="@+id/home_04_chat_main_image"
+            app:layout_constraintStart_toEndOf="@+id/home_04_chat_main_image" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/home_04_chat_profile_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:src="@mipmap/ic_launcher_round"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/home_04_chat_main_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:maxWidth="200dp"
+            android:padding="7dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/home_04_chat_nick_image"
+            app:srcCompat="@drawable/book_01" />
 
         <TextView
-            android:id="@+id/time_me"
+            android:id="@+id/home_04_chat_nick_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textSize="10sp"
+            app:layout_constraintStart_toStartOf="@+id/home_04_chat_main_image"
+            app:layout_constraintTop_toTopOf="@+id/home_04_chat_profile_image" />
+
+        <TextView
+            android:id="@+id/home_04_chat_read_you_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:text="0"
+            android:textColor="@color/mybrary_main"
+            android:textSize="8sp"
+            app:layout_constraintBottom_toTopOf="@+id/time_you_image"
+            app:layout_constraintStart_toStartOf="@+id/time_you_image" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/home_04_chatting_re_me_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/time_me_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="3dp"
             android:text="TextView"
             android:textSize="10sp"
-            app:layout_constraintBottom_toBottomOf="@+id/home_04_chat_main_me"
-            app:layout_constraintEnd_toStartOf="@+id/home_04_chat_main_me" />
+            app:layout_constraintBottom_toBottomOf="@+id/home_04_chat_main_me_image"
+            app:layout_constraintEnd_toStartOf="@+id/home_04_chat_main_me_image" />
 
-        <TextView
-            android:id="@+id/home_04_chat_main_me"
+        <ImageView
+            android:id="@+id/home_04_chat_main_me_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/chat_me"
             android:maxWidth="200dp"
             android:padding="7dp"
             android:paddingStart="10dp"
@@ -114,18 +222,19 @@
             android:textAlignment="textStart"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/book_01" />
 
         <TextView
-            android:id="@+id/home_04_chat_read_me"
+            android:id="@+id/home_04_chat_read_me_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="1dp"
             android:text="0"
             android:textColor="@color/mybrary_main"
             android:textSize="8sp"
-            app:layout_constraintBottom_toTopOf="@+id/time_me"
-            app:layout_constraintEnd_toEndOf="@+id/time_me" />
+            app:layout_constraintBottom_toTopOf="@+id/time_me_image"
+            app:layout_constraintEnd_toEndOf="@+id/time_me_image" />
     </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

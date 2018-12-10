@@ -1,7 +1,6 @@
 package com.example.dudu.myapplication;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -409,6 +408,8 @@ public class Home_04_Chatting extends AppCompatActivity {
             //레이아웃 초기화
             messageViewHolder.chat_you.setVisibility(View.GONE);
             messageViewHolder.chat_me.setVisibility(View.GONE);
+            messageViewHolder.chat_you_image.setVisibility(View.GONE);
+            messageViewHolder.chat_me_image.setVisibility(View.GONE);
 
             //글라이드 오류 방지
             mGlideRequestManager = Glide.with(Home_04_Chatting.this);
@@ -418,24 +419,51 @@ public class Home_04_Chatting extends AppCompatActivity {
             simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
             String message_time = simpleDateFormat.format(date);
 
-            //내가 보낸 메세지
-            if(contents.get(position).wright_user.equals(App.user_UID_get())){
+            if(contents.get(position).picture.equals("")) {
 
-                messageViewHolder.chat_me.setVisibility(View.VISIBLE);
-                messageViewHolder.getUser_contents_me.setText(contents.get(position).contents);
-                messageViewHolder.time_me.setText(message_time);
+                //내가 보낸 메세지
+                if (contents.get(position).wright_user.equals(App.user_UID_get())) {
 
-                read_user_count(position, messageViewHolder.read_me);
+                    messageViewHolder.chat_me.setVisibility(View.VISIBLE);
+                    messageViewHolder.user_contents_me.setText(contents.get(position).contents);
+                    messageViewHolder.time_me.setText(message_time);
 
-            }else{  //상대방이 보낸 메세지
+                    read_user_count(position, messageViewHolder.read_me);
 
-                messageViewHolder.chat_you.setVisibility(View.VISIBLE);
-                messageViewHolder.user_contents.setText(contents.get(position).contents);
-                messageViewHolder.user_nick.setText(opponent_chat_info.user_nick);
-                mGlideRequestManager.load(opponent_chat_info.user_profile).fitCenter().into(messageViewHolder.user_profile);
-                messageViewHolder.time_you.setText(message_time);
+                } else {  //상대방이 보낸 메세지
 
-                read_user_count(position, messageViewHolder.read_you);
+                    messageViewHolder.chat_you.setVisibility(View.VISIBLE);
+                    messageViewHolder.user_contents.setText(contents.get(position).contents);
+                    messageViewHolder.user_nick.setText(opponent_chat_info.user_nick);
+                    mGlideRequestManager.load(opponent_chat_info.user_profile).fitCenter().into(messageViewHolder.user_profile);
+                    messageViewHolder.time_you.setText(message_time);
+
+                    read_user_count(position, messageViewHolder.read_you);
+
+                }
+
+            }else if(!(contents.get(position).picture.equals(""))){
+
+                //내가 보낸 메세지
+                if (contents.get(position).wright_user.equals(App.user_UID_get())) {
+
+                    messageViewHolder.chat_me_image.setVisibility(View.VISIBLE);
+                    //사진 문법 넣기
+                    messageViewHolder.time_me_image.setText(message_time);
+
+                    read_user_count(position, messageViewHolder.read_me_image);
+
+                } else {  //상대방이 보낸 메세지
+
+                    messageViewHolder.chat_you_image.setVisibility(View.VISIBLE);
+                    //사진 문법 넣기
+                    messageViewHolder.user_nick.setText(opponent_chat_info.user_nick);
+                    mGlideRequestManager.load(opponent_chat_info.user_profile).fitCenter().into(messageViewHolder.user_profile);
+                    messageViewHolder.time_you_image.setText(message_time);
+
+                    read_user_count(position, messageViewHolder.read_you_image);
+
+                }
 
             }
 
@@ -451,7 +479,7 @@ public class Home_04_Chatting extends AppCompatActivity {
             ImageView user_profile;
             TextView user_nick;
             TextView user_contents;
-            TextView getUser_contents_me;
+            TextView user_contents_me;
             TextView time_you;
             TextView time_me;
             TextView read_you;
@@ -459,18 +487,41 @@ public class Home_04_Chatting extends AppCompatActivity {
             ConstraintLayout chat_you;
             ConstraintLayout chat_me;
 
+            ImageView user_profile_image;
+            TextView user_nick_image;
+            ImageView user_contents_image;
+            ImageView user_contents_me_image;
+            TextView time_you_image;
+            TextView time_me_image;
+            TextView read_you_image;
+            TextView read_me_image;
+            ConstraintLayout chat_you_image;
+            ConstraintLayout chat_me_image;
+
             home_04_chatting_re(View view) {
                 super(view);
                 user_profile = view.findViewById(R.id.home_04_chat_profile);
                 user_nick = view.findViewById(R.id.home_04_chat_nick);
                 user_contents = view.findViewById(R.id.home_04_chat_main);
-                getUser_contents_me = view.findViewById(R.id.home_04_chat_main_me);
+                user_contents_me = view.findViewById(R.id.home_04_chat_main_me);
                 time_you = view.findViewById(R.id.time_you);
                 time_me = view.findViewById(R.id.time_me);
                 read_you = view.findViewById(R.id.home_04_chat_read_you);
                 read_me = view.findViewById(R.id.home_04_chat_read_me);
                 chat_you = view.findViewById(R.id.home_04_chatting_re_you);
                 chat_me = view.findViewById(R.id.home_04_chatting_re_me);
+
+                //이미지
+                user_profile_image = view.findViewById(R.id.home_04_chat_profile_image);
+                user_nick_image = view.findViewById(R.id.home_04_chat_nick_image);
+                user_contents_image = view.findViewById(R.id.home_04_chat_main_image);
+                user_contents_me_image = view.findViewById(R.id.home_04_chat_main_me_image);
+                time_you_image = view.findViewById(R.id.time_you_image);
+                time_me_image = view.findViewById(R.id.time_me_image);
+                read_you_image = view.findViewById(R.id.home_04_chat_read_you_image);
+                read_me_image = view.findViewById(R.id.home_04_chat_read_me_image);
+                chat_you_image = view.findViewById(R.id.home_04_chatting_re_you_image);
+                chat_me_image = view.findViewById(R.id.home_04_chatting_re_me_image);
 
             }
         }
@@ -530,7 +581,7 @@ public class Home_04_Chatting extends AppCompatActivity {
 
     }
 
-//    //------------------------책 사진 적용--------------
+    //------------------------책 사진 적용--------------
 //
 //    //사진 설정
 //    void showchat() {

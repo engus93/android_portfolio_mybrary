@@ -16,6 +16,7 @@ public class Home_04_ChatRoom_Model {
 
         String wright_user;
         String contents;
+        String picture = "";
         Object time;
         public Map<String,Object> read = new HashMap<>();
 
