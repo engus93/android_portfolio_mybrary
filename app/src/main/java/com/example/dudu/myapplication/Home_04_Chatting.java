@@ -122,6 +122,8 @@ public class Home_04_Chatting extends AppCompatActivity {
         opponent_uid = getIntent().getStringExtra("opponent_uid");
         room_key = getIntent().getStringExtra("chat_room_key");
 
+//        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(room_key).child("users").child(App.user_UID_get()).setValue(false);
+
         FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(room_key).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -129,8 +131,6 @@ public class Home_04_Chatting extends AppCompatActivity {
                 for(DataSnapshot item : dataSnapshot.getChildren()){
 
                     now_opponent_uid = item.getKey();
-
-                    System.out.println(now_opponent_uid);
 
                     if(!(now_opponent_uid.equals(App.user_UID_get()))) {
 
@@ -179,7 +179,6 @@ public class Home_04_Chatting extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void aVoid) {
 
-                                //알림
                                 sendFcm();
 
                                 //텍스트 창 초기화
@@ -505,6 +504,9 @@ public class Home_04_Chatting extends AppCompatActivity {
         if(valueEventListener != null) {
             databaseReference.removeEventListener(valueEventListener);
         }
+
+        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(room_key).child("users").child(App.user_UID_get()).setValue(true);
+
         finish();
 
     }
