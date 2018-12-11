@@ -453,7 +453,7 @@ public class Home_04_Chatting extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
             home_04_chatting_re messageViewHolder = ((home_04_chatting_re)holder);
 
             //레이아웃 초기화
@@ -524,6 +524,56 @@ public class Home_04_Chatting extends AppCompatActivity {
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
             }
+
+
+
+            //사진 확대----------------------------------------------------
+
+            messageViewHolder.user_profile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(Home_04_Chatting.this, Pictur_View.class);
+                    intent.putExtra("picture", opponent_chat_info.user_profile);
+                    startActivity(intent);
+
+                }
+            });
+
+            messageViewHolder.user_profile_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(Home_04_Chatting.this, Pictur_View.class);
+                    intent.putExtra("picture", opponent_chat_info.user_profile);
+                    startActivity(intent);
+
+                }
+            });
+
+
+            messageViewHolder.user_contents_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(Home_04_Chatting.this, Pictur_View.class);
+                    intent.putExtra("picture", contents.get(position).picture);
+                    startActivity(intent);
+
+                }
+            });
+
+            messageViewHolder.user_contents_me_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(Home_04_Chatting.this, Pictur_View.class);
+                    intent.putExtra("picture", contents.get(position).picture);
+                    startActivity(intent);
+
+                }
+            });
+
 
         }
 

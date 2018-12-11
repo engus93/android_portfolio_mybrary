@@ -72,6 +72,8 @@
             android:name=".Home_04_Group_Chatting"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
+        <activity android:name=".Pictur_View"/>
+
         <activity android:name=".Home_05"/>
 
         <activity android:name=".Search_01"
