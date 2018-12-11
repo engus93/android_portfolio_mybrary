@@ -120,7 +120,7 @@ public class Home_02_following extends AppCompatActivity {
 
         public Home_02_Following_Adapter() {
 
-            FirebaseDatabase.getInstance().getReference().child("User_Info").addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference().child("User_Info").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -213,7 +213,7 @@ public class Home_02_following extends AppCompatActivity {
             });
 
             //리싸이클러뷰 글쓴이 정보 파이어베이스에서 가져오기
-            FirebaseDatabase.getInstance().getReference("User_Info").child(App.user_UID_get()).addValueEventListener(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference("User_Info").child(App.user_UID_get()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -223,7 +223,7 @@ public class Home_02_following extends AppCompatActivity {
 
                     Log.d("체크", "0차 관문");
 
-//                    if(temp.user_following.size() > position) {
+                    if(temp.user_following.size() > position) {
 
                         Log.d("체크", "1차 관문");
 
@@ -249,7 +249,7 @@ public class Home_02_following extends AppCompatActivity {
 
                     }
 
-//                }
+                }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
