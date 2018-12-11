@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,11 +57,6 @@ public class Home_02_following extends AppCompatActivity {
         home_04_friend_send = findViewById(R.id.home_04_friend_send);
         home_04_friendlist_back_B = findViewById(R.id.home_04_friendlist_back_B);
         home_04_friendlist_title = findViewById(R.id.home_04_friendlist_title);
-        home_04_friend_search = findViewById(R.id.home_04_friend_search_ET);
-        home_04_friend_search_image = findViewById(R.id.home_04_friend_search_image);
-
-        home_04_friend_search.setVisibility(View.GONE);
-        home_04_friend_search_image.setVisibility(View.GONE);
 
         //세팅
         home_04_friendlist_title.setText("Following");
@@ -167,7 +163,7 @@ public class Home_02_following extends AppCompatActivity {
             });
 
             //리싸이클러뷰 글쓴이 정보 파이어베이스에서 가져오기
-            FirebaseDatabase.getInstance().getReference("User_Info").child(App.user_UID_get()).addValueEventListener(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference("User_Info").child(App.user_UID_get()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -175,15 +171,23 @@ public class Home_02_following extends AppCompatActivity {
 
                     temp = dataSnapshot.getValue(Member_ArrayList.class);
 
-                    if(following_user_info.size() > position) {
+                    if(temp.user_following.size() > position) {
 
-                        if (temp.user_follower.containsKey(following_user_info.get(position).user_UID)) {
+                        Log.d("체크", "1차 관문");
+
+                        if (temp.user_following.containsKey(following_user_info.get(position).user_UID)) {
+
+
+                            Log.d("체크", "2차 관문");
 
                             holder.user_follow.setSelected(true);
                             holder.user_follow.setTextColor(Color.parseColor("#e47700"));
                             holder.user_follow.setText("팔로잉");
 
                         } else {
+
+
+                            Log.d("체크", "3차 관문");
 
                             holder.user_follow.setSelected(false);
                             holder.user_follow.setTextColor(Color.parseColor("#FFFFFF"));
@@ -242,6 +246,14 @@ public class Home_02_following extends AppCompatActivity {
             }
 
         }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        this.finish();
 
     }
 
