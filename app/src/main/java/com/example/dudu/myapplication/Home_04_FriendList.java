@@ -196,8 +196,12 @@ public class Home_04_FriendList extends AppCompatActivity {
 
                     all_user_info.clear();
 
+                    search_user_info.clear();
+
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
                         Member_ArrayList member_arrayList = snapshot.getValue(Member_ArrayList.class);
+
                         if (member_arrayList.user_UID.equals(App.user_UID_get())) {
 
                             Member_ArrayList temp = member_arrayList;
@@ -222,9 +226,8 @@ public class Home_04_FriendList extends AppCompatActivity {
                             all_user_info.add(member_arrayList);
 
                         }
-                    }
 
-                    search_user_info.clear();
+                    }
 
                     search_user_info.addAll(my_following);
 

@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,10 +46,17 @@ public class Home_02_following extends AppCompatActivity {
     EditText home_04_friend_search;
     ImageView home_04_friend_search_image;
 
-    List<Member_ArrayList> following_user_info;
+    List<Member_ArrayList> all_user_info = new ArrayList<>();
+    List<Member_ArrayList> following_user_info = new ArrayList<>();
+    List<Member_ArrayList> search_user_info = new ArrayList<>();
+    Member_ArrayList my_info = new Member_ArrayList();
+
+    Boolean first_login = true;
 
     //글라이드 오류 방지
     public RequestManager mGlideRequestManager;
+
+    Home_02_Following_Adapter home_02_following_adapter = new Home_02_Following_Adapter();
 
     protected void onCreate(Bundle savedInstancesState) {
 
@@ -57,6 +66,7 @@ public class Home_02_following extends AppCompatActivity {
         home_04_friend_send = findViewById(R.id.home_04_friend_send);
         home_04_friendlist_back_B = findViewById(R.id.home_04_friendlist_back_B);
         home_04_friendlist_title = findViewById(R.id.home_04_friendlist_title);
+        home_04_friend_search = findViewById(R.id.home_04_friend_search_ET);
 
         //세팅
         home_04_friendlist_title.setText("Following");
@@ -72,6 +82,27 @@ public class Home_02_following extends AppCompatActivity {
             }
         });
 
+        home_04_friend_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                String searchText = home_04_friend_search.getText().toString();
+                home_02_following_adapter.filter(searchText);
+
+            }
+
+        });
+
         //---------------------------리싸이클러뷰---------------------------------
         final RecyclerView mRecyclerView;
         RecyclerView.LayoutManager mLayoutManager;
@@ -81,29 +112,43 @@ public class Home_02_following extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(new Home_04_Friend_Adapter());
+        mRecyclerView.setAdapter(home_02_following_adapter);
 
     }
 
-    public class Home_04_Friend_Adapter extends RecyclerView.Adapter<Home_04_Friend_Adapter.home_02_follower_re> {
+    public class Home_02_Following_Adapter extends RecyclerView.Adapter<Home_02_Following_Adapter.home_02_follower_re> {
 
-        public Home_04_Friend_Adapter() {
+        public Home_02_Following_Adapter() {
 
-            following_user_info = new ArrayList<>();
-
-            FirebaseDatabase.getInstance().getReference().child("User_Info").addValueEventListener(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference().child("User_Info").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    following_user_info.clear();
-
                     String key;
 
-                    Member_ArrayList my_info = dataSnapshot.child(App.user_UID_get()).getValue(Member_ArrayList.class);
+                    all_user_info.clear();
+
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                        Member_ArrayList member_arrayList = snapshot.getValue(Member_ArrayList.class);
+
+                        if (member_arrayList.user_UID.equals(App.user_UID_get())) {
+
+                            my_info = member_arrayList;
+
+                        } else {
+
+                            all_user_info.add(member_arrayList);
+
+                        }
+
+                    }
 
                     Set set = my_info.user_following.entrySet();
 
                     Iterator iterator = set.iterator();
+
+                    following_user_info.clear();
 
                     while (iterator.hasNext()) {
 
@@ -114,6 +159,11 @@ public class Home_02_following extends AppCompatActivity {
                         following_user_info.add(dataSnapshot.child(key).getValue(Member_ArrayList.class));
 
                     }
+
+
+                    search_user_info.clear();
+
+                    search_user_info.addAll(following_user_info);
 
                     notifyDataSetChanged();
 
@@ -129,10 +179,10 @@ public class Home_02_following extends AppCompatActivity {
 
         //틀 생성
         @Override
-        public Home_04_Friend_Adapter.home_02_follower_re onCreateViewHolder(ViewGroup parent, int viewType) {
+        public Home_02_Following_Adapter.home_02_follower_re onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_02_follower, parent, false);
 
-            return new Home_04_Friend_Adapter.home_02_follower_re(view);
+            return new Home_02_Following_Adapter.home_02_follower_re(view);
 
         }
 
@@ -143,11 +193,11 @@ public class Home_02_following extends AppCompatActivity {
             //글라이드 오류 방지
             mGlideRequestManager = Glide.with(Home_02_following.this);
 
-            mGlideRequestManager.load(following_user_info.get(position).user_profile).into(holder.user_profile);
-            holder.user_nick.setText(following_user_info.get(position).getUser_nick());
-            holder.user_id.setText(following_user_info.get(position).getMember_id());
+            mGlideRequestManager.load(search_user_info.get(position).user_profile).into(holder.user_profile);
+            holder.user_nick.setText(search_user_info.get(position).getUser_nick());
+            holder.user_id.setText(search_user_info.get(position).getMember_id());
 
-            opponent_uid = following_user_info.get(position).user_UID;
+            opponent_uid = search_user_info.get(position).user_UID;
 
             holder.user_follow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -163,7 +213,7 @@ public class Home_02_following extends AppCompatActivity {
             });
 
             //리싸이클러뷰 글쓴이 정보 파이어베이스에서 가져오기
-            FirebaseDatabase.getInstance().getReference("User_Info").child(App.user_UID_get()).addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference("User_Info").child(App.user_UID_get()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -171,11 +221,13 @@ public class Home_02_following extends AppCompatActivity {
 
                     temp = dataSnapshot.getValue(Member_ArrayList.class);
 
-                    if(temp.user_following.size() > position) {
+                    Log.d("체크", "0차 관문");
+
+//                    if(temp.user_following.size() > position) {
 
                         Log.d("체크", "1차 관문");
 
-                        if (temp.user_following.containsKey(following_user_info.get(position).user_UID)) {
+                        if (temp.user_following.containsKey(search_user_info.get(position).user_UID)) {
 
 
                             Log.d("체크", "2차 관문");
@@ -197,7 +249,7 @@ public class Home_02_following extends AppCompatActivity {
 
                     }
 
-                }
+//                }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
@@ -211,7 +263,7 @@ public class Home_02_following extends AppCompatActivity {
                 public void onClick(View v) {
 
                     Intent intent = new Intent(Home_02_following.this, Home_02_Others.class);
-                    intent.putExtra("user_uid", following_user_info.get(position).user_UID);
+                    intent.putExtra("user_uid", search_user_info.get(position).user_UID);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(intent);
 
@@ -224,7 +276,7 @@ public class Home_02_following extends AppCompatActivity {
         //현재 위치
         @Override
         public int getItemCount() {
-            return following_user_info.size();
+            return search_user_info.size();
         }
 
         public class home_02_follower_re extends RecyclerView.ViewHolder {
@@ -244,6 +296,29 @@ public class Home_02_following extends AppCompatActivity {
                 click_item = view.findViewById(R.id.home_02_follower_cardview);
 
             }
+
+        }
+
+        //검색 아이템
+        void filter(String searchText) {
+            search_user_info.clear();
+
+            if(searchText.length() == 0) {
+                search_user_info.addAll(following_user_info);
+            }
+            else {
+
+                for(Member_ArrayList item : all_user_info) {
+
+                    if(item.getUser_nick().contains(searchText)) {
+
+                        search_user_info.add(item);
+
+                    }
+                }
+            }
+
+            notifyDataSetChanged();
 
         }
 
