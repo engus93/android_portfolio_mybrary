@@ -61,6 +61,8 @@ public class Home_04 extends AppCompatActivity {
     //글라이드 오류 방지
     public RequestManager mGlideRequestManager;
 
+    String opponent_uid = null;
+
     protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
@@ -284,6 +286,7 @@ public class Home_04 extends AppCompatActivity {
                 if(!(user_uid.equals(App.user_UID_get()))){
 
                     opponentuid = user_uid;
+
                     opponent_users.add(opponentuid);
 
                 }
@@ -301,18 +304,30 @@ public class Home_04 extends AppCompatActivity {
 
                         Member_ArrayList opponent_info = new Member_ArrayList();
 
+                        Boolean count = true;
+
                         //이름 더해주기
-                        for(int i = 0; i < chatRoom_model.get(position).users.size() - 1; i++){
+//                        for(int i = 0; i < chatRoom_model.get(position).users.size() - 1; i++){
 
-                            opponent_info = dataSnapshot.child(opponent_users.get(i)).getValue(Member_ArrayList.class);
+                        for (String group_uid : chatRoom_model.get(position).users.keySet()) {
 
-                            if(i == 0) {
-                                group_chat_nick = opponent_info.user_nick;
-                            }else{
-                                group_chat_nick += ", " + opponent_info.user_nick;
+                            if (!(group_uid.equals(App.user_UID_get()))) {
 
-                                System.out.println(opponent_info.user_nick);
+                                opponent_info = dataSnapshot.child(group_uid).getValue(Member_ArrayList.class);
 
+                                if (count) {
+
+                                    group_chat_nick = opponent_info.user_nick;
+
+                                    count = false;
+
+                                } else {
+
+                                    group_chat_nick += ", " + opponent_info.user_nick;
+
+                                    System.out.println(opponent_info.user_nick);
+
+                                }
                             }
 
                         }
@@ -358,21 +373,53 @@ public class Home_04 extends AppCompatActivity {
                 //채팅방 입장
                 home_04_re_item.click_item.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        Intent intent = null;
-                        if (chatRoom_model.get(position).users.size() > 2) {
+                    public void onClick(final View v) {
 
-                            intent = new Intent(v.getContext(), Home_04_Group_Chatting.class);
+                        if (chatRoom_model.get(position).users.size() > 2) {
+                            Intent intent = new Intent(v.getContext(), Home_04_Group_Chatting.class);
                             intent.putExtra("chat_room_key", room_keys.get(position));
                             intent.putExtra("chat_room_name", group_chat_nick);
 
+                            startActivity(intent);
+
                         } else {
-                            intent = new Intent(v.getContext(), Home_04_Chatting.class);
-                            intent.putExtra("chat_room_key", room_keys.get(position));
-                            intent.putExtra("opponent_uid", opponent_users.get(position));
+
+                            FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(room_keys.get(position)).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                    Home_04_ChatRoom_Model temp = new Home_04_ChatRoom_Model();
+
+                                    temp = dataSnapshot.getValue(Home_04_ChatRoom_Model.class);
+
+                                    for(String user_uid : temp.users.keySet()){
+
+                                        if(!(user_uid.equals(App.user_UID_get()))){
+
+                                            opponent_uid = user_uid;
+
+                                            break;
+
+                                        }
+
+                                    }
+
+                                    Intent intent = new Intent(v.getContext(), Home_04_Chatting.class);
+                                    intent.putExtra("chat_room_key", room_keys.get(position));
+                                    intent.putExtra("opponent_uid", opponent_uid);
+                                    startActivity(intent);
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
                         }
 
-                        startActivity(intent);
+
                     }
                 });
 

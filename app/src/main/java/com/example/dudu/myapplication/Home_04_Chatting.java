@@ -77,6 +77,8 @@ public class Home_04_Chatting extends AppCompatActivity {
      RecyclerView mRecyclerView;
      RecyclerView.LayoutManager mLayoutManager;
 
+     Home_04_Chatting_Adapter home_04_chatting_adapter;
+
     //파이어베이스
     private FirebaseStorage storage;    //스토리지
     public String change;
@@ -149,6 +151,49 @@ public class Home_04_Chatting extends AppCompatActivity {
 
         opponent_uid = getIntent().getStringExtra("opponent_uid");
         room_key = getIntent().getStringExtra("chat_room_key");
+
+        //---------------------------리싸이클러뷰---------------------------------
+        mRecyclerView = findViewById(R.id.home_04_chatting_re);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        //메뉴창
+        home_04_chatting_joinlist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                MainActivity.showToast(Home_04_Chatting.this, "메뉴 창!");
+
+            }
+        });
+
+        //뒤로가기
+        home_04_friendlist_back_B.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                onBackPressed();
+
+            }
+        });
+
+        //카메라 기능
+        home_04_chatting_camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                showchat();
+
+            }
+        });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(room_key).child("now_login").child(App.user_UID_get()).setValue(false);
 
@@ -240,44 +285,20 @@ public class Home_04_Chatting extends AppCompatActivity {
             }
         });
 
-        //---------------------------리싸이클러뷰---------------------------------
-        mRecyclerView = findViewById(R.id.home_04_chatting_re);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        //메뉴창
-        home_04_chatting_joinlist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                MainActivity.showToast(Home_04_Chatting.this, "메뉴 창!");
-
-            }
-        });
-
-        //뒤로가기
-        home_04_friendlist_back_B.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                onBackPressed();
-
-            }
-        });
-
-        //카메라 기능
-        home_04_chatting_camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                showchat();
-
-            }
-        });
-
         checkChatRoom();    //내가 생성하려는 방이 중복된게 있는지 체크
+
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(valueEventListener != null) {
+            databaseReference.removeEventListener(valueEventListener);
+        }
+
+        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(room_key).child("now_login").child(App.user_UID_get()).setValue(true);
 
     }
 
@@ -330,7 +351,8 @@ public class Home_04_Chatting extends AppCompatActivity {
 
                         chatroom_key = item.getKey();
                         home_04_chatting_send.setEnabled(true); //전송 버튼 살리기(활성화)
-                        mRecyclerView.setAdapter(new Home_04_Chatting_Adapter());
+                        home_04_chatting_adapter = new Home_04_Chatting_Adapter();
+                        mRecyclerView.setAdapter(home_04_chatting_adapter);
                     }
                     }
 
@@ -606,12 +628,6 @@ public class Home_04_Chatting extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
-        if(valueEventListener != null) {
-            databaseReference.removeEventListener(valueEventListener);
-        }
-
-        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(room_key).child("now_login").child(App.user_UID_get()).setValue(true);
 
         finish();
 
