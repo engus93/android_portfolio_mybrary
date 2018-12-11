@@ -229,7 +229,6 @@ public class Home_02_following extends AppCompatActivity {
 
                         if (temp.user_following.containsKey(search_user_info.get(position).user_UID)) {
 
-
                             Log.d("체크", "2차 관문");
 
                             holder.user_follow.setSelected(true);

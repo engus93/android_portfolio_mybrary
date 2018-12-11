@@ -310,6 +310,9 @@ public class Home_04 extends AppCompatActivity {
                                 group_chat_nick = opponent_info.user_nick;
                             }else{
                                 group_chat_nick += ", " + opponent_info.user_nick;
+
+                                System.out.println(opponent_info.user_nick);
+
                             }
 
                         }

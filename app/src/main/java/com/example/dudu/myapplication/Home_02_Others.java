@@ -198,16 +198,16 @@ public class Home_02_Others extends AppCompatActivity {
 
                 temp = dataSnapshot.getValue(Member_ArrayList.class);
 
-                if (!(temp.user_following.containsKey(other_user_uid))) {
+                if (temp.user_following.containsKey(other_user_uid)) {
                     // Unstar the post and remove self from stars
-                    home_02_others_follow.setSelected(false);
-                    home_02_others_follow.setTextColor(Color.parseColor("#FFFFFF"));
-                    home_02_others_follow.setText("팔로우");
-                } else {
-                    // Star the post and add self to stars
                     home_02_others_follow.setSelected(true);
                     home_02_others_follow.setTextColor(Color.parseColor("#e47700"));
                     home_02_others_follow.setText("팔로잉");
+                } else {
+                    // Star the post and add self to stars
+                    home_02_others_follow.setSelected(false);
+                    home_02_others_follow.setTextColor(Color.parseColor("#FFFFFF"));
+                    home_02_others_follow.setText("팔로우");
                 }
 
             }

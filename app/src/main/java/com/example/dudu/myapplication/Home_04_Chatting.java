@@ -487,9 +487,9 @@ public class Home_04_Chatting extends AppCompatActivity {
                 } else {  //상대방이 보낸 메세지
 
                     messageViewHolder.chat_you_image.setVisibility(View.VISIBLE);
-                    messageViewHolder.user_nick.setText(opponent_chat_info.user_nick);
+                    messageViewHolder.user_nick_image.setText(opponent_chat_info.user_nick);
                     mGlideRequestManager.load(contents.get(position).picture).fitCenter().override(600, 800).into(messageViewHolder.user_contents_image);
-                    mGlideRequestManager.load(opponent_chat_info.user_profile).fitCenter().into(messageViewHolder.user_profile);
+                    mGlideRequestManager.load(opponent_chat_info.user_profile).fitCenter().into(messageViewHolder.user_profile_image);
                     messageViewHolder.time_you_image.setText(message_time);
 
                     read_user_count(position, messageViewHolder.read_you_image);

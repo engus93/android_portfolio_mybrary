@@ -495,19 +495,19 @@ public class Home_03_View extends AppCompatActivity {
 
         Intent intent1 = getIntent();
 
-        final int position_10 = intent1.getIntExtra("position", -1);
+//        final int position_10 = intent1.getIntExtra("position", -1);
         String mybrary_key = intent1.getStringExtra("mybrary_key");
         opponent_uid = intent1.getStringExtra("now_mybrary_uid");
 
         my_uid = App.user_UID_get();
 
-        FirebaseDatabase.getInstance().getReference().child("Users_MyBrary").child(mybrary_key).addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("Users_MyBrary").child(mybrary_key).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 now_mybrary = dataSnapshot.getValue(Home_02_02_ArrayList.class);
 
-                mGlideRequestManager.load(now_mybrary.book).into(home_02_02_book_image);
+                mGlideRequestManager.load(now_mybrary.book).fitCenter().into(home_02_02_book_image);
 
                 home_02_02_book_name.setText(now_mybrary.name);
                 home_02_02_book_author.setText(now_mybrary.author);
@@ -558,7 +558,7 @@ public class Home_03_View extends AppCompatActivity {
                 home_03_wright_user_nick.setText(temp.user_nick);
                 mGlideRequestManager.load(temp.user_profile).fitCenter().into(home_03_wright_user_profile);
 
-                if (temp.user_follower.containsKey(my_uid)) {
+                if (temp.user_following.containsKey(my_uid)) {
 
                     home_03_view_follow_B.setSelected(true);
                     home_03_view_follow_B.setTextColor(Color.parseColor("#e47700"));
@@ -744,12 +744,10 @@ public class Home_03_View extends AppCompatActivity {
 
                 if (home_03_mybrary.user_mybrary_like.containsKey(App.user_UID_get())) {
                     // Unstar the post and remove self from stars
-//                    home_03_mybrary.like_count = home_03_mybrary.like_count - 1;
                     home_03_mybrary.user_mybrary_like.remove(App.user_UID_get());
                     home_03_like_image.setSelected(false);
                 } else {
                     // Star the post and add self to stars
-//                    home_03_mybrary.like_count = home_03_mybrary.like_count + 1;
                     home_03_mybrary.user_mybrary_like.put(App.user_UID_get(), true);
                     home_03_like_image.setSelected(true);
                 }
