@@ -148,30 +148,6 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
         chatting_progress = findViewById(R.id.chatting_progress);
         chatting_progress.setVisibility(View.GONE);
 
-        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("now_login").child(App.user_UID_get()).setValue(false);
-
-        FirebaseDatabase.getInstance().getReference().child("User_Info").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for(DataSnapshot item : dataSnapshot.getChildren()){
-                    all_user_info.put(item.getKey(), item.getValue(Member_ArrayList.class));
-                }
-
-                init();
-
-                mRecyclerView.setAdapter(new Group_Message_Adapter());
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(Home_04_Group_Chatting.this));
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-
-        });
-
         //메뉴창
         home_04_chatting_joinlist.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,6 +176,36 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
                 showchat();
 
             }
+        });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("now_login").child(App.user_UID_get()).setValue(false);
+
+        FirebaseDatabase.getInstance().getReference().child("User_Info").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot item : dataSnapshot.getChildren()){
+                    all_user_info.put(item.getKey(), item.getValue(Member_ArrayList.class));
+                }
+
+                init();
+
+                mRecyclerView.setAdapter(new Group_Message_Adapter());
+                mRecyclerView.setLayoutManager(new LinearLayoutManager(Home_04_Group_Chatting.this));
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
         });
 
     }
@@ -257,13 +263,21 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
+    protected void onPause() {
+        super.onPause();
 
         if(valueEventListener != null) {
             databaseReference.removeEventListener(valueEventListener);
         }
 
         FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("now_login").child(App.user_UID_get()).setValue(true);
+
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
 
         finish();
 
@@ -368,7 +382,7 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
 
             Group_Message_ViewHolder messageViewHolder = ((Group_Message_ViewHolder)holder);
 
@@ -442,6 +456,53 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
 
         }
 
+            //사진 확대----------------------------------------------------
+
+            messageViewHolder.user_profile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(Home_04_Group_Chatting.this, Pictur_View.class);
+                    intent.putExtra("picture", Objects.requireNonNull(all_user_info.get(contents.get(position).wright_user)).user_profile);
+                    startActivity(intent);
+
+                }
+            });
+
+            messageViewHolder.user_profile_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(Home_04_Group_Chatting.this, Pictur_View.class);
+                    intent.putExtra("picture", Objects.requireNonNull(all_user_info.get(contents.get(position).wright_user)).user_profile);
+                    startActivity(intent);
+
+                }
+            });
+
+
+            messageViewHolder.user_contents_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(Home_04_Group_Chatting.this, Pictur_View.class);
+                    intent.putExtra("picture", contents.get(position).picture);
+                    startActivity(intent);
+
+                }
+            });
+
+            messageViewHolder.user_contents_me_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(Home_04_Group_Chatting.this, Pictur_View.class);
+                    intent.putExtra("picture", contents.get(position).picture);
+                    startActivity(intent);
+
+                }
+            });
+
         }
 
         @Override
@@ -498,6 +559,8 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
                 chat_me_image = view.findViewById(R.id.home_04_chatting_re_me_image);
             }
         }
+
+
     }
 
     void read_user_count(final int position, final TextView textView) {
