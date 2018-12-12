@@ -365,7 +365,7 @@ public class Home_02_01 extends AppCompatActivity {
 
         //포그라운드용
         notificationModel.data.title = App.my_nick;
-        notificationModel.notification.text = App.my_nick + "님이 글을 작성하였습니다.";
+        notificationModel.data.text = App.my_nick + "님이 글을 작성하였습니다.";
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf8"), gson.toJson(notificationModel));
 
