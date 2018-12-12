@@ -46,7 +46,7 @@ public class Home_02_follower extends AppCompatActivity {
     EditText home_04_friend_search;
     ImageView home_04_friend_search_image;
 
-    List<Member_ArrayList> follower_user_info;
+    List<Member_ArrayList> follower_user_info = new ArrayList<>();
     List<Member_ArrayList> search_user_info = new ArrayList<>();
     List<Member_ArrayList> all_user_info = new ArrayList<>();
 
@@ -129,19 +129,15 @@ public class Home_02_follower extends AppCompatActivity {
 
         public Home_02_Follower_Adapter() {
 
-            follower_user_info = new ArrayList<>();
-
-            FirebaseDatabase.getInstance().getReference().child("User_Info").addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference().child("User_Info").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                     Member_ArrayList my_info = new Member_ArrayList();
 
-                    follower_user_info.clear();
-
-                    search_user_info.clear();
-
                     String key;
+
+                    all_user_info.clear();
 
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
@@ -159,9 +155,12 @@ public class Home_02_follower extends AppCompatActivity {
 
                     }
 
+
                     Set set = my_info.user_follower.entrySet();
 
                     Iterator iterator = set.iterator();
+
+                    follower_user_info.clear();
 
                     while (iterator.hasNext()) {
 
@@ -172,6 +171,8 @@ public class Home_02_follower extends AppCompatActivity {
                         follower_user_info.add(dataSnapshot.child(key).getValue(Member_ArrayList.class));
 
                     }
+
+                    search_user_info.clear();
 
                     search_user_info.addAll(follower_user_info);
 
@@ -214,17 +215,18 @@ public class Home_02_follower extends AppCompatActivity {
                 public void onClick(View v) {
 
                     //팔로우
-                    onFollowerClicked(FirebaseDatabase.getInstance().getReference().child("User_Info").child(opponent_uid));
+                    onFollowerClicked(FirebaseDatabase.getInstance().getReference().child("User_Info").child(search_user_info.get(position_01).user_UID));
 
                     //팔로잉
-                    onFollowingClicked(FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()));
+                    onFollowingClicked(FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()), search_user_info.get(position_01).user_UID);
 
+                    notifyDataSetChanged();
 
                 }
             });
 
             //리싸이클러뷰 팔로워 정보 가져오기
-            FirebaseDatabase.getInstance().getReference("User_Info").child(App.user_UID_get()).addValueEventListener(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference("User_Info").child(App.user_UID_get()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -233,8 +235,6 @@ public class Home_02_follower extends AppCompatActivity {
                     temp_00 = dataSnapshot.getValue(Member_ArrayList.class);
 
                     Log.d("체크", "0차 관문");
-
-                    if(temp_00.user_follower.size() > position_01) {
 
                         Log.d("체크", "1차 관문");
 
@@ -256,7 +256,6 @@ public class Home_02_follower extends AppCompatActivity {
 
                         }
                     }
-                }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
@@ -371,7 +370,7 @@ public class Home_02_follower extends AppCompatActivity {
     }
 
     //팔로잉 트렌잭션
-    private void onFollowingClicked(DatabaseReference postRef) {
+    private void onFollowingClicked(DatabaseReference postRef, final String temp_uid) {
         postRef.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
@@ -380,12 +379,12 @@ public class Home_02_follower extends AppCompatActivity {
                     return Transaction.success(mutableData);
                 }
 
-                if (home_03_user_following.user_following.containsKey(opponent_uid)) {
+                if (home_03_user_following.user_following.containsKey(temp_uid)) {
                     // Unstar the post and remove self from stars
-                    home_03_user_following.user_following.remove(opponent_uid);
+                    home_03_user_following.user_following.remove(temp_uid);
                 } else {
                     // Star the post and add self to stars
-                    home_03_user_following.user_following.put(opponent_uid, true);
+                    home_03_user_following.user_following.put(temp_uid, true);
                 }
 
                 // Set value and report transaction success

@@ -32,6 +32,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -71,6 +73,14 @@ public class Home_01 extends AppCompatActivity {
     //글라이드 오류 방지
     public RequestManager mGlideRequestManager;
 
+    ArrayList <String> rank_book_name = new ArrayList<>();
+    ArrayList <String> rank_book_image = new ArrayList<>();
+
+    ArrayList<Home_01_ArrayList> best_book_info_ArrayList = new ArrayList<>();
+
+    Home_01_Adapter myAdapter;
+
+
     protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
@@ -84,7 +94,9 @@ public class Home_01 extends AppCompatActivity {
 
         drower_profile = findViewById(R.id.home_drawer_profile);
 
-        new GetLottoNumberTask().execute();
+//        new GetLottoNumberTask().execute();
+
+//        parsing();
 
         //메뉴 1 - > 메뉴 2
         home_01_menu_02_b = findViewById(R.id.home_01_menu_02_B);
@@ -172,7 +184,7 @@ public class Home_01 extends AppCompatActivity {
 
         //--------------------------------리싸이클러뷰--------------------------------------------
 
-        final RecyclerView mRecyclerView;
+        RecyclerView mRecyclerView;
         RecyclerView.LayoutManager mLayoutManager;
 
         mRecyclerView = findViewById(R.id.home_01_RE);
@@ -181,17 +193,7 @@ public class Home_01 extends AppCompatActivity {
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.HORIZONTAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        final ArrayList<Home_01_ArrayList> best_book_info_ArrayList = new ArrayList<>();
-        best_book_info_ArrayList.add(new Home_01_ArrayList(R.drawable.book_01, "1위", "골든아워 1", "이국종", "2018.10"));
-        best_book_info_ArrayList.add(new Home_01_ArrayList(R.drawable.book_02, "2위", "그래서 하고 싶은 말이 뭔데?", "다케우치 가오루", "2018.08"));
-        best_book_info_ArrayList.add(new Home_01_ArrayList(R.drawable.book_03, "3위", "룬의 아이들 1", "전민희", "2018.11"));
-        best_book_info_ArrayList.add(new Home_01_ArrayList(R.drawable.book_04, "4위", "트렌드 코리아 2019", "김난도 전미영 이향은 이준영 등", "2018.10"));
-        best_book_info_ArrayList.add(new Home_01_ArrayList(R.drawable.book_05, "5위", "참을 수 없는 존재의 가벼움", "밀란 쿤데라", "2018.06"));
-        best_book_info_ArrayList.add(new Home_01_ArrayList(R.drawable.book_06, "6위", "처음부터 잘 쓰는 사람은 없습니다", "이다혜", "2018.10"));
-
-
-        final Home_01_Adapter myAdapter = new Home_01_Adapter(best_book_info_ArrayList);
-
+        myAdapter = new Home_01_Adapter(this ,best_book_info_ArrayList);
         mRecyclerView.setAdapter(myAdapter);
 
         //------------------------왼쪽 상단 네비게이션 바------------------------------------
@@ -373,45 +375,78 @@ public class Home_01 extends AppCompatActivity {
         builder.show();
     }
 
-    private class GetLottoNumberTask extends AsyncTask<Void, Void, Void> {
+//    void parsing() {
+//
+//
+//        Document document = null;
+//        try {
+//            document = Jsoup.connect("http://book.interpark.com/api/bestSeller.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&categoryId=100&output=json").get();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        System.out.println(document);
+//
+//    }
 
-        @Override
-        protected Void doInBackground(Void... params) {
+//    private class GetLottoNumberTask extends AsyncTask<Void, Void, Void> {
+//
+//        @Override
+//        protected Void doInBackground(Void... params) {
+//
+//            try {
+//                Document document = Jsoup.connect("http://www.yes24.com/24/category/bestseller").get();
+//                Elements elements = document.select("ol[class=\"\"] li p a img");
+//
+//                for(org.jsoup.nodes.Element temp : elements){
+//
+//                    String temp_2 = temp.attr("alt");
+//                    String temp_3 = temp.attr("src");
+//
+//                    if(!temp_2.contains("카트에 넣기") && !temp_2.contains("리스트에 넣기") && !temp_2.contains("미리보기") && !temp_2.contains("eBook")){
+//
+//                        temp_3 = temp_3.replace("/S", "");
+//                        rank_book_name.add(temp_2);
+//                        rank_book_image.add(temp_3);
+//
+//                        System.out.println(temp_3);
+//
+//                    }
+//
+//                }
+//
+//                best_book_info_ArrayList.clear();
+//
+//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(0), "1위", rank_book_name.get(0), "이국종", "2018.10"));
+//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(1), "2위", rank_book_name.get(1), "다케우치 가오루", "2018.08"));
+//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(2), "3위", rank_book_name.get(2), "전민희", "2018.11"));
+//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(3), "4위", rank_book_name.get(3), "김난도 전미영 이향은 이준영 등", "2018.10"));
+//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(4), "5위", rank_book_name.get(4), "밀란 쿤데라", "2018.06"));
+//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(5), "6위", rank_book_name.get(5), "이다혜", "2018.10"));
+//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(6), "7위", rank_book_name.get(6), "이다혜", "2018.10"));
+//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(7), "8위", rank_book_name.get(7), "이다혜", "2018.10"));
+//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(8), "9위", rank_book_name.get(8), "이다혜", "2018.10"));
+//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(9), "10위", rank_book_name.get(9), "이다혜", "2018.10"));
+//
+//            } catch (IOException e) {
+//
+//                e.printStackTrace();
+//
+//            }
+//
+//            return null;
+//
+//        }
+//    }
 
-            try {
-                Document document = Jsoup.connect("http://www.yes24.com/24/category/bestseller").get();
-                Elements elements = document.select("ol[class=\"\"] li p a img");
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-                for(org.jsoup.nodes.Element temp : elements){
+        myAdapter.notifyDataSetChanged();
 
-                    String temp_2 = temp.attr("alt");
-                    String temp_3 = temp.attr("src");
-
-                    if(!temp_2.contains("카트에 넣기") && !temp_2.contains("리스트에 넣기") && !temp_2.contains("미리보기") && !temp_2.contains("eBook")){
-
-                        System.out.println(temp_2);
-                        System.out.println(temp_3);
-
-                    }
-
-
-
-                }
-
-
-            } catch (IOException e) {
-
-                e.printStackTrace();
-
-            }
-
-            return null;
-
-        }
     }
-
-
-    }
+}
 
 
 

@@ -103,6 +103,12 @@ public class Home_02_following extends AppCompatActivity {
 
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         //---------------------------리싸이클러뷰---------------------------------
         final RecyclerView mRecyclerView;
         RecyclerView.LayoutManager mLayoutManager;
