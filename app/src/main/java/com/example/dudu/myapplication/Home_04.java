@@ -34,7 +34,9 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +52,8 @@ public class Home_04 extends AppCompatActivity {
     ImageButton home_04_menu_04_b;
     ImageButton home_04_menu_05_b;
     ImageButton home_04_friend_plus; //검색창 버튼
+
+    Home_04_Adapter home_04_adapter = new Home_04_Adapter();
 
     ImageView drower_profile;   //드로어 프로필
 
@@ -231,6 +235,7 @@ public class Home_04 extends AppCompatActivity {
     class Home_04_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private ArrayList<Home_04_ChatRoom_Model> chatRoom_model = new ArrayList<>();
+        private ArrayList<Home_04_ChatRoom_Model> chatRoom_model_sort = new ArrayList<>();
         private ArrayList<String> room_keys = new ArrayList<>();
         private ArrayList<String> opponent_users = new ArrayList<>();
 
@@ -245,14 +250,31 @@ public class Home_04 extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     chatRoom_model.clear();
+                    room_keys.clear();
 
                     for (DataSnapshot item : dataSnapshot.getChildren()) {
 
                         chatRoom_model.add(item.getValue(Home_04_ChatRoom_Model.class));
-                        room_keys.add(item.getKey());
+
                     }
 
-                    notifyDataSetChanged();
+                    Collections.sort(chatRoom_model, new Comparator<Home_04_ChatRoom_Model>() {
+
+                        @Override
+                        public int compare(Home_04_ChatRoom_Model o1, Home_04_ChatRoom_Model o2) {
+                            if (o1.lasttime > o2.lasttime) {
+                                return 1;
+                            } else if (o1.lasttime < o2.lasttime) {
+                                return -1;
+                            }
+                            return 0;
+                        }
+
+                    });
+
+                    Collections.reverse(chatRoom_model);
+
+                    home_04_adapter.notifyDataSetChanged();
 
                 }
 
@@ -261,7 +283,6 @@ public class Home_04 extends AppCompatActivity {
 
                 }
             });
-
 
         }
 
@@ -306,9 +327,6 @@ public class Home_04 extends AppCompatActivity {
 
                         Boolean count = true;
 
-                        //이름 더해주기
-//                        for(int i = 0; i < chatRoom_model.get(position).users.size() - 1; i++){
-
                         for (String group_uid : chatRoom_model.get(position).users.keySet()) {
 
                             if (!(group_uid.equals(App.user_UID_get()))) {
@@ -350,6 +368,13 @@ public class Home_04 extends AppCompatActivity {
                 }
             });
 
+            if(chatRoom_model.get(position).message_count.get(App.user_UID_get()) == 0){
+                home_04_re_item.message_count.setVisibility(View.INVISIBLE);
+            }else{
+                home_04_re_item.message_count.setVisibility(View.VISIBLE);
+                home_04_re_item.message_count.setText(String.valueOf(chatRoom_model.get(position).message_count.get(App.user_UID_get())));
+            }
+
             //맵에 내용을 다 넣어서 메세지의 키 값을 스트링으로 뽑아서 그 것을 파이어 베이스에서 가져옴
             Map<String, Home_04_ChatRoom_Model.Message> messageMap = new TreeMap<>(Collections.<String>reverseOrder());
             messageMap.putAll(chatRoom_model.get(position).message);
@@ -377,14 +402,14 @@ public class Home_04 extends AppCompatActivity {
 
                         if (chatRoom_model.get(position).users.size() > 2) {
                             Intent intent = new Intent(v.getContext(), Home_04_Group_Chatting.class);
-                            intent.putExtra("chat_room_key", room_keys.get(position));
+                            intent.putExtra("chat_room_key", chatRoom_model.get(position).chat_medel_room_key);
                             intent.putExtra("chat_room_name", group_chat_nick);
 
                             startActivity(intent);
 
                         } else {
 
-                            FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(room_keys.get(position)).addListenerForSingleValueEvent(new ValueEventListener() {
+                            FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatRoom_model.get(position).chat_medel_room_key).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -405,7 +430,7 @@ public class Home_04 extends AppCompatActivity {
                                     }
 
                                     Intent intent = new Intent(v.getContext(), Home_04_Chatting.class);
-                                    intent.putExtra("chat_room_key", room_keys.get(position));
+                                    intent.putExtra("chat_room_key", chatRoom_model.get(position).chat_medel_room_key);
                                     intent.putExtra("opponent_uid", opponent_uid);
                                     startActivity(intent);
 
@@ -439,6 +464,7 @@ public class Home_04 extends AppCompatActivity {
             TextView user_main;
             TextView user_time;
             CardView click_item;
+            TextView message_count;
 
             public home_04_re(View view) {
                 super(view);
@@ -448,6 +474,7 @@ public class Home_04 extends AppCompatActivity {
                 user_main = view.findViewById(R.id.home_04_re_main);
                 user_time = view.findViewById(R.id.home_04_re_time);
                 click_item = view.findViewById(R.id.home_04_re_cardview);
+                message_count = view.findViewById(R.id.home_04_message_count);
 
 
             }
@@ -461,7 +488,7 @@ public class Home_04 extends AppCompatActivity {
 
         //---------------------------리싸이클러뷰---------------------------------
         RecyclerView mRecyclerView = findViewById(R.id.home_04_re);
-        mRecyclerView.setAdapter(new Home_04_Adapter());
+        mRecyclerView.setAdapter(home_04_adapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     }

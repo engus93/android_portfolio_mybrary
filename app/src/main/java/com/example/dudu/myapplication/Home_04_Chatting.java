@@ -197,6 +197,8 @@ public class Home_04_Chatting extends AppCompatActivity {
 
         FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(room_key).child("now_login").child(App.user_UID_get()).setValue(false);
 
+        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(room_key).child("message_count").child(App.user_UID_get()).setValue(0);
+
         FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(room_key).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -243,22 +245,32 @@ public class Home_04_Chatting extends AppCompatActivity {
                 } else {
                     //빈 텍스트 보내기 막기
                     if (!(home_04_chatting_ET.getText().length() <= 0)) {
-                        Home_04_ChatRoom_Model.Message message = new Home_04_ChatRoom_Model.Message();
+                        final Home_04_ChatRoom_Model.Message message = new Home_04_ChatRoom_Model.Message();
                         message.wright_user = App.user_UID_get();
                         message.contents = home_04_chatting_ET.getText().toString();
                         message.time = ServerValue.TIMESTAMP;
+
+                        Long time = System.currentTimeMillis();
+
+                        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("lasttime").setValue(time);
 
                         FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("message").push().setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
 
-                                FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("now_login").child(opponent_uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                        Boolean temp = dataSnapshot.getValue(Boolean.class);
+                                        Boolean temp = dataSnapshot.child("now_login").child(opponent_uid).getValue(Boolean.class);
+
+                                        int count = dataSnapshot.child("message_count").child(opponent_uid).getValue(Integer.class);
 
                                         if(temp){
+
+                                            count += 1;
+
+                                            FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chatroom_key).child("message_count").child(opponent_uid).setValue(count);
 
                                             sendFcm();
 
@@ -273,8 +285,8 @@ public class Home_04_Chatting extends AppCompatActivity {
                                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                     }
-                                });
 
+                                });
 
                             }
                         });
@@ -347,16 +359,16 @@ public class Home_04_Chatting extends AppCompatActivity {
 
                     Home_04_ChatRoom_Model chatRoom_model = item.getValue(Home_04_ChatRoom_Model.class);
 
-                    if(chatRoom_model.users.containsKey(now_opponent_uid) && chatRoom_model.users.size() == 2){
+                    if (chatRoom_model.users.containsKey(now_opponent_uid) && chatRoom_model.users.size() == 2) {
 
                         chatroom_key = item.getKey();
                         home_04_chatting_send.setEnabled(true); //전송 버튼 살리기(활성화)
                         home_04_chatting_adapter = new Home_04_Chatting_Adapter();
                         mRecyclerView.setAdapter(home_04_chatting_adapter);
                     }
-                    }
-
                 }
+
+            }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

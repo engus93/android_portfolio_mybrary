@@ -74,6 +74,10 @@ public class Home_04_FriendList extends AppCompatActivity {
 
                     chatRoom_model.users.put(App.user_UID_get(), true);
                     chatRoom_model.now_login.put(App.user_UID_get(), true);
+                    chatRoom_model.message_count.put(App.user_UID_get(), 0);
+                    chatRoom_model.lasttime = System.currentTimeMillis();
+                    chatRoom_model.chat_medel_room_key = roomkey;
+
                     FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(roomkey).setValue(chatRoom_model);
 
                     final Iterator<Map.Entry<String, Boolean>> entries = chatRoom_model.users.entrySet().iterator();
@@ -299,6 +303,10 @@ public class Home_04_FriendList extends AppCompatActivity {
                                 chatRoom_model.users.put(search_user_info.get(position).user_UID, true);
                                 chatRoom_model.now_login.put(App.user_UID_get(), true);
                                 chatRoom_model.now_login.put(search_user_info.get(position).user_UID, true);
+                                chatRoom_model.message_count.put(App.user_UID_get(), 0);
+                                chatRoom_model.message_count.put(search_user_info.get(position).user_UID, 0);
+                                chatRoom_model.lasttime = System.currentTimeMillis();
+                                chatRoom_model.chat_medel_room_key = roomkey;
 
                                 FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(roomkey).setValue(chatRoom_model);
 
@@ -333,11 +341,13 @@ public class Home_04_FriendList extends AppCompatActivity {
 
                         chatRoom_model.users.put(search_user_info.get(position).user_UID, true);
                         chatRoom_model.now_login.put(search_user_info.get(position).user_UID, true);
+                        chatRoom_model.message_count.put(search_user_info.get(position).user_UID, 0);
 
                     } else if (!isChecked) {
 
                         chatRoom_model.users.remove(search_user_info.get(position));
                         chatRoom_model.now_login.remove(search_user_info.get(position));
+                        chatRoom_model.message_count.remove(search_user_info.get(position));
 
                     } else {
                         MainActivity.showToast(Home_04_FriendList.this, "오류");

@@ -186,6 +186,8 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
 
         FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("now_login").child(App.user_UID_get()).setValue(false);
 
+        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("message_count").child(App.user_UID_get()).setValue(0);
+
         FirebaseDatabase.getInstance().getReference().child("User_Info").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -224,6 +226,10 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
                     message.contents = home_04_chatting_ET.getText().toString();
                     message.time = ServerValue.TIMESTAMP;
 
+                    Long time = System.currentTimeMillis();
+
+                    FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("lasttime").setValue(time);
+
                     FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("message").push().setValue(message);
 
                     FirebaseDatabase.getInstance().getReference("Chatting_Room").child(chat_room_key).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -239,7 +245,13 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
 
                                     Boolean check = temp.now_login.get(item);
 
+                                    int count = temp.message_count.get(item);
+
                                     if (check) {
+
+                                        count += 1;
+
+                                        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("message_count").child(all_user_info.get(item).user_UID).setValue(count);
 
                                         sendFcm(all_user_info.get(item).user_token);
 

@@ -1,16 +1,18 @@
 package com.example.dudu.myapplication;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Home_04_ChatRoom_Model {
+public class Home_04_ChatRoom_Model implements Comparable<Home_04_ChatRoom_Model> {
 
     public Map<String, Message> message = new HashMap<>(); //채팅방 안에 내용들
     public Map<String, Boolean> users = new HashMap<>();    //채팅방에 속한 사람들
     public Map<String, Boolean> now_login = new HashMap<>();    //채팅방에 있는 사람들
+    public Map<String, Integer> message_count = new HashMap<>();    //채팅방에 있는 사람들
 
-    public String uid;
-    public String opponent_uid;
+    public Long lasttime;
+    public String chat_medel_room_key;
 
     public static class Message {
 
@@ -20,6 +22,16 @@ public class Home_04_ChatRoom_Model {
         Object time;
         public Map<String,Object> read = new HashMap<>();
 
+    }
+
+    @Override
+    public int compareTo(Home_04_ChatRoom_Model o) {
+        if(lasttime > o.lasttime){
+            return -1;
+        }else if(lasttime < o.lasttime){
+            return 1;
+        }
+            return 0;
     }
 
     Home_04_ChatRoom_Model() {
@@ -42,21 +54,6 @@ public class Home_04_ChatRoom_Model {
         this.message = message;
     }
 
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public String getOpponent_uid() {
-        return opponent_uid;
-    }
-
-    public void setOpponent_uid(String opponent_uid) {
-        this.opponent_uid = opponent_uid;
-    }
 
 
 
