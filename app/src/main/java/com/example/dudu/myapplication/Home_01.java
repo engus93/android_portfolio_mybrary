@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,7 +24,6 @@ import android.widget.ImageButton;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -33,10 +33,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+import org.w3c.dom.Element;
+
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -79,6 +83,8 @@ public class Home_01 extends AppCompatActivity {
         mGlideRequestManager = Glide.with(this);
 
         drower_profile = findViewById(R.id.home_drawer_profile);
+
+        new GetLottoNumberTask().execute();
 
         //메뉴 1 - > 메뉴 2
         home_01_menu_02_b = findViewById(R.id.home_01_menu_02_B);
@@ -366,6 +372,44 @@ public class Home_01 extends AppCompatActivity {
         });
         builder.show();
     }
+
+    private class GetLottoNumberTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            try {
+                Document document = Jsoup.connect("http://www.yes24.com/24/category/bestseller").get();
+                Elements elements = document.select("ol[class=\"\"] li p a img");
+
+                for(org.jsoup.nodes.Element temp : elements){
+
+                    String temp_2 = temp.attr("alt");
+                    String temp_3 = temp.attr("src");
+
+                    if(!temp_2.contains("카트에 넣기") && !temp_2.contains("리스트에 넣기") && !temp_2.contains("미리보기") && !temp_2.contains("eBook")){
+
+                        System.out.println(temp_2);
+                        System.out.println(temp_3);
+
+                    }
+
+
+
+                }
+
+
+            } catch (IOException e) {
+
+                e.printStackTrace();
+
+            }
+
+            return null;
+
+        }
+    }
+
 
     }
 
