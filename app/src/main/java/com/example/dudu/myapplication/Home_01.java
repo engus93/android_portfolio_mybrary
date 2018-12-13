@@ -188,10 +188,6 @@ public class Home_01 extends AppCompatActivity {
             }
         });
 
-        //--------------------------------리싸이클러뷰--------------------------------------------
-
-
-
         //------------------------왼쪽 상단 네비게이션 바------------------------------------
 
         // 전체화면인 DrawerLayout 객체 참조
@@ -444,6 +440,8 @@ public class Home_01 extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+
+            //--------------------------------리싸이클러뷰--------------------------------------------
 
             RecyclerView mRecyclerView;
             RecyclerView.LayoutManager mLayoutManager;

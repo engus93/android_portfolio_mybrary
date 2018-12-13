@@ -11,9 +11,11 @@ public class Home_05_ArrayList {
     public int heart_heart;
     public String user_key;
     public String login_user_uid;
+    public String book_main;
+    public String book_link;
 
 
-    public Home_05_ArrayList(String book, String name, String author, String price, double rank, int heart_heart, String user_key, String login_user_uid) {
+    public Home_05_ArrayList(String book, String name, String author, String price, double rank, int heart_heart, String user_key, String login_user_uid,String book_main, String book_link) {
         this.heart_book = book;
         this.heart_name = name;
         this.heart_author = author;
@@ -22,6 +24,8 @@ public class Home_05_ArrayList {
         this.heart_heart = heart_heart;
         this.user_key = user_key;
         this.login_user_uid = login_user_uid;
+        this.book_main = book_main;
+        this.book_link = book_link;
     }
 
     public Home_05_ArrayList(){

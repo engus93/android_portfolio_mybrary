@@ -175,12 +175,12 @@ public class Home_02_01 extends AppCompatActivity {
 
                 android.app.AlertDialog.Builder alert_confirm = new android.app.AlertDialog.Builder(Home_02_01.this);
                 alert_confirm.setMessage("등록하시겠습니까?").setCancelable(false).setPositiveButton("아니요", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-                            }
+                    }
 
-                        }).setNegativeButton("네",
+                }).setNegativeButton("네",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -193,7 +193,7 @@ public class Home_02_01 extends AppCompatActivity {
 
                                     MainActivity.showToast(Home_02_01.this, "내용를 입력해주세요.");
 
-                                }else {
+                                } else {
 
 //                                        Log.d("체크", "사진 어디냐1");
 
@@ -233,11 +233,11 @@ public class Home_02_01 extends AppCompatActivity {
 
                                             Iterator iterator = set.iterator();
 
-                                            while(iterator.hasNext()){
+                                            while (iterator.hasNext()) {
 
-                                                Map.Entry entry = (Map.Entry)iterator.next();
+                                                Map.Entry entry = (Map.Entry) iterator.next();
 
-                                                String key = (String)entry.getKey();
+                                                String key = (String) entry.getKey();
 
                                                 String user_token = dataSnapshot.child(key).child("user_token").getValue(String.class);
 
@@ -267,15 +267,15 @@ public class Home_02_01 extends AppCompatActivity {
 //                                    //저장
 //                                    save.apply();
 
-                                        Intent intent1 = new Intent(Home_02_01.this, Home_02.class);
-                                        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                        MainActivity.showToast(Home_02_01.this, "작성 되었습니다.");
-                                        startActivity(intent1);
+                                    Intent intent1 = new Intent(Home_02_01.this, Home_02.class);
+                                    intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                    MainActivity.showToast(Home_02_01.this, "작성 되었습니다.");
+                                    startActivity(intent1);
 
 //                                    //그리드 리싸이클러뷰 역순
 //                                    Collections.reverse(App.home_02_02_ArrayList);
 
-                                        return;
+                                    return;
                                 }
 
 
@@ -301,9 +301,9 @@ public class Home_02_01 extends AppCompatActivity {
         search_book_name = getIntent().getStringExtra("search_book_name");
         search_book_author = getIntent().getStringExtra("search_book_author");
 
-        Log.d("체크", "리즘1"+search_book_name+search_book_author);
+        Log.d("체크", "리즘1" + search_book_name + search_book_author);
 
-        if(search_book_name != null && search_book_author != null && search_book_image != null){
+        if (search_book_name != null && search_book_author != null && search_book_image != null) {
 
             Log.d("체크", "리즘2" + search_book_name);
 
@@ -320,7 +320,7 @@ public class Home_02_01 extends AppCompatActivity {
             App.Regeneration = false;
 
             android.app.AlertDialog.Builder alert_confirm = new android.app.AlertDialog.Builder(Home_02_01.this);
-            
+
             alert_confirm.setMessage("작성 중 내용 불러오기").setCancelable(false).setPositiveButton("아니요", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -358,7 +358,7 @@ public class Home_02_01 extends AppCompatActivity {
 
     }
 
-    void sendFcm(String to_user){
+    void sendFcm(String to_user) {
 
         Log.d("메세지", "되고있니");
 
@@ -481,14 +481,14 @@ public class Home_02_01 extends AppCompatActivity {
                             selectPhoto();
                         } else if (pos == 1) {
                             selectGallery();
-                        }else if (pos == 2) {
+                        } else if (pos == 2) {
 
                             //검색해서 가져오기 (틀만 구현)
                             Intent intent = new Intent(Home_02_01.this, Search_01.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
 
                         }
+
                     }
 
                 }
@@ -522,7 +522,7 @@ public class Home_02_01 extends AppCompatActivity {
 
     //이미지 파일화 시키기
     public File createImageFile() throws IOException {
-        File dir = new File(Environment.getExternalStorageDirectory() +  "/MyBrary/");
+        File dir = new File(Environment.getExternalStorageDirectory() + "/MyBrary/");
         if (!dir.exists()) {
             dir.mkdirs();
         }
@@ -795,7 +795,7 @@ public class Home_02_01 extends AppCompatActivity {
 
     }
 
-    public void upload(String uri){
+    public void upload(String uri) {
 
         home_02_01_book_image.setVisibility(View.INVISIBLE);
         home_02_01_book_image_progress.setVisibility(View.VISIBLE);
@@ -803,7 +803,7 @@ public class Home_02_01 extends AppCompatActivity {
         StorageReference storageRef = storage.getReference();
 
         Uri file = Uri.fromFile(new File(uri));
-        final StorageReference riversRef = storageRef.child("MyBrary/User_MyBrary/"+file.getLastPathSegment());
+        final StorageReference riversRef = storageRef.child("MyBrary/User_MyBrary/" + file.getLastPathSegment());
         UploadTask uploadTask = riversRef.putFile(file);
 
         Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -846,8 +846,6 @@ public class Home_02_01 extends AppCompatActivity {
     }
 
 }
-
-
 
 
 // ---------------------- 캘린더 날짜 선택 -------------------------[

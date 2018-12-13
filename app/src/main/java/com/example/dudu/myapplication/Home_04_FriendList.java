@@ -391,9 +391,11 @@ public class Home_04_FriendList extends AppCompatActivity {
             if(searchText.length() == 0) {
                 search_user_info.addAll(my_following);
             }
+
             else {
 
                 for(Member_ArrayList item : all_user_info) {
+
                     if(item.getUser_nick().contains(searchText)) {
 
                         search_user_info.add(item);

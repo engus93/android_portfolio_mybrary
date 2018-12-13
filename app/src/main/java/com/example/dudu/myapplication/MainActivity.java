@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         sign_in_01_sign_up_01_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent1 = new Intent(MainActivity.this, Sign_up_01_Activity.class);
+                Intent intent1 = new Intent(MainActivity.this, Sign_up_02_Activity.class);
                 startActivity(intent1);
 
             }

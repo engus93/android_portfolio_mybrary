@@ -127,9 +127,9 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
                     //랜덤 키 생성
                     key = myRef.push().getKey();
 
-                    App.heart_book_ArrayList.add(new Home_05_ArrayList(search_book_Array.get(position).drawableId, search_book_Array.get(position).name, search_book_Array.get(position).author, search_book_Array.get(position).price, (float) search_book_Array.get(position).star, R.drawable.home_05_heart_02, key, App.user_UID_get()));
+                    App.heart_book_ArrayList.add(new Home_05_ArrayList(search_book_Array.get(position).drawableId, search_book_Array.get(position).name, search_book_Array.get(position).author, search_book_Array.get(position).price, (float) search_book_Array.get(position).star, R.drawable.home_05_heart_02, key, App.user_UID_get(), search_book_Array.get(position).book_main, search_book_Array.get(position).book_link));
 
-                    like_plus = new Home_05_ArrayList(search_book_Array.get(position).drawableId, search_book_Array.get(position).name, search_book_Array.get(position).author, search_book_Array.get(position).price, (float) search_book_Array.get(position).star, R.drawable.home_05_heart_02, key, App.user_UID_get());
+                    like_plus = new Home_05_ArrayList(search_book_Array.get(position).drawableId, search_book_Array.get(position).name, search_book_Array.get(position).author, search_book_Array.get(position).price, (float) search_book_Array.get(position).star, R.drawable.home_05_heart_02, key, App.user_UID_get(), search_book_Array.get(position).book_main, search_book_Array.get(position).book_link);
 
                     //파이어베이스에 저장
                     myRef.child(key).setValue(like_plus);

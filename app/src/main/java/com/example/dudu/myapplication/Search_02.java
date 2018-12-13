@@ -38,6 +38,7 @@ public class Search_02 extends AppCompatActivity {
     TextView search_02_publisher;
     TextView search_02_date;
     TextView search_02_price;
+    TextView search_02_summary;
 
     protected void onCreate(Bundle savedInstancState) {
         super.onCreate(savedInstancState);
@@ -50,6 +51,7 @@ public class Search_02 extends AppCompatActivity {
         search_02_publisher = findViewById(R.id.search_02_publisher);
         search_02_date = findViewById(R.id.search_02_date);
         search_02_price = findViewById(R.id.search_02_price);
+        search_02_summary = findViewById(R.id.search_02_summary);
 
         //글라이드 오류 방지
         mGlideRequestManager = Glide.with(Search_02.this);
@@ -69,6 +71,11 @@ public class Search_02 extends AppCompatActivity {
             search_02_publisher = findViewById(R.id.search_02_publisher);
             search_02_date = findViewById(R.id.search_02_date);
             search_02_price.setText(App.search_book_ArrayList.get(position).getPrice());
+            search_02_summary.setText(App.search_book_ArrayList.get(position).book_main);
+        }else{
+
+
+
         }
 
         findViewById(R.id.search_02_heart_B).setOnClickListener(new View.OnClickListener() {
@@ -117,20 +124,11 @@ public class Search_02 extends AppCompatActivity {
                             //랜덤 키 생성
                             key = myRef.push().getKey();
 
-//                App.heart_book_ArrayList.add(new Home_05_ArrayList(App.search_book_ArrayList.get(position).drawableId, App.search_book_ArrayList.get(position).name, App.search_book_ArrayList.get(position).author, App.search_book_ArrayList.get(position).price, (float) App.search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02, key, App.user_UID_get()));
-
-                            Home_05_ArrayList like_plus = new Home_05_ArrayList(App.search_book_ArrayList.get(position).drawableId, App.search_book_ArrayList.get(position).name, App.search_book_ArrayList.get(position).author, App.search_book_ArrayList.get(position).price, (float) App.search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02, key, App.user_UID_get());
+                            Home_05_ArrayList like_plus = new Home_05_ArrayList(App.search_book_ArrayList.get(position).drawableId, App.search_book_ArrayList.get(position).name, App.search_book_ArrayList.get(position).author, App.search_book_ArrayList.get(position).price, (float) App.search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02, key, App.user_UID_get(), App.search_book_ArrayList.get(position).book_main, App.search_book_ArrayList.get(position).book_link);
 
                             //파이어베이스에 저장
                             myRef.child(key).setValue(like_plus);
 
-                            try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    Log.d("체크", "찜");
 
 //                    App.heart_book_ArrayList.add(new Home_05_ArrayList(App.search_book_ArrayList.get(position).drawableId, App.search_book_ArrayList.get(position).name, App.search_book_ArrayList.get(position).author, App.search_book_ArrayList.get(position).price, (float) App.search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02));
 
@@ -204,8 +202,7 @@ public class Search_02 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://book.naver.com/search/search.nhn?sm=sta_hty.book&sug=&where=nexearch&query=" + App.search_book_ArrayList.get(position).name));
-//                Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://book.naver.com/search/search.nhn?sm=sta_hty.book&sug=&where=nexearch&query=" + App.search_book_ArrayList.get(position).name));
+                Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(App.search_book_ArrayList.get(position).book_link));
                 startActivity(intent1);
             }
         });

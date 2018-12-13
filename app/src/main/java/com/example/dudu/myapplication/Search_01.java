@@ -1,5 +1,6 @@
 package com.example.dudu.myapplication;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -35,7 +37,7 @@ public class Search_01 extends AppCompatActivity {
 
     String search_word;
 
-    String search_url = "http://book.interpark.com/api/search.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&output=json&sort=salesPoint&query=";
+    String search_url = "http://book.interpark.com/api/search.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&output=json&queryType=title&sort=accuracy&query=";
 
     protected void onCreate(Bundle savedInstancState){
         super.onCreate(savedInstancState);
@@ -61,8 +63,13 @@ public class Search_01 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
                 search_word = search_searchbar.getText().toString();
+
+                //키보드 내리기
+                if (v != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
 
                 new GetBestBookTask().execute();
 
@@ -123,7 +130,6 @@ public class Search_01 extends AppCompatActivity {
 
                 //배열의 크기만큼 반복하면서, name과 address의 값을 추출함
                 for (int i = 0; i < jArr.length(); i++) {
-
                     //i번째 배열 할당
                     json = jArr.getJSONObject(i);
 
@@ -132,9 +138,11 @@ public class Search_01 extends AppCompatActivity {
                     String coverLargeUrl = json.getString("coverLargeUrl");
                     String author = json.getString("author");
                     String price = String.valueOf(json.getInt("priceStandard"));
-                    double star = json.getDouble("customerReviewRank");
+                    double star = json.getDouble("customerReviewRank")/2.0;
+                    String book_main = json.getString("description");
+                    String book_link = json.getString("mobileLink");
 
-                    App.search_book_ArrayList.add(new Search_01_ArrayList(coverLargeUrl, title, author, price + "원", star));
+                    App.search_book_ArrayList.add(new Search_01_ArrayList(coverLargeUrl, title, author, price + "원", star, book_main, book_link));
 
                 }
 
@@ -168,11 +176,11 @@ public class Search_01 extends AppCompatActivity {
             mRecyclerView.setAdapter(myAdapter);
 
             if(App.search_book_ArrayList.size() == 0) {
-                mRecyclerView.setVisibility(View.VISIBLE);
-                search_nothing.setVisibility(View.GONE);
-            }else {
                 search_nothing.setVisibility(View.VISIBLE);
                 mRecyclerView.setVisibility(View.GONE);
+            }else {
+                mRecyclerView.setVisibility(View.VISIBLE);
+                search_nothing.setVisibility(View.GONE);
             }
 
         }
