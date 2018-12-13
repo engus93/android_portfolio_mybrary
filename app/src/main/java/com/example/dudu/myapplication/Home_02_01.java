@@ -112,7 +112,6 @@ public class Home_02_01 extends AppCompatActivity {
 
     Uri imageUri;
     String set_date;
-    Boolean Regeneration = false;
 
     String search_book_name;
     String search_book_author;
@@ -316,9 +315,9 @@ public class Home_02_01 extends AppCompatActivity {
 
         }
 
-        if (Regeneration) {
+        if (App.Regeneration) {
 
-            Regeneration = false;
+            App.Regeneration = false;
 
             android.app.AlertDialog.Builder alert_confirm = new android.app.AlertDialog.Builder(Home_02_01.this);
             
@@ -339,7 +338,15 @@ public class Home_02_01 extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
+                            change = App.Regeneration_list.book;
+
+                            mGlideRequestManager.load(change).fitCenter().into(home_02_01_book_image);
+                            home_02_01_book_name.setText(App.Regeneration_list.name);
+                            home_02_01_book_author.setText(App.Regeneration_list.author);
+                            home_02_01_book_main.setText(App.Regeneration_list.main);
+
 //                            Log.d("책등록", "등록됨");
+
                             return;
                         }
                     });
@@ -422,6 +429,7 @@ public class Home_02_01 extends AppCompatActivity {
 
                         Intent intent1 = new Intent(Home_02_01.this, Home_02.class);
                         intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        finish();
                         startActivity(intent1);
 
                     }
@@ -429,7 +437,12 @@ public class Home_02_01 extends AppCompatActivity {
                 }).setNegativeButton("네", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Regeneration = true;
+                        App.Regeneration = true;
+                        App.Regeneration_list.book = change;
+                        App.Regeneration_list.name = home_02_01_book_name.getText().toString();
+                        App.Regeneration_list.author = home_02_01_book_author.getText().toString();
+                        App.Regeneration_list.main = home_02_01_book_main.getText().toString();
+
                         Intent intent1 = new Intent(Home_02_01.this, Home_02.class);
                         intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         startActivity(intent1);

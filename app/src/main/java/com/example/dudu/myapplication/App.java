@@ -52,6 +52,9 @@ public class App extends Application {
 
   static String my_nick;
 
+  static Boolean Regeneration = false;
+  static Home_02_02_ArrayList Regeneration_list = new Home_02_02_ArrayList();
+
   @Override
   public void onCreate() {
     super.onCreate();
