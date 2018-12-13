@@ -37,7 +37,7 @@ public class Search_01 extends AppCompatActivity {
 
     String search_word;
 
-    String search_url = "http://book.interpark.com/api/search.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&output=json&queryType=title&sort=accuracy&query=";
+    String search_url = "http://book.interpark.com/api/search.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&output=json&queryType=title&sort=accuracy&maxResults=20&query=";
 
     protected void onCreate(Bundle savedInstancState){
         super.onCreate(savedInstancState);
