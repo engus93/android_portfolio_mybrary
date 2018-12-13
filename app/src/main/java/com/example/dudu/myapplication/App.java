@@ -52,6 +52,8 @@ public class App extends Application {
 
   static String my_nick;
 
+  static String home_02_01_temp_main;
+
   static Boolean Regeneration = false;
   static Home_02_02_ArrayList Regeneration_list = new Home_02_02_ArrayList();
 

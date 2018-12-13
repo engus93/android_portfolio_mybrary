@@ -297,24 +297,7 @@ public class Home_02_01 extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        search_book_image = getIntent().getStringExtra("search_book_image");
-        search_book_name = getIntent().getStringExtra("search_book_name");
-        search_book_author = getIntent().getStringExtra("search_book_author");
-
-        Log.d("체크", "리즘1" + search_book_name + search_book_author);
-
-        if (search_book_name != null && search_book_author != null && search_book_image != null) {
-
-            Log.d("체크", "리즘2" + search_book_name);
-
-            home_02_01_book_name.setText(search_book_name);
-            home_02_01_book_author.setText(search_book_author);
-            mGlideRequestManager.load(search_book_image).fitCenter().into(home_02_01_book_image);
-
-            change = search_book_image;
-
-        }
-
+        //임시 저장 루트
         if (App.Regeneration) {
 
             App.Regeneration = false;
@@ -324,11 +307,43 @@ public class Home_02_01 extends AppCompatActivity {
             alert_confirm.setMessage("작성 중 내용 불러오기").setCancelable(false).setPositiveButton("아니요", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Intent intent1 = new Intent(Home_02_01.this, Home_02_01.class);
 
-                    finish();
+                    search_book_image = getIntent().getStringExtra("search_book_image");
+                    search_book_name = getIntent().getStringExtra("search_book_name");
+                    search_book_author = getIntent().getStringExtra("search_book_author");
 
-                    startActivity(intent1);
+                    //책 정보 가져오기
+                    if (search_book_name != null && search_book_author != null && search_book_image != null) {
+
+                        Log.d("체크", "리즘2" + search_book_name);
+
+                        home_02_01_book_name.setText(search_book_name);
+                        home_02_01_book_author.setText(search_book_author);
+                        mGlideRequestManager.load(search_book_image).fitCenter().into(home_02_01_book_image);
+
+                        home_02_01_book_main.setText(App.home_02_01_temp_main);
+
+                        change = search_book_image;
+
+                        App.home_02_01_temp_main = "";
+
+                    } else {
+                        //리셋 시키기
+                        home_02_01_book_name.setText("");
+                        home_02_01_book_author.setText("");
+                        home_02_01_book_main.setText("");
+
+                        mGlideRequestManager.load("https://firebasestorage.googleapis.com/v0/b/mybrary-4084f.appspot.com/o/MyBrary%2FDefault%2Fhome_02_default.png?alt=media&token=41370ddd-23c6-4ae2-a2c1-68db57c9ae2f").fitCenter().into(home_02_01_book_image);
+
+                        change = search_book_image;
+
+                        //서재 등록 날짜 세팅
+                        Date date = new Date();
+                        final SimpleDateFormat dateFormat = new SimpleDateFormat("yy년 MM월 dd일 HH시 mm분", java.util.Locale.getDefault());
+                        set_date = dateFormat.format(date);
+                        home_02_01_book_date.setText(set_date);
+
+                    }
 
                 }
 
@@ -345,7 +360,6 @@ public class Home_02_01 extends AppCompatActivity {
                             home_02_01_book_author.setText(App.Regeneration_list.author);
                             home_02_01_book_main.setText(App.Regeneration_list.main);
 
-//                            Log.d("책등록", "등록됨");
 
                             return;
                         }
@@ -354,6 +368,29 @@ public class Home_02_01 extends AppCompatActivity {
             android.app.AlertDialog alert = alert_confirm.create();
 
             alert.show();
+        }else{
+
+            search_book_image = getIntent().getStringExtra("search_book_image");
+            search_book_name = getIntent().getStringExtra("search_book_name");
+            search_book_author = getIntent().getStringExtra("search_book_author");
+
+            //책 정보 가져오기
+            if (search_book_name != null && search_book_author != null && search_book_image != null) {
+
+                Log.d("체크", "리즘2" + search_book_name);
+
+                home_02_01_book_name.setText(search_book_name);
+                home_02_01_book_author.setText(search_book_author);
+                mGlideRequestManager.load(search_book_image).fitCenter().into(home_02_01_book_image);
+
+                home_02_01_book_main.setText(App.home_02_01_temp_main);
+
+                change = search_book_image;
+
+                App.home_02_01_temp_main = "";
+
+            }
+
         }
 
     }
@@ -482,6 +519,8 @@ public class Home_02_01 extends AppCompatActivity {
                         } else if (pos == 1) {
                             selectGallery();
                         } else if (pos == 2) {
+
+                            App.home_02_01_temp_main = home_02_01_book_main.getText().toString();
 
                             //검색해서 가져오기 (틀만 구현)
                             Intent intent = new Intent(Home_02_01.this, Search_01.class);

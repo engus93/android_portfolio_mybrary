@@ -471,6 +471,8 @@ public class Home_03_View extends AppCompatActivity {
     String opponent_uid;
     String my_uid;
 
+    Boolean like;
+
     Context context;
 
     @Override
@@ -528,8 +530,10 @@ public class Home_03_View extends AppCompatActivity {
                 }
 
                 if (now_mybrary.user_mybrary_like.containsKey(App.user_UID_get())) {
+                    like = true;
                     home_03_like_image.setSelected(true);
                 }else{
+                    like = false;
                     home_03_like_image.setSelected(false);
                 }
 
@@ -544,7 +548,24 @@ public class Home_03_View extends AppCompatActivity {
             }
         });
 
+        home_03_like_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                if (like) {
+                    like = false;
+                    MainActivity.showToast(Home_03_View.this, "취소하셨습니다.");
+                } else {
+                    like = true;
+                    MainActivity.showToast(Home_03_View.this, "좋아요를 눌렀습니다.");
+                }
+
+                onStarClicked(FirebaseDatabase.getInstance().getReference().child("Users_MyBrary").child(now_mybrary.user_key));
+
+
+            }
+
+        });
 
         //리싸이클러뷰 글쓴이 정보 파이어베이스에서 가져오기
         FirebaseDatabase.getInstance().getReference("User_Info").child(opponent_uid).addValueEventListener(new ValueEventListener() {
@@ -638,21 +659,7 @@ public class Home_03_View extends AppCompatActivity {
             }
         });
 
-        home_03_like_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                if (now_mybrary.user_mybrary_like.containsKey(App.user_UID_get())) {
-                    MainActivity.showToast(Home_03_View.this, "취소하셨습니다.");
-                } else {
-                    MainActivity.showToast(Home_03_View.this, "좋아요를 눌렀습니다.");
-                }
-
-                onStarClicked(FirebaseDatabase.getInstance().getReference().child("Users_MyBrary").child(now_mybrary.user_key));
-
-            }
-
-        });
 
         //삭제하기
         home_02_02_remove_B.setOnClickListener(new View.OnClickListener() {

@@ -210,10 +210,10 @@ public class Home_02_following extends AppCompatActivity {
                 public void onClick(View v) {
 
                     //팔로우
-                    onFollowerClicked(FirebaseDatabase.getInstance().getReference().child("User_Info").child(opponent_uid));
+                    onFollowerClicked(FirebaseDatabase.getInstance().getReference().child("User_Info").child(search_user_info.get(position).user_UID));
 
                     //팔로잉
-                    onFollowingClicked(FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()));
+                    onFollowingClicked(FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()), search_user_info.get(position).user_UID);
 
                 }
             });
@@ -370,7 +370,7 @@ public class Home_02_following extends AppCompatActivity {
     }
 
     //팔로잉 트렌잭션
-    private void onFollowingClicked(DatabaseReference postRef) {
+    private void onFollowingClicked(DatabaseReference postRef, final String uid) {
         postRef.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
@@ -379,12 +379,12 @@ public class Home_02_following extends AppCompatActivity {
                     return Transaction.success(mutableData);
                 }
 
-                if (home_03_user_following.user_following.containsKey(opponent_uid)) {
+                if (home_03_user_following.user_following.containsKey(uid)) {
                     // Unstar the post and remove self from stars
-                    home_03_user_following.user_following.remove(opponent_uid);
+                    home_03_user_following.user_following.remove(uid);
                 } else {
                     // Star the post and add self to stars
-                    home_03_user_following.user_following.put(opponent_uid, true);
+                    home_03_user_following.user_following.put(uid, true);
                 }
 
                 // Set value and report transaction success

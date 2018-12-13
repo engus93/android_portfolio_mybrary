@@ -10,8 +10,11 @@ import android.widget.ImageButton;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class Home_00_my_info_01 extends AppCompatActivity {
 
@@ -28,6 +31,20 @@ public class Home_00_my_info_01 extends AppCompatActivity {
         setContentView(R.layout.home_00_my_info_01);
 
         my_info_nick = findViewById(R.id.my_info_01_nick_ET);
+
+        FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                my_info_nick.setText((CharSequence) dataSnapshot.child(App.user_UID_get()).child("user_nick").getValue());
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         //닉네임 수정 -> 닉네임 수정 완료
         bt_01 = findViewById(R.id.my_info_01_nick_B);
