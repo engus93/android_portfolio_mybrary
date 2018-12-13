@@ -44,9 +44,11 @@
 
         <activity android:name=".Home_02"/>
 
-        <activity android:name=".Home_02_follower"/>
+        <activity android:name=".Home_02_follower"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
-        <activity android:name=".Home_02_following"/>
+        <activity android:name=".Home_02_following"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity android:name=".Home_02_Others"/>
 
@@ -62,7 +64,8 @@
 
         <activity android:name=".Home_04"/>
 
-        <activity android:name=".Home_04_FriendList"/>
+        <activity android:name=".Home_04_FriendList"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
             android:name=".Home_04_Chatting"

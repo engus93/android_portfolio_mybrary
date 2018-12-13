@@ -220,13 +220,11 @@ public class Home_02_follower extends AppCompatActivity {
                     //팔로잉
                     onFollowingClicked(FirebaseDatabase.getInstance().getReference().child("User_Info").child(App.user_UID_get()), search_user_info.get(position_01).user_UID);
 
-                    notifyDataSetChanged();
-
                 }
             });
 
             //리싸이클러뷰 팔로워 정보 가져오기
-            FirebaseDatabase.getInstance().getReference("User_Info").child(App.user_UID_get()).addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference("User_Info").child(App.user_UID_get()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
