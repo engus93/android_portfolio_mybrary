@@ -9,8 +9,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -34,17 +32,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-import org.w3c.dom.Element;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -67,6 +62,8 @@ public class Home_01 extends AppCompatActivity {
 
     String change;
 
+    String urlzz = "http://book.interpark.com/api/bestSeller.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&categoryId=100&output=json";
+
     int REQ_CALL_SELECT = 1300;
     int REQ_SMS_SELECT = 1400;
 
@@ -80,10 +77,12 @@ public class Home_01 extends AppCompatActivity {
     //글라이드 오류 방지
     public RequestManager mGlideRequestManager;
 
-    ArrayList <String> rank_book_name = new ArrayList<>();
-    ArrayList <String> rank_book_image = new ArrayList<>();
+    ArrayList<String> rank_book_name = new ArrayList<>();
+    ArrayList<String> rank_book_image = new ArrayList<>();
 
     ArrayList<Home_01_ArrayList> best_book_info_ArrayList = new ArrayList<>();
+    ArrayList<Home_01_ArrayList> new_book_info_ArrayList = new ArrayList<>();
+    ArrayList<Home_01_ArrayList> recommendation_book_info_ArrayList = new ArrayList<>();
 
     Home_01_Adapter myAdapter;
 
@@ -101,7 +100,7 @@ public class Home_01 extends AppCompatActivity {
 
         drower_profile = findViewById(R.id.home_drawer_profile);
 
-//        new GetLottoNumberTask().execute();
+        new GetBestBookTask().execute();
 
 //        parsing();
 
@@ -177,7 +176,7 @@ public class Home_01 extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 change = (String) dataSnapshot.child(App.user_UID_get()).child("user_profile").getValue();
-                if(!(change.equals(""))){
+                if (!(change.equals(""))) {
                     mGlideRequestManager.load(change).into(drower_profile);
                 }
 
@@ -191,17 +190,7 @@ public class Home_01 extends AppCompatActivity {
 
         //--------------------------------리싸이클러뷰--------------------------------------------
 
-        RecyclerView mRecyclerView;
-        RecyclerView.LayoutManager mLayoutManager;
 
-        mRecyclerView = findViewById(R.id.home_01_RE);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.HORIZONTAL);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        myAdapter = new Home_01_Adapter(this ,best_book_info_ArrayList);
-        mRecyclerView.setAdapter(myAdapter);
 
         //------------------------왼쪽 상단 네비게이션 바------------------------------------
 
@@ -293,7 +282,7 @@ public class Home_01 extends AppCompatActivity {
 
     }
 
-    void getToken(){
+    void getToken() {
 
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
             @Override
@@ -319,13 +308,13 @@ public class Home_01 extends AppCompatActivity {
         long tempTime = System.currentTimeMillis();
         long intervalTime = tempTime - backPressedTime;
 
-            if (0 <= intervalTime && (long) 2000 >= intervalTime) {
-                finishAffinity();
-            } else {
-                backPressedTime = tempTime;
-                MainActivity.showToast(this, "한번 더 누르시면 종료가 됩니다.");
-            }
+        if (0 <= intervalTime && (long) 2000 >= intervalTime) {
+            finishAffinity();
+        } else {
+            backPressedTime = tempTime;
+            MainActivity.showToast(this, "한번 더 누르시면 종료가 됩니다.");
         }
+    }
 
     //프로필 문의하기 메소드
     void showquestion() {
@@ -396,63 +385,234 @@ public class Home_01 extends AppCompatActivity {
 //
 //    }
 
-//    private class GetLottoNumberTask extends AsyncTask<Void, Void, Void> {
+    //베스트셀러
+    private class GetBestBookTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            URL url = null;
+            HttpURLConnection urlConnection = null;
+            BufferedInputStream buf = null;
+
+            try {
+                //[URL 지정과 접속]
+
+                //웹서버 URL 지정
+                url = new URL("http://book.interpark.com/api/bestSeller.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&categoryId=100&output=json");
+
+                //URL 접속
+                urlConnection = (HttpURLConnection) url.openConnection();
+
+                //[웹문서 소스를 버퍼에 저장]
+                //데이터를 버퍼에 기록
+
+                BufferedReader bufreader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+
+                String line = null;
+                String page = "";
+
+                //버퍼의 웹문서 소스를 줄단위로 읽어(line), Page에 저장함
+                while ((line = bufreader.readLine()) != null) {
+                    page += line;
+                }
+
+                //읽어들인 JSON포맷의 데이터를 JSON객체로 변환
+                JSONObject json = new JSONObject(page);
+
+                //item 에 해당하는 배열을 할당
+                JSONArray jArr = json.getJSONArray("item");
+
+                System.out.println("시발" + jArr);
+
+                best_book_info_ArrayList.clear();
+
+                //배열의 크기만큼 반복하면서, name과 address의 값을 추출함
+                for (int i = 0; i < 10; i++) {
+
+                    //i번째 배열 할당
+                    json = jArr.getJSONObject(i);
+
+                    //책 데이터 추출
+                    String title = json.getString("title");
+                    String coverLargeUrl = json.getString("coverLargeUrl");
+                    String pubDate = json.getString("pubDate");
+                    String author = json.getString("author");
+
+                    best_book_info_ArrayList.add(new Home_01_ArrayList(coverLargeUrl, i + 1 + "위", title, author, "출간일 : " + pubDate));
+
+                }
+
+            } catch (IOException e) {
+
+                e.printStackTrace();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+
+        }
+
+        //신간도서
+//        private class GetNewBookTask extends AsyncTask<Void, Void, Void> {
 //
-//        @Override
-//        protected Void doInBackground(Void... params) {
+//            @Override
+//            protected Void doInBackground(Void... params) {
 //
-//            try {
-//                Document document = Jsoup.connect("http://www.yes24.com/24/category/bestseller").get();
-//                Elements elements = document.select("ol[class=\"\"] li p a img");
+//                URL url = null;
+//                HttpURLConnection urlConnection = null;
+//                BufferedInputStream buf = null;
 //
-//                for(org.jsoup.nodes.Element temp : elements){
+//                try {
+//                    //[URL 지정과 접속]
 //
-//                    String temp_2 = temp.attr("alt");
-//                    String temp_3 = temp.attr("src");
+//                    //웹서버 URL 지정
+//                    url = new URL("http://book.interpark.com/api/recommend.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&categoryId=100&output=json");
 //
-//                    if(!temp_2.contains("카트에 넣기") && !temp_2.contains("리스트에 넣기") && !temp_2.contains("미리보기") && !temp_2.contains("eBook")){
+//                    //URL 접속
+//                    urlConnection = (HttpURLConnection) url.openConnection();
 //
-//                        temp_3 = temp_3.replace("/S", "");
-//                        rank_book_name.add(temp_2);
-//                        rank_book_image.add(temp_3);
+//                    //[웹문서 소스를 버퍼에 저장]
+//                    //데이터를 버퍼에 기록
 //
-//                        System.out.println(temp_3);
+//                    BufferedReader bufreader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+//
+//                    String line = null;
+//                    String page = "";
+//
+//                    //버퍼의 웹문서 소스를 줄단위로 읽어(line), Page에 저장함
+//                    while ((line = bufreader.readLine()) != null) {
+//                        page += line;
+//                    }
+//
+//                    //읽어들인 JSON포맷의 데이터를 JSON객체로 변환
+//                    JSONObject json = new JSONObject(page);
+//
+//                    //item 에 해당하는 배열을 할당
+//                    JSONArray jArr = json.getJSONArray("item");
+//
+//                    System.out.println("시발" + jArr);
+//
+//                    best_book_info_ArrayList.clear();
+//
+//                    //배열의 크기만큼 반복하면서, name과 address의 값을 추출함
+//                    for (int i = 0; i < 10; i++) {
+//
+//                        //i번째 배열 할당
+//                        json = jArr.getJSONObject(i);
+//
+//                        //책 데이터 추출
+//                        String title = json.getString("title");
+//                        String coverLargeUrl = json.getString("coverLargeUrl");
+//                        String pubDate = json.getString("pubDate");
+//                        String author = json.getString("author");
+//
+//                        best_book_info_ArrayList.add(new Home_01_ArrayList(coverLargeUrl, i + 1 + "위", title, author, "출간일 : " + pubDate));
 //
 //                    }
 //
+//                } catch (IOException e) {
+//
+//                    e.printStackTrace();
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
 //                }
 //
-//                best_book_info_ArrayList.clear();
-//
-//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(0), "1위", rank_book_name.get(0), "이국종", "2018.10"));
-//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(1), "2위", rank_book_name.get(1), "다케우치 가오루", "2018.08"));
-//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(2), "3위", rank_book_name.get(2), "전민희", "2018.11"));
-//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(3), "4위", rank_book_name.get(3), "김난도 전미영 이향은 이준영 등", "2018.10"));
-//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(4), "5위", rank_book_name.get(4), "밀란 쿤데라", "2018.06"));
-//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(5), "6위", rank_book_name.get(5), "이다혜", "2018.10"));
-//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(6), "7위", rank_book_name.get(6), "이다혜", "2018.10"));
-//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(7), "8위", rank_book_name.get(7), "이다혜", "2018.10"));
-//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(8), "9위", rank_book_name.get(8), "이다혜", "2018.10"));
-//                best_book_info_ArrayList.add(new Home_01_ArrayList(rank_book_image.get(9), "10위", rank_book_name.get(9), "이다혜", "2018.10"));
-//
-//            } catch (IOException e) {
-//
-//                e.printStackTrace();
+//                return null;
 //
 //            }
+
+//            private class GetBestBookTask extends AsyncTask<Void, Void, Void> {
 //
-//            return null;
+//                @Override
+//                protected Void doInBackground(Void... params) {
 //
-//        }
-//    }
+//                    URL url = null;
+//                    HttpURLConnection urlConnection = null;
+//                    BufferedInputStream buf = null;
+//
+//                    try {
+//                        //[URL 지정과 접속]
+//
+//                        //웹서버 URL 지정
+//                        url = new URL("http://book.interpark.com/api/bestSeller.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&categoryId=100&output=json");
+//
+//                        //URL 접속
+//                        urlConnection = (HttpURLConnection) url.openConnection();
+//
+//                        //[웹문서 소스를 버퍼에 저장]
+//                        //데이터를 버퍼에 기록
+//
+//                        BufferedReader bufreader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+//
+//                        String line = null;
+//                        String page = "";
+//
+//                        //버퍼의 웹문서 소스를 줄단위로 읽어(line), Page에 저장함
+//                        while ((line = bufreader.readLine()) != null) {
+//                            page += line;
+//                        }
+//
+//                        //읽어들인 JSON포맷의 데이터를 JSON객체로 변환
+//                        JSONObject json = new JSONObject(page);
+//
+//                        //item 에 해당하는 배열을 할당
+//                        JSONArray jArr = json.getJSONArray("item");
+//
+//                        System.out.println("시발" + jArr);
+//
+//                        best_book_info_ArrayList.clear();
+//
+//                        //배열의 크기만큼 반복하면서, name과 address의 값을 추출함
+//                        for (int i = 0; i < 10; i++) {
+//
+//                            //i번째 배열 할당
+//                            json = jArr.getJSONObject(i);
+//
+//                            //책 데이터 추출
+//                            String title = json.getString("title");
+//                            String coverLargeUrl = json.getString("coverLargeUrl");
+//                            String pubDate = json.getString("pubDate");
+//                            String author = json.getString("author");
+//
+//                            best_book_info_ArrayList.add(new Home_01_ArrayList(coverLargeUrl, i + 1 + "위", title, author, "출간일 : " + pubDate));
+//
+//                        }
+//
+//                    } catch (IOException e) {
+//
+//                        e.printStackTrace();
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    return null;
+//
+//                }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
 
-        myAdapter.notifyDataSetChanged();
+            RecyclerView mRecyclerView;
+            RecyclerView.LayoutManager mLayoutManager;
 
+            mRecyclerView = findViewById(R.id.home_01_RE);
+            mRecyclerView.setHasFixedSize(true);
+            mLayoutManager = new LinearLayoutManager(Home_01.this);
+            ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.HORIZONTAL);
+            mRecyclerView.setLayoutManager(mLayoutManager);
+
+            myAdapter = new Home_01_Adapter(Home_01.this, best_book_info_ArrayList);
+            mRecyclerView.setAdapter(myAdapter);
+
+        }
     }
+
 }
 
 
