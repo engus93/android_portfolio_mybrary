@@ -371,20 +371,6 @@ public class Home_01 extends AppCompatActivity {
         builder.show();
     }
 
-//    void parsing() {
-//
-//
-//        Document document = null;
-//        try {
-//            document = Jsoup.connect("http://book.interpark.com/api/bestSeller.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&categoryId=100&output=json").get();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        System.out.println(document);
-//
-//    }
-
     //베스트셀러
     private class GetBestBookTask extends AsyncTask<Void, Void, Void> {
 
@@ -455,7 +441,26 @@ public class Home_01 extends AppCompatActivity {
 
         }
 
-        //신간도서
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            RecyclerView mRecyclerView;
+            RecyclerView.LayoutManager mLayoutManager;
+
+            mRecyclerView = findViewById(R.id.home_01_RE);
+            mRecyclerView.setHasFixedSize(true);
+            mLayoutManager = new LinearLayoutManager(Home_01.this);
+            ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.HORIZONTAL);
+            mRecyclerView.setLayoutManager(mLayoutManager);
+
+            myAdapter = new Home_01_Adapter(Home_01.this, best_book_info_ArrayList);
+            mRecyclerView.setAdapter(myAdapter);
+
+        }
+    }
+
+    //신간도서
 //        private class GetNewBookTask extends AsyncTask<Void, Void, Void> {
 //
 //            @Override
@@ -593,25 +598,6 @@ public class Home_01 extends AppCompatActivity {
 //                    return null;
 //
 //                }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-            RecyclerView mRecyclerView;
-            RecyclerView.LayoutManager mLayoutManager;
-
-            mRecyclerView = findViewById(R.id.home_01_RE);
-            mRecyclerView.setHasFixedSize(true);
-            mLayoutManager = new LinearLayoutManager(Home_01.this);
-            ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.HORIZONTAL);
-            mRecyclerView.setLayoutManager(mLayoutManager);
-
-            myAdapter = new Home_01_Adapter(Home_01.this, best_book_info_ArrayList);
-            mRecyclerView.setAdapter(myAdapter);
-
-        }
-    }
 
 }
 
