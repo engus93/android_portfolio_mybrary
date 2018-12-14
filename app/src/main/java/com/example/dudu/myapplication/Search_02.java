@@ -52,6 +52,8 @@ public class Search_02 extends AppCompatActivity {
         search_02_date = findViewById(R.id.search_02_date);
         search_02_price = findViewById(R.id.search_02_price);
         search_02_summary = findViewById(R.id.search_02_summary);
+        search_02_publisher = findViewById(R.id.search_02_publisher);
+        search_02_date = findViewById(R.id.search_02_date);
 
         //글라이드 오류 방지
         mGlideRequestManager = Glide.with(Search_02.this);
@@ -68,10 +70,11 @@ public class Search_02 extends AppCompatActivity {
             mGlideRequestManager.load(App.search_book_ArrayList.get(position).drawableId).fitCenter().into(search_02_book);
             search_02_name.setText(App.search_book_ArrayList.get(position).getName());
             search_02_author.setText(App.search_book_ArrayList.get(position).getAuthor());
-            search_02_publisher = findViewById(R.id.search_02_publisher);
-            search_02_date = findViewById(R.id.search_02_date);
             search_02_price.setText(App.search_book_ArrayList.get(position).getPrice());
+            search_02_publisher.setText(App.search_book_ArrayList.get(position).book_publisher);
+            search_02_date.setText(App.search_book_ArrayList.get(position).date);
             search_02_summary.setText(App.search_book_ArrayList.get(position).book_main);
+
         }else{
 
 

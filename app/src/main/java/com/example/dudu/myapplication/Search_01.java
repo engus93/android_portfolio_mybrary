@@ -37,7 +37,7 @@ public class Search_01 extends AppCompatActivity {
 
     String search_word;
 
-    String search_url = "http://book.interpark.com/api/search.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&output=json&queryType=title&sort=accuracy&maxResults=20&query=";
+    String search_url = "http://book.interpark.com/api/search.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&output=json&queryType=title&sort=accuracy&maxResults=30&query=";
 
     protected void onCreate(Bundle savedInstancState){
         super.onCreate(savedInstancState);
@@ -141,8 +141,10 @@ public class Search_01 extends AppCompatActivity {
                     double star = json.getDouble("customerReviewRank")/2.0;
                     String book_main = json.getString("description");
                     String book_link = json.getString("mobileLink");
+                    String book_publisher = json.getString("publisher");
+                    String date = json.getString("pubDate");
 
-                    App.search_book_ArrayList.add(new Search_01_ArrayList(coverLargeUrl, title, author, price + "원", star, book_main, book_link));
+                    App.search_book_ArrayList.add(new Search_01_ArrayList(coverLargeUrl, title, author, price + "원", book_publisher, date , star, book_main, book_link));
 
                 }
 

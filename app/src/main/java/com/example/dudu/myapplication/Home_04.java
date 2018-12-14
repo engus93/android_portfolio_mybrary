@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -468,7 +469,7 @@ public class Home_04 extends AppCompatActivity {
             TextView user_nick;
             TextView user_main;
             TextView user_time;
-            CardView click_item;
+            ConstraintLayout click_item;
             TextView message_count;
 
             public home_04_re(View view) {

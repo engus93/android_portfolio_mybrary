@@ -10,8 +10,10 @@ public class Search_01_ArrayList {
     public double star;
     public String book_main;
     public String book_link;
+    public String book_publisher;
+    public String date;
 
-    public Search_01_ArrayList(String drawableId, String name, String author, String price, double star, String book_main, String book_link){
+    public Search_01_ArrayList(String drawableId, String name, String author, String price, String book_publisher, String date, double star, String book_main, String book_link){
         this.drawableId = drawableId;
         this.name = name;
         this.author = author;
@@ -19,6 +21,8 @@ public class Search_01_ArrayList {
         this.star = star;
         this.book_main = book_main;
         this.book_link = book_link;
+        this.book_publisher = book_publisher;
+        this.date = date;
     }
 
     public String getDrawableId() {
