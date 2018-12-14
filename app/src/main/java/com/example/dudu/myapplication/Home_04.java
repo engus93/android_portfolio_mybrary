@@ -14,7 +14,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,19 +26,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.facebook.stetho.inspector.elements.Document;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
 
-import org.jsoup.Jsoup;
-
-import java.lang.annotation.Documented;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -410,8 +403,8 @@ public class Home_04 extends AppCompatActivity {
                             Intent intent = new Intent(v.getContext(), Home_04_Group_Chatting.class);
                             intent.putExtra("chat_room_key", chatRoom_model.get(position).chat_medel_room_key);
                             intent.putExtra("chat_room_name", group_chat_nick);
-
                             startActivity(intent);
+                            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_left_out);
 
                         } else {
 
@@ -439,6 +432,7 @@ public class Home_04 extends AppCompatActivity {
                                     intent.putExtra("chat_room_key", chatRoom_model.get(position).chat_medel_room_key);
                                     intent.putExtra("opponent_uid", opponent_uid);
                                     startActivity(intent);
+                                    overridePendingTransition(R.anim.trans_right_in, R.anim.trans_left_out);
 
                                 }
 

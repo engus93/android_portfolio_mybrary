@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
         long intervalTime = tempTime - backPressedTime;
 
         if (0 <= intervalTime && (long) 2000 >= intervalTime) {
-            toast.cancel();
             finishAffinity();
         } else {
             backPressedTime = tempTime;

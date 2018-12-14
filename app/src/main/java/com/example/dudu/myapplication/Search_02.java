@@ -60,24 +60,21 @@ public class Search_02 extends AppCompatActivity {
 
         Intent intent1 = getIntent();
 
-        final int position = intent1.getIntExtra("position",-1);
+        final int position = intent1.getIntExtra("position", -1);
 
         search_02_name = findViewById(R.id.search_02_name);
 
-        System.out.println(position);
+        if (!(position == -1)) {
 
-        if(!(position == -1)) {
             mGlideRequestManager.load(App.search_book_ArrayList.get(position).drawableId).fitCenter().into(search_02_book);
             search_02_name.setText(App.search_book_ArrayList.get(position).getName());
             search_02_author.setText(App.search_book_ArrayList.get(position).getAuthor());
             search_02_price.setText(App.search_book_ArrayList.get(position).getPrice());
             search_02_publisher.setText(App.search_book_ArrayList.get(position).book_publisher);
-            search_02_date.setText(App.search_book_ArrayList.get(position).date);
+            search_02_date.setText("출간일 : " + App.search_book_ArrayList.get(position).date);
             search_02_summary.setText(App.search_book_ArrayList.get(position).book_main);
 
-        }else{
-
-
+        } else {
 
         }
 
@@ -106,31 +103,31 @@ public class Search_02 extends AppCompatActivity {
 
                 }
 
-                        if (book_check || App.heart_book_ArrayList.size() == 0) {
+                if (book_check || App.heart_book_ArrayList.size() == 0) {
 
-                            //키보드 내리기
-                            if (v != null) {
-                                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                            }
+                    //키보드 내리기
+                    if (v != null) {
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    }
 
-                            //키보드 내리기
-                            if (v != null) {
-                                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                            }
+                    //키보드 내리기
+                    if (v != null) {
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    }
 
-                            //파이어베이스 데이터베이스 선언
-                            FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            DatabaseReference myRef = database.getReference("Users_Like_Book");
+                    //파이어베이스 데이터베이스 선언
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef = database.getReference("Users_Like_Book");
 
-                            //랜덤 키 생성
-                            key = myRef.push().getKey();
+                    //랜덤 키 생성
+                    key = myRef.push().getKey();
 
-                            Home_05_ArrayList like_plus = new Home_05_ArrayList(App.search_book_ArrayList.get(position).drawableId, App.search_book_ArrayList.get(position).name, App.search_book_ArrayList.get(position).author, App.search_book_ArrayList.get(position).price, (float) App.search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02, key, App.user_UID_get(), App.search_book_ArrayList.get(position).book_main, App.search_book_ArrayList.get(position).book_link);
+                    Home_05_ArrayList like_plus = new Home_05_ArrayList(App.search_book_ArrayList.get(position).drawableId, App.search_book_ArrayList.get(position).name, App.search_book_ArrayList.get(position).author, App.search_book_ArrayList.get(position).price, (float) App.search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02, key, App.user_UID_get(), App.search_book_ArrayList.get(position).book_main, App.search_book_ArrayList.get(position).book_link);
 
-                            //파이어베이스에 저장
-                            myRef.child(key).setValue(like_plus);
+                    //파이어베이스에 저장
+                    myRef.child(key).setValue(like_plus);
 
 
 //                    App.heart_book_ArrayList.add(new Home_05_ArrayList(App.search_book_ArrayList.get(position).drawableId, App.search_book_ArrayList.get(position).name, App.search_book_ArrayList.get(position).author, App.search_book_ArrayList.get(position).price, (float) App.search_book_ArrayList.get(position).star, R.drawable.home_05_heart_02));
@@ -165,7 +162,7 @@ public class Search_02 extends AppCompatActivity {
                     Log.d("체크", "체크 false 02");
                     //키보드 내리기
                     if (v != null) {
-                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     }
 
@@ -199,7 +196,6 @@ public class Search_02 extends AppCompatActivity {
         });
 
 
-
         //찜목록 추가
         findViewById(R.id.search_02_Go_B).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,7 +205,6 @@ public class Search_02 extends AppCompatActivity {
                 startActivity(intent1);
             }
         });
-
 
 
         //뒤로 가기
@@ -222,9 +217,6 @@ public class Search_02 extends AppCompatActivity {
             }
         });
 
-
     }
-
-
 
 }

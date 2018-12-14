@@ -426,7 +426,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -474,6 +473,9 @@ public class Home_03_View extends AppCompatActivity {
     Boolean like;
 
     Context context;
+
+    //내가 삭제할때 발생하는 오류 예외 처리
+    Boolean error_skip = true;
 
     @Override
     protected void onCreate(Bundle savedInstancesState) {
@@ -605,9 +607,13 @@ public class Home_03_View extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                Home_02_02_ArrayList temp = dataSnapshot.getValue(Home_02_02_ArrayList.class);
+                if(error_skip) {
 
-                home_03_like_text.setText("좋아요 " + String.valueOf(temp.user_mybrary_like.size()) + "개");
+                    Home_02_02_ArrayList temp = dataSnapshot.getValue(Home_02_02_ArrayList.class);
+
+                    home_03_like_text.setText("좋아요 " + String.valueOf(temp.user_mybrary_like.size()) + "개");
+
+                }
 
             }
 
@@ -679,6 +685,8 @@ public class Home_03_View extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
+                                error_skip = false;
+
                                 key = now_mybrary.getUser_key();
 
                                 //파이어베이스 데이터베이스 선언
@@ -695,13 +703,11 @@ public class Home_03_View extends AppCompatActivity {
                                             Home_02_02_ArrayList home_02_02_arrayList_00 = new Home_02_02_ArrayList();
                                             home_02_02_arrayList_00 = snapshot.getValue(Home_02_02_ArrayList.class);
 
-                                            Log.d("체크", "삭제 전");
-
                                             if (home_02_02_arrayList_00.getUser_key().equals(key)) {
 
-                                                Log.d("체크", "삭제 진입");
-
                                                 myRef.child(home_02_02_arrayList_00.getUser_key()).removeValue();
+
+                                                onBackPressed();
 
                                             }
 
@@ -714,8 +720,6 @@ public class Home_03_View extends AppCompatActivity {
 
                                     }
                                 });
-
-                                onBackPressed();
 
                                 return;
                             }

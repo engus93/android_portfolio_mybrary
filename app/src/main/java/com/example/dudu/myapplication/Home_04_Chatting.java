@@ -144,7 +144,6 @@ public class Home_04_Chatting extends AppCompatActivity {
         home_04_chatting_camera = findViewById(R.id.home_04_chatting_camera);
 
         chatting_progress = findViewById(R.id.chatting_progress);
-        chatting_progress.setVisibility(View.GONE);
 
         //글라이드 오류 방지
         mGlideRequestManager = Glide.with(this);
@@ -512,7 +511,10 @@ public class Home_04_Chatting extends AppCompatActivity {
 
                     messageViewHolder.chat_me_image.setVisibility(View.VISIBLE);
 
-                    mGlideRequestManager.load(contents.get(position).picture).fitCenter().override(600, 800).into(messageViewHolder.user_contents_me_image);
+                    mGlideRequestManager.load(contents.get(position).picture).fitCenter()
+                            .centerCrop()
+                            .override(600, 800)
+                            .into(messageViewHolder.user_contents_me_image);
 
                     messageViewHolder.time_me_image.setText(message_time);
 
@@ -522,7 +524,10 @@ public class Home_04_Chatting extends AppCompatActivity {
 
                     messageViewHolder.chat_you_image.setVisibility(View.VISIBLE);
                     messageViewHolder.user_nick_image.setText(opponent_chat_info.user_nick);
-                    mGlideRequestManager.load(contents.get(position).picture).fitCenter().override(600, 800).into(messageViewHolder.user_contents_image);
+                    mGlideRequestManager.load(contents.get(position).picture).fitCenter().crossFade()
+                            .centerCrop()
+                            .override(600, 800)
+                            .into(messageViewHolder.user_contents_image);
                     mGlideRequestManager.load(opponent_chat_info.user_profile).fitCenter().into(messageViewHolder.user_profile_image);
                     messageViewHolder.time_you_image.setText(message_time);
 
@@ -530,8 +535,6 @@ public class Home_04_Chatting extends AppCompatActivity {
 
                 }
 
-                //프로그레스바 없애기
-                chatting_progress.setVisibility(View.GONE);
                 //화면 터치 재개
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
@@ -692,6 +695,7 @@ public class Home_04_Chatting extends AppCompatActivity {
     public void onBackPressed() {
 
         finish();
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_right_out);
 
     }
 
@@ -988,6 +992,7 @@ public class Home_04_Chatting extends AppCompatActivity {
 
         //프로그레스바 띄우기
         chatting_progress.setVisibility(View.VISIBLE);
+
         //화면 터치 막기
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
@@ -1026,6 +1031,9 @@ public class Home_04_Chatting extends AppCompatActivity {
 
                     Toast.makeText(Home_04_Chatting.this, "사진이 업로드 되었습니다.", Toast.LENGTH_SHORT).show();
 
+                    //프로그레스바 띄우기
+                    chatting_progress.setVisibility(View.GONE);
+
                 } else {
                     Toast.makeText(Home_04_Chatting.this, "업로드 실패", Toast.LENGTH_SHORT).show();
                 }
@@ -1033,61 +1041,7 @@ public class Home_04_Chatting extends AppCompatActivity {
             }
         });
 
-
     }
 
 
 }
-
-
-//        //상대방 UID 추출
-//        if (!(App.now_chat_user.user_1.equals(App.user_UID_get()))) {
-//            App.opponent.opponent_uid = App.now_chat_user.user_1;
-//        } else {
-//            App.opponent.opponent_uid = App.now_chat_user.user_2;
-//        }
-
-//        //유저 정보
-//        FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                App.opponent.opponent_nick = (String) dataSnapshot.child(App.opponent.opponent_uid).child("user_nick").getValue();
-//                App.opponent.opponent_profile = (String) dataSnapshot.child(App.opponent.opponent_uid).child("user_profile").getValue();
-//
-//                home_04_chatting_nick.setText(App.opponent.opponent_nick);
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-
-
-//
-//        //모든 채팅방 리스트 불러오기
-//        FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                Home_04_ChatRoom_Model single_chatting = new Home_04_ChatRoom_Model();
-//
-//                App.user_chat_room.clear();
-//
-//                //모든 채팅방 리스트 불러오기
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    single_chatting = snapshot.getValue(Home_04_ChatRoom_Model.class);
-//
-//                    App.user_chat_room.add(single_chatting);
-//
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });

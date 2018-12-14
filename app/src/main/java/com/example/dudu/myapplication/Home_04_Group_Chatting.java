@@ -290,8 +290,8 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-
         finish();
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_right_out);
 
     }
 

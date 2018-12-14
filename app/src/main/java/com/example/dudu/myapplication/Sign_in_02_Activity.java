@@ -288,11 +288,14 @@ public class Sign_in_02_Activity extends AppCompatActivity{
                     }
 
                     // 로그인 성공
+                    finishAffinity();
                     Intent intent1 = new Intent(Sign_in_02_Activity.this, Home_01.class);
                     MainActivity.showToast(Sign_in_02_Activity.this, "로그인");
                     intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent1);
+
+
 
                 } else {
                     // 로그인 실패

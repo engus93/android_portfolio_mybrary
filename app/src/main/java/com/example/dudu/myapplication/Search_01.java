@@ -17,6 +17,7 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mozilla.javascript.tools.jsc.Main;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -24,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 
 public class Search_01 extends AppCompatActivity {
 
@@ -71,8 +71,11 @@ public class Search_01 extends AppCompatActivity {
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 }
 
-                new GetBestBookTask().execute();
-
+                if (search_word.length() > 0) {
+                    new GetBookSearchTask().execute();
+                } else {
+                    MainActivity.showToast(Search_01.this, "글자를 입력해주세요.");
+                }
             }
         });
 
@@ -89,7 +92,7 @@ public class Search_01 extends AppCompatActivity {
     }
 
     //베스트셀러
-    private class GetBestBookTask extends AsyncTask<Void, Void, Void> {
+    private class GetBookSearchTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
