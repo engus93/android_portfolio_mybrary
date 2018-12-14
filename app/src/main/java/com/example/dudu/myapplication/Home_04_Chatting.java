@@ -154,6 +154,7 @@ public class Home_04_Chatting extends AppCompatActivity {
         //---------------------------리싸이클러뷰---------------------------------
         mRecyclerView = findViewById(R.id.home_04_chatting_re);
         mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.getItemAnimator();
         mLayoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);

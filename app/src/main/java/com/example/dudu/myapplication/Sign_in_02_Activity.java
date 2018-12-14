@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -31,13 +34,17 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.HashMap;
 
-public class Sign_in_02_Activity extends AppCompatActivity{
+public class Sign_in_02_Activity extends AppCompatActivity {
 
     Button sign_in_02_home; //로그인 ->  버튼
     ImageButton sign_in_02_back;    // 뒤로가기 버튼
     EditText sign_in_02_id; //아이디
     EditText sign_in_02_password;   //패스워드
     CheckBox auto_login;    //자동 로그인
+
+    ConstraintLayout sign_in_02_constraint;
+
+    Animation shake;
 
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -48,7 +55,7 @@ public class Sign_in_02_Activity extends AppCompatActivity{
 
     private GoogleSignInClient mGoogleSignInClient;
 
-    protected void onCreate (Bundle savedInstancesState){
+    protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
         setContentView(R.layout.sign_in_02);
@@ -61,6 +68,10 @@ public class Sign_in_02_Activity extends AppCompatActivity{
         sign_in_02_id = findViewById(R.id.sign_in_02_id);
         sign_in_02_password = findViewById(R.id.sign_in_02_password);
         auto_login = findViewById(R.id.sign_02_auto);
+        sign_in_02_constraint = findViewById(R.id.sign_in_02_constraint);
+
+        //애니메이션 파인드
+        shake = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shake);
 
         //쉐어드 생성
         SharedPreferences savenick_info = getSharedPreferences("member_login", MODE_PRIVATE);
@@ -107,7 +118,7 @@ public class Sign_in_02_Activity extends AppCompatActivity{
         sign_in_02_back.setOnClickListener(new View.OnClickListener() {
 
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 finish();
             }
 
@@ -162,10 +173,6 @@ public class Sign_in_02_Activity extends AppCompatActivity{
             }
 
         });
-
-
-
-
 
 
     }
@@ -261,7 +268,7 @@ public class Sign_in_02_Activity extends AppCompatActivity{
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
 
-                    if(auto_login.isChecked()) {
+                    if (auto_login.isChecked()) {
                         //쉐어드 생성
                         SharedPreferences saveMember_info = getSharedPreferences("member_login", MODE_PRIVATE);
                         SharedPreferences.Editor save = saveMember_info.edit();
@@ -276,7 +283,7 @@ public class Sign_in_02_Activity extends AppCompatActivity{
 
                         //저장
                         save.apply();
-                    }else{
+                    } else {
                         //쉐어드 생성
                         SharedPreferences saveMember_info = getSharedPreferences("member_login", MODE_PRIVATE);
                         SharedPreferences.Editor save = saveMember_info.edit();
@@ -294,15 +301,18 @@ public class Sign_in_02_Activity extends AppCompatActivity{
                     intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent1);
-
+                    overridePendingTransition(R.anim.trans_right_in, R.anim.trans_left_out);
 
 
                 } else {
                     // 로그인 실패
                     Toast.makeText(Sign_in_02_Activity.this, "아이디나 비밀번호를 확인해주세요.", Toast.LENGTH_SHORT).show();
+                    sign_in_02_constraint.startAnimation(shake);
+
+
                 }
             }
         });
     }
-
 }
+

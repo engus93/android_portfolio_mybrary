@@ -1,14 +1,14 @@
 package com.example.dudu.myapplication;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -24,15 +24,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_Heart_ViewHolder>  {
 
     String key; //푸쉬 키 찾기
 
     Context context;
+
+    Animation fade;
 
     private ArrayList<Home_05_ArrayList> heart_book_ArrayList;
 
@@ -58,6 +57,9 @@ public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_H
         //글라이드 오류 방지
         mGlideRequestManager = Glide.with(context);
 
+        //애니메이션 파인드
+        fade = AnimationUtils.loadAnimation(context, R.anim.fade);
+
         mGlideRequestManager.load(heart_book_ArrayList.get(position).heart_book).fitCenter().into(holder.heart_book_image);
         holder.heart_book_name.setText(heart_book_ArrayList.get(position).heart_name);
         holder.heart_book_author.setText(heart_book_ArrayList.get(position).heart_author);
@@ -67,6 +69,8 @@ public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_H
         holder.click_heart_heart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                holder.click_item.startAnimation(fade);
 
                 switch (v.getId()) {
                     case R.id.heart_heart:
@@ -178,6 +182,7 @@ public class Home_05_Adapter extends RecyclerView.Adapter<Home_05_Adapter.Home_H
             heart_book_price = view.findViewById(R.id.heart_price);
             heart_book_date = view.findViewById(R.id.heart_star);
             click_heart_heart = view.findViewById(R.id.heart_heart);
+            click_item = view.findViewById(R.id.home_05_cardview_real);
         }
     }
 

@@ -20,6 +20,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -65,6 +67,8 @@ public class Home_04 extends AppCompatActivity {
 
     String opponent_uid = null;
 
+    Animation shake;
+
     protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
@@ -74,6 +78,9 @@ public class Home_04 extends AppCompatActivity {
         mGlideRequestManager = Glide.with(this);
 
         drower_profile = findViewById(R.id.home_drawer_profile);
+
+        //애니메이션 파인드
+        shake = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.message_shake);
 
         //메뉴 4 - > 메뉴 1
         home_04_menu_01_b = findViewById(R.id.home_04_menu_01_B);
@@ -342,8 +349,6 @@ public class Home_04 extends AppCompatActivity {
 
                                     group_chat_nick += ", " + opponent_info.user_nick;
 
-                                    System.out.println(opponent_info.user_nick);
-
                                 }
                             }
 
@@ -372,6 +377,7 @@ public class Home_04 extends AppCompatActivity {
             }else{
                 home_04_re_item.message_count.setVisibility(View.VISIBLE);
                 home_04_re_item.message_count.setText(String.valueOf(chatRoom_model.get(position).message_count.get(App.user_UID_get())));
+                home_04_re_item.click_item.startAnimation(shake);
             }
 
             //맵에 내용을 다 넣어서 메세지의 키 값을 스트링으로 뽑아서 그 것을 파이어 베이스에서 가져옴
