@@ -50,6 +50,8 @@ public class App extends Application {
 
   static ArrayList<Search_01_ArrayList> search_book_ArrayList = new ArrayList<>();    //검색용 어레이 리스트
 
+  static ArrayList<Search_01_ArrayList> search_best_book_info_ArrayList = new ArrayList<>();  //검색창 처음에 베스트셀러
+
   static String my_nick;
 
   static String home_02_01_temp_main;
@@ -58,6 +60,7 @@ public class App extends Application {
   static Home_02_02_ArrayList Regeneration_list = new Home_02_02_ArrayList();
 
   static Boolean error_skip = true;
+
 
   @Override
   public void onCreate() {

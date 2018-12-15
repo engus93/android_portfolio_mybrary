@@ -39,6 +39,8 @@ public class Search_01 extends AppCompatActivity {
 
     String search_url = "http://book.interpark.com/api/search.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&output=json&queryType=title&sort=accuracy&maxResults=30&query=";
 
+    Search_01_Adapter myAdapter;
+
     protected void onCreate(Bundle savedInstancState){
         super.onCreate(savedInstancState);
         setContentView(R.layout.search_01);
@@ -85,8 +87,21 @@ public class Search_01 extends AppCompatActivity {
 
         super.onResume();
 
-        Log.d("체크", "찜 후");
+        App.search_book_ArrayList.clear();
 
+        App.search_book_ArrayList.addAll(App.search_best_book_info_ArrayList);
+
+        //리싸이클러뷰
+        RecyclerView.LayoutManager mLayoutManager;
+
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(Search_01.this);
+        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        myAdapter = new Search_01_Adapter(Search_01.this, App.search_book_ArrayList);
+
+        mRecyclerView.setAdapter(myAdapter);
 
 
     }
@@ -168,24 +183,13 @@ public class Search_01 extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            //리싸이클러뷰
-            RecyclerView.LayoutManager mLayoutManager;
-
-            mRecyclerView.setHasFixedSize(true);
-            mLayoutManager = new LinearLayoutManager(Search_01.this);
-            ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
-            mRecyclerView.setLayoutManager(mLayoutManager);
-
-            final Search_01_Adapter myAdapter = new Search_01_Adapter(Search_01.this, App.search_book_ArrayList);
-
-            mRecyclerView.setAdapter(myAdapter);
-
             if(App.search_book_ArrayList.size() == 0) {
                 search_nothing.setVisibility(View.VISIBLE);
                 mRecyclerView.setVisibility(View.GONE);
             }else {
                 mRecyclerView.setVisibility(View.VISIBLE);
                 search_nothing.setVisibility(View.GONE);
+                mRecyclerView.setAdapter(myAdapter);
             }
 
         }
