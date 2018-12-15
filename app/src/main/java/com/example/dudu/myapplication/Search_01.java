@@ -1,6 +1,7 @@
 package com.example.dudu.myapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +13,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,13 +37,19 @@ public class Search_01 extends AppCompatActivity {
     ImageButton search_back_B;
     EditText search_searchbar;
     Button search_button;
+    ImageView barcode_search;
 
     RecyclerView mRecyclerView;
     TextView search_nothing;
 
     String search_word;
+    String search_code = null;
 
-    String search_url = "http://book.interpark.com/api/search.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&output=json&queryType=title&sort=accuracy&maxResults=30&query=";
+    Boolean code_search = false;
+
+    String search_url = "http://book.interpark.com/api/search.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&output=json&sort=accuracy&maxResults=30&queryType=title&query=";
+
+    String code_search_url = "http://book.interpark.com/api/search.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&output=json&sort=accuracy&maxResults=30&queryType=isbn&query=";
 
     Search_01_Adapter myAdapter;
 
@@ -50,6 +62,7 @@ public class Search_01 extends AppCompatActivity {
         search_back_B = findViewById(R.id.search_back_B);
         mRecyclerView = findViewById(R.id.search_01_RE);
         search_nothing = findViewById(R.id.search_nothing);
+        barcode_search = findViewById(R.id.barcode_search);
 
         search_back_B.setOnClickListener(new View.OnClickListener(){
 
@@ -80,6 +93,33 @@ public class Search_01 extends AppCompatActivity {
                 }
             }
         });
+
+        //바코드 서치
+        barcode_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                new IntentIntegrator(Search_01.this).initiateScan();
+
+            }
+        });
+
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == IntentIntegrator.REQUEST_CODE) {
+            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if (result == null) {
+                // 취소됨
+            } else {
+                // 스캔된 QRCode --> result.getContents()
+                search_code = result.getContents();
+                search_searchbar.setText(search_code);
+                code_search = true;
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
 
     }
 
@@ -119,8 +159,12 @@ public class Search_01 extends AppCompatActivity {
             try {
                 //[URL 지정과 접속]
 
-                //웹서버 URL 지정
-                url = new URL(search_url + search_word);
+                if(!code_search) {
+                    //웹서버 URL 지정
+                    url = new URL(search_url + search_word);
+                }else{
+                    url = new URL(code_search_url + search_code);
+                }
 
                 //URL 접속
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -191,6 +235,8 @@ public class Search_01 extends AppCompatActivity {
                 search_nothing.setVisibility(View.GONE);
                 mRecyclerView.setAdapter(myAdapter);
             }
+
+            code_search = false;
 
         }
     }
