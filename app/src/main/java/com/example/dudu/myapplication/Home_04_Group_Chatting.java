@@ -146,7 +146,6 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
         home_04_chatting_nick.setText(chat_room_name);
 
         chatting_progress = findViewById(R.id.chatting_progress);
-        chatting_progress.setVisibility(View.GONE);
 
         //메뉴창
         home_04_chatting_joinlist.setOnClickListener(new View.OnClickListener() {
@@ -461,8 +460,6 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
 
                 }
 
-                //프로그레스바 없애기
-                chatting_progress.setVisibility(View.GONE);
                 //화면 터치 재개
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
@@ -946,6 +943,8 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
                     FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("message").push().setValue(message);
 
                     Toast.makeText(Home_04_Group_Chatting.this, "사진이 업로드 되었습니다.", Toast.LENGTH_SHORT).show();
+
+                    chatting_progress.setVisibility(View.GONE);
 
                 } else {
                     Toast.makeText(Home_04_Group_Chatting.this, "업로드 실패", Toast.LENGTH_SHORT).show();

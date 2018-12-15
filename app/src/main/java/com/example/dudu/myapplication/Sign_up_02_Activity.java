@@ -1,8 +1,10 @@
 package com.example.dudu.myapplication;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -20,8 +22,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class Sign_up_02_Activity extends AppCompatActivity {
 
@@ -35,12 +42,15 @@ public class Sign_up_02_Activity extends AppCompatActivity {
     //회원 가입 부가적 필요
     boolean check;  //아이디 체크 불린
     String user_sex;
+    Button user_id_check;
 
     ImageButton sign_up_02_back_IB;
     Button sign_up_02_sign_in_01_B;
     CheckBox user_sign_up_check;
     RadioButton user_male;
     RadioButton user_female;
+
+    ArrayList<Member_ArrayList> all_user_info = new ArrayList<>();
 
     // 파이어베이스 인증 객체 생성
     private FirebaseAuth firebaseAuth;
@@ -61,6 +71,54 @@ public class Sign_up_02_Activity extends AppCompatActivity {
         user_birth_day = findViewById(R.id.user_date_in);
         user_male = findViewById(R.id.user_male_radio);
         user_female = findViewById(R.id.user_female_radio);
+        user_id_check = findViewById(R.id.user_id_check);
+
+        FirebaseDatabase.getInstance().getReference().child("User_Info").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot item : dataSnapshot.getChildren()) {
+
+                    all_user_info.add(item.getValue(Member_ArrayList.class));
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        user_id_check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                //키보드 내리기
+                if (view != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+
+
+                for (int i = 0; i < all_user_info.size(); i++) {
+
+                    if (!user_id.getText().toString().equals(all_user_info.get(i).member_id)) {
+
+                        check = true;
+                        MainActivity.showToast(Sign_up_02_Activity.this, "사용 가능한 아이디입니다.");
+
+                    } else {
+
+                        check = false;
+                        MainActivity.showToast(Sign_up_02_Activity.this, "사용 불가능한 아이디입니다.");
+                    }
+
+                }
+
+            }
+        });
 
         //뒤로가기
         sign_up_02_back_IB = findViewById(R.id.search_back_B);
@@ -106,6 +164,10 @@ public class Sign_up_02_Activity extends AppCompatActivity {
 
                     MainActivity.showToast(Sign_up_02_Activity.this, "아이디를 입력해주세요.");
 
+                } else if (!check) {
+
+                    MainActivity.showToast(Sign_up_02_Activity.this, "아이디 중복 체크를 해주세요.");
+
                 } else if (user_password_01.getText().toString().length() <= 0 && App.PASSWORD_PATTERN.matcher(user_password_01.getText().toString()).matches()) {
 
                     MainActivity.showToast(Sign_up_02_Activity.this, "패스워드를 확인해주세요.");
@@ -130,11 +192,11 @@ public class Sign_up_02_Activity extends AppCompatActivity {
 
                     MainActivity.showToast(Sign_up_02_Activity.this, "약관에 동의 해주세요.");
 
-                } else{
+                } else {
 
-                    if(user_male.isChecked()){
+                    if (user_male.isChecked()) {
                         user_sex = "남자";
-                    }else{
+                    } else {
                         user_sex = "여자";
                     }
 
@@ -200,11 +262,11 @@ public class Sign_up_02_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(user_sign_up_check.isChecked()){
+                if (user_sign_up_check.isChecked()) {
                     Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.vp.co.kr/home/agreement_03.html"));
                     startActivity(intent1);
                     //
-                }else{
+                } else {
 
                 }
 
@@ -239,6 +301,7 @@ public class Sign_up_02_Activity extends AppCompatActivity {
                             Intent intent1 = new Intent(Sign_up_02_Activity.this, MainActivity.class);
                             intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             startActivity(intent1);
+
                         } else {
                             // 회원가입 실패
                             Toast.makeText(Sign_up_02_Activity.this, "회원가입 실패", Toast.LENGTH_SHORT).show();
