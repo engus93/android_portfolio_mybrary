@@ -474,9 +474,6 @@ public class Home_03_View extends AppCompatActivity {
 
     Context context;
 
-    //내가 삭제할때 발생하는 오류 예외 처리
-    Boolean error_skip = true;
-
     @Override
     protected void onCreate(Bundle savedInstancesState) {
         super.onCreate(savedInstancesState);
@@ -499,7 +496,6 @@ public class Home_03_View extends AppCompatActivity {
 
         Intent intent1 = getIntent();
 
-//        final int position_10 = intent1.getIntExtra("position", -1);
         String mybrary_key = intent1.getStringExtra("mybrary_key");
         opponent_uid = intent1.getStringExtra("now_mybrary_uid");
 
@@ -517,6 +513,8 @@ public class Home_03_View extends AppCompatActivity {
                 home_02_02_book_author.setText(now_mybrary.author);
                 home_02_02_book_date.setText(now_mybrary.finish);
                 home_02_02_book_main.setText(now_mybrary.main);
+
+                App.error_skip = true;
 
                 //나의 게시물인지 확인 (내가 아니다)
                 if (!(now_mybrary.user_uid.equals(App.user_UID_get()))) {
@@ -538,9 +536,6 @@ public class Home_03_View extends AppCompatActivity {
                     like = false;
                     home_03_like_image.setSelected(false);
                 }
-
-//                //작성자 UID 가져오기
-//                opponent_uid = now_mybrary.user_uid;
 
             }
 
@@ -607,7 +602,7 @@ public class Home_03_View extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                if(error_skip) {
+                if(App.error_skip) {
 
                     Home_02_02_ArrayList temp = dataSnapshot.getValue(Home_02_02_ArrayList.class);
 
@@ -685,7 +680,7 @@ public class Home_03_View extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
-                                error_skip = false;
+                                App.error_skip = false;
 
                                 key = now_mybrary.getUser_key();
 
@@ -837,14 +832,13 @@ public class Home_03_View extends AppCompatActivity {
         });
     }
 
-//    @Override
-//    public void onBackPressed() {
-//
-//        Intent intent1 = new Intent(Home_03_View.this, Home_03.class);
-//        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//        startActivity(intent1);
-//
-//    }
+    @Override
+    public void onBackPressed() {
+
+        finish();
+        App.error_skip = false;
+
+    }
 
 
 }

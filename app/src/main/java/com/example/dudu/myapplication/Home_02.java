@@ -224,6 +224,7 @@ public class Home_02 extends AppCompatActivity {
                 temp = dataSnapshot.child(App.user_UID_get()).getValue(Member_ArrayList.class);
 
                 home_02_nick_title.setText(temp.user_nick);
+                home_02_user_talk.setText(temp.user_talk);
                 home_02_follow_count.setText(String.valueOf(temp.user_follower.size()));
                 home_02_following_count.setText(String.valueOf(temp.user_following.size()));
 

@@ -27,9 +27,9 @@ public class Member_ArrayList {
         this.member_name = member_name;
         this.member_birthday= member_birthday;
         this.member_sex = member_sex;
-        this.user_nick = "닉네임 없음";
-        this.user_talk = "대화명 없음";
-        this.user_like = "좋아하는 책 없음";
+        this.user_nick = "";
+        this.user_talk = "";
+        this.user_like = "";
         this.user_profile = "https://firebasestorage.googleapis.com/v0/b/mybrary-4084f.appspot.com/o/MyBrary%2FDefault%2FUser_Default_Profile.png?alt=media&token=9c0e3cd1-f0d1-4df7-a98e-3fa64c6312df";
         this.user_UID = user_UID;
         

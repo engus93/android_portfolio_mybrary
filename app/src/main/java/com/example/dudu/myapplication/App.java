@@ -57,6 +57,8 @@ public class App extends Application {
   static Boolean Regeneration = false;
   static Home_02_02_ArrayList Regeneration_list = new Home_02_02_ArrayList();
 
+  static Boolean error_skip = true;
+
   @Override
   public void onCreate() {
     super.onCreate();
