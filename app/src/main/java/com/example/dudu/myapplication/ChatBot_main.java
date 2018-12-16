@@ -1,5 +1,6 @@
 package com.example.dudu.myapplication;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,12 +38,11 @@ import ai.api.model.Result;
 
 public class ChatBot_main extends AppCompatActivity implements AIListener {
 
-
+    FirebaseRecyclerAdapter<ChatBot_Message, chat_rec> adapter;
     RecyclerView recyclerView;
     EditText chat_bot_ET;
     RelativeLayout chat_bot_send_B;
     DatabaseReference mDataBaseReference;
-    FirebaseRecyclerAdapter<ChatMessage, chat_rec> adapter;
     Boolean flagFab = true;
     TextView chat_bot_nick;
     ImageView chat_bot_back;
@@ -80,6 +80,7 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
         final AIRequest aiRequest = new AIRequest();
 
         chat_bot_send_B.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("StaticFieldLeak")
             @Override
             public void onClick(View view) {
                 aiService.startListening();
@@ -88,8 +89,8 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
 
                 if (!message.equals("")) {
 
-                    ChatMessage chatMessage = new ChatMessage(message, "user");
-                    mDataBaseReference.child("chat").push().setValue(chatMessage);
+                    ChatBot_Message chatBotMessage = new ChatBot_Message(message, "user");
+                    mDataBaseReference.child("chat").push().setValue(chatBotMessage);
 
                     aiRequest.setQuery(message);
                     new AsyncTask<AIRequest, Void, AIResponse>() {
@@ -113,8 +114,8 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
                                 System.out.println(reply);
                                 System.out.println(reply.length());
                                 if (reply.length() != 0) {
-                                    ChatMessage chatMessage = new ChatMessage(reply, "bot");
-                                    mDataBaseReference.child("chat").push().setValue(chatMessage);
+                                    ChatBot_Message chatBotMessage = new ChatBot_Message(reply, "bot");
+                                    mDataBaseReference.child("chat").push().setValue(chatBotMessage);
                                 } else {
                                     int MessageCount = result.getFulfillment().getMessages().size();
                                     if (MessageCount > 1) {
@@ -124,8 +125,8 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
                                             String temp = String.valueOf(responseMessage.getSpeech());
                                             temp = temp.replace("[", "");
                                             temp = temp.replace("]", "");
-                                            ChatMessage chatMessage = new ChatMessage(temp, "bot");
-                                            mDataBaseReference.child("chat").push().setValue(chatMessage);
+                                            ChatBot_Message chatBotMessage = new ChatBot_Message(temp, "bot");
+                                            mDataBaseReference.child("chat").push().setValue(chatBotMessage);
                                         }
                                     }
                                 }
@@ -175,22 +176,23 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
             }
         });
 
-        adapter = new FirebaseRecyclerAdapter<ChatMessage, chat_rec>(ChatMessage.class, R.layout.msglist, chat_rec.class, mDataBaseReference.child("chat")) {
+        adapter = new FirebaseRecyclerAdapter<ChatBot_Message, chat_rec>(ChatBot_Message.class, R.layout.chatbot_msglist, chat_rec.class, mDataBaseReference.child("chat")) {
             @Override
-            protected void populateViewHolder(chat_rec viewHolder, ChatMessage model, int position) {
+            protected void populateViewHolder(chat_rec viewHolder, ChatBot_Message model, int position) {
 
                 if (model.getMsgUser().equals("user")) {
 
                     viewHolder.rightText.setText(model.getMsgText());
 
-                    viewHolder.rightText.setVisibility(View.VISIBLE);
-                    viewHolder.leftText.setVisibility(View.GONE);
+                    viewHolder.user_message.setVisibility(View.VISIBLE);
+                    viewHolder.chat_bot_message.setVisibility(View.GONE);
+
                 } else {
 
                     viewHolder.leftText.setText(model.getMsgText());
 
-                    viewHolder.rightText.setVisibility(View.GONE);
-                    viewHolder.leftText.setVisibility(View.VISIBLE);
+                    viewHolder.user_message.setVisibility(View.GONE);
+                    viewHolder.chat_bot_message.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -257,12 +259,12 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
         Result result = response.getResult();
 
         String message = result.getResolvedQuery();
-        ChatMessage chatMessage0 = new ChatMessage(message, "user");
-        mDataBaseReference.child("chat").push().setValue(chatMessage0);
+        ChatBot_Message chatBotMessage0 = new ChatBot_Message(message, "user");
+        mDataBaseReference.child("chat").push().setValue(chatBotMessage0);
 
         String reply = result.getFulfillment().getSpeech();
-        ChatMessage chatMessage = new ChatMessage(reply, "bot");
-        mDataBaseReference.child("chat").push().setValue(chatMessage);
+        ChatBot_Message chatBotMessage = new ChatBot_Message(reply, "bot");
+        mDataBaseReference.child("chat").push().setValue(chatBotMessage);
 
     }
 

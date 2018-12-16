@@ -1,17 +1,17 @@
 package com.example.dudu.myapplication;
 
-public class ChatMessage {
+public class ChatBot_Message {
 
     private String msgText;
     private String msgUser;
 
-    public ChatMessage(String msgText, String msgUser) {
+    public ChatBot_Message(String msgText, String msgUser) {
         this.msgText = msgText;
         this.msgUser = msgUser;
 
     }
 
-    public ChatMessage() {
+    public ChatBot_Message() {
 
     }
 
