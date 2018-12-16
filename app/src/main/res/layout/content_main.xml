@@ -111,7 +111,7 @@
                 android:background="@drawable/chat_me"
                 android:backgroundTint="@color/default1"
                 android:hint="Type a Message"
-                android:inputType="text"
+                android:inputType="textMultiLine"
                 android:minHeight="50dp"
                 android:paddingStart="15dp"
                 android:paddingEnd="15dp"

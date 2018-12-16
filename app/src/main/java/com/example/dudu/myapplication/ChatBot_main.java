@@ -28,6 +28,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
 
 import ai.api.AIDataService;
 import ai.api.AIListener;
@@ -118,13 +120,12 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
                         protected void onPostExecute(AIResponse response) {
                             if (response != null) {
                                 Result result = response.getResult();
+//                                String reply = result.getFulfillment().getSpeech();
                                 String reply = result.getFulfillment().getSpeech();
-                                System.out.println(reply);
-                                System.out.println(reply.length());
 
                                 //현재 시간 등록
                                 Date date = new Date();
-                                final SimpleDateFormat dateFormat = new SimpleDateFormat("HH시 mm분", java.util.Locale.getDefault());
+                                final SimpleDateFormat dateFormat = new SimpleDateFormat("HH시 mm분", Locale.getDefault());
                                 String set_date = dateFormat.format(date);
 
                                 if (reply.length() != 0) {
@@ -148,6 +149,7 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
                             }
                         }
                     }.execute(aiRequest);
+
                 } else {
                     //   aiService.startListening();
                 }
@@ -203,6 +205,11 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
                     viewHolder.chat_bot_message.setVisibility(View.GONE);
 
                 } else {
+
+                    if(model.getMsgText().contains("\\n")){
+                        String temp = model.getMsgText();
+                        model.setMsgText(temp.replace("\\n", "\n"));
+                    }
 
                     viewHolder.leftText.setText(model.getMsgText());
                     viewHolder.chat_bot_time.setText(model.getSend_time());
