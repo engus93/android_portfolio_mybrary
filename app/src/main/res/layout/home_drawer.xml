@@ -57,11 +57,11 @@
             android:layout_marginBottom="5dp"
             android:background="@color/trans"
             android:text="내 정보 변경"
-            app:layout_constraintBottom_toTopOf="@+id/guideline12"
+            app:layout_constraintBottom_toTopOf="@+id/home_drawer_question"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline11" />
+            app:layout_constraintTop_toBottomOf="@+id/guideline11" />
 
         <View
             android:id="@+id/view10"
@@ -69,13 +69,13 @@
             android:layout_height="0.5dp"
             android:layout_marginStart="1dp"
             android:layout_marginEnd="1dp"
-            android:layout_marginBottom="5dp"
             android:layout_weight="1"
             android:background="@android:color/darker_gray"
-            app:layout_constraintBottom_toTopOf="@+id/guideline12"
+            app:layout_constraintBottom_toTopOf="@+id/home_drawer_question"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/home_drawer_my_info" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline12"
@@ -94,25 +94,27 @@
             android:layout_marginBottom="5dp"
             android:background="@color/trans"
             android:text="문의하기"
-            app:layout_constraintBottom_toTopOf="@+id/guideline14"
+            app:layout_constraintBottom_toTopOf="@+id/home_drawer_logout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline13" />
+            app:layout_constraintTop_toBottomOf="@+id/home_drawer_my_info" />
 
         <View
             android:id="@+id/view11"
             android:layout_width="0dp"
             android:layout_height="0.5dp"
             android:layout_marginStart="1dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="1dp"
-            android:layout_marginBottom="5dp"
             android:layout_weight="1"
             android:background="@android:color/darker_gray"
-            app:layout_constraintBottom_toTopOf="@+id/guideline13"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/view10"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/home_drawer_question" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline13"
@@ -131,6 +133,7 @@
             android:layout_marginBottom="5dp"
             android:background="@color/trans"
             android:text="도움말"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/guideline13"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -143,13 +146,13 @@
             android:layout_height="0.5dp"
             android:layout_marginStart="1dp"
             android:layout_marginEnd="1dp"
-            android:layout_marginBottom="5dp"
             android:layout_weight="1"
             android:background="@android:color/darker_gray"
-            app:layout_constraintBottom_toTopOf="@+id/guideline14"
+            app:layout_constraintBottom_toTopOf="@+id/home_drawer_logout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/home_drawer_logout" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline14"
@@ -166,7 +169,8 @@
             android:text="로그아웃"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view12" />
+            app:layout_constraintTop_toBottomOf="@+id/home_drawer_question" />
 
-    </android.support.constraint.ConstraintLayout>
+</android.support.constraint.ConstraintLayout>

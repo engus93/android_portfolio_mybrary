@@ -290,12 +290,6 @@ public class Sign_in_02_Activity extends AppCompatActivity {
                         save.apply();
                     }
 
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
                     // 로그인 성공
                     finishAffinity();
                     Intent intent1 = new Intent(Sign_in_02_Activity.this, Home_01.class);
@@ -305,7 +299,6 @@ public class Sign_in_02_Activity extends AppCompatActivity {
                     intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent1);
                     overridePendingTransition(R.anim.trans_right_in, R.anim.trans_left_out);
-
 
                 } else {
                     // 로그인 실패
