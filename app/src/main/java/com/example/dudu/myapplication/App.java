@@ -9,6 +9,7 @@ import android.util.Log;
 import com.facebook.stetho.Stetho;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -66,6 +67,8 @@ public class App extends Application {
   public void onCreate() {
     super.onCreate();
     Stetho.initializeWithDefaults(this);
+
+    FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
   }
 

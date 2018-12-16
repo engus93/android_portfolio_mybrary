@@ -35,6 +35,8 @@
 
         <activity android:name=".Sign_in_02_Activity"/>
 
+        <activity android:name=".ChatBot_main"/>
+
         <activity android:name=".Home_01"/>
 
         <activity android:name=".Home_00_my_info"/>

@@ -62,6 +62,8 @@ public class Home_01 extends AppCompatActivity {
     Button home_01_recommend_02;
     Button home_01_recommend_03;
 
+    CircleImageView chat_bot_button;
+
 
     ImageButton home_01_search; //검색창 버튼
 
@@ -109,6 +111,7 @@ public class Home_01 extends AppCompatActivity {
         mGlideRequestManager = Glide.with(this);
 
         drower_profile = findViewById(R.id.home_drawer_profile);
+        chat_bot_button = findViewById(R.id.chat_bot_button);
 
         new GetBestBookTask().execute();
         new GetNewBookTask().execute();
@@ -176,6 +179,18 @@ public class Home_01 extends AppCompatActivity {
 
             }
         });
+
+        chat_bot_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent1 = new Intent(Home_01.this, ChatBot_main.class);
+                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent1);
+
+            }
+        });
+
 
         //토큰 발행
         getToken();

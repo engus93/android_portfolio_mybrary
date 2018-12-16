@@ -1,10 +1,8 @@
 package com.example.dudu.myapplication;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -104,7 +102,7 @@ public class Sign_up_02_Activity extends AppCompatActivity {
 
                 for (int i = 0; i < all_user_info.size(); i++) {
 
-                    if (!user_id.getText().toString().equals(all_user_info.get(i).member_id)) {
+                    if (!user_id.getText().toString().equals(all_user_info.get(i).member_id) && user_id.getText().length() > 9) {
 
                         check = true;
                         MainActivity.showToast(Sign_up_02_Activity.this, "사용 가능한 아이디입니다.");

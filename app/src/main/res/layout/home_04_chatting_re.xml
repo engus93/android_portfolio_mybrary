@@ -8,8 +8,7 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/home_04_chatting_re_me"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
+        android:layout_height="match_parent">
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline25"
@@ -61,8 +60,7 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/home_04_chatting_re_you"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/time_you"
@@ -209,7 +207,8 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/home_04_chatting_re_me_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/time_me_image"
