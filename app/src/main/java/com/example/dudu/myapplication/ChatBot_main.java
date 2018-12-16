@@ -26,6 +26,9 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import ai.api.AIDataService;
 import ai.api.AIListener;
 import ai.api.AIServiceException;
@@ -89,8 +92,13 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
 
                 if (!message.equals("")) {
 
-                    ChatBot_Message chatBotMessage = new ChatBot_Message(message, "user");
-                    mDataBaseReference.child("chat").push().setValue(chatBotMessage);
+                    //현재 시간 등록
+                    Date date = new Date();
+                    final SimpleDateFormat dateFormat = new SimpleDateFormat("HH시 mm분", java.util.Locale.getDefault());
+                    String set_date = dateFormat.format(date);
+
+                    ChatBot_Message chatBotMessage = new ChatBot_Message(message, "user",set_date);
+                    mDataBaseReference.child("ChatBot").child(App.user_UID_get()).push().setValue(chatBotMessage);
 
                     aiRequest.setQuery(message);
                     new AsyncTask<AIRequest, Void, AIResponse>() {
@@ -113,9 +121,15 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
                                 String reply = result.getFulfillment().getSpeech();
                                 System.out.println(reply);
                                 System.out.println(reply.length());
+
+                                //현재 시간 등록
+                                Date date = new Date();
+                                final SimpleDateFormat dateFormat = new SimpleDateFormat("HH시 mm분", java.util.Locale.getDefault());
+                                String set_date = dateFormat.format(date);
+
                                 if (reply.length() != 0) {
-                                    ChatBot_Message chatBotMessage = new ChatBot_Message(reply, "bot");
-                                    mDataBaseReference.child("chat").push().setValue(chatBotMessage);
+                                    ChatBot_Message chatBotMessage = new ChatBot_Message(reply, "bot", set_date);
+                                    mDataBaseReference.child("ChatBot").child(App.user_UID_get()).push().setValue(chatBotMessage);
                                 } else {
                                     int MessageCount = result.getFulfillment().getMessages().size();
                                     if (MessageCount > 1) {
@@ -125,8 +139,8 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
                                             String temp = String.valueOf(responseMessage.getSpeech());
                                             temp = temp.replace("[", "");
                                             temp = temp.replace("]", "");
-                                            ChatBot_Message chatBotMessage = new ChatBot_Message(temp, "bot");
-                                            mDataBaseReference.child("chat").push().setValue(chatBotMessage);
+                                            ChatBot_Message chatBotMessage = new ChatBot_Message(temp, "bot", set_date);
+                                            mDataBaseReference.child("ChatBot").child(App.user_UID_get()).push().setValue(chatBotMessage);
                                         }
                                     }
                                 }
@@ -176,13 +190,14 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
             }
         });
 
-        adapter = new FirebaseRecyclerAdapter<ChatBot_Message, chat_rec>(ChatBot_Message.class, R.layout.chatbot_msglist, chat_rec.class, mDataBaseReference.child("chat")) {
+        adapter = new FirebaseRecyclerAdapter<ChatBot_Message, chat_rec>(ChatBot_Message.class, R.layout.chatbot_msglist, chat_rec.class, mDataBaseReference.child("ChatBot").child(App.user_UID_get())) {
             @Override
             protected void populateViewHolder(chat_rec viewHolder, ChatBot_Message model, int position) {
 
                 if (model.getMsgUser().equals("user")) {
 
                     viewHolder.rightText.setText(model.getMsgText());
+                    viewHolder.chat_bot_time_me.setText(model.getSend_time());
 
                     viewHolder.user_message.setVisibility(View.VISIBLE);
                     viewHolder.chat_bot_message.setVisibility(View.GONE);
@@ -190,6 +205,7 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
                 } else {
 
                     viewHolder.leftText.setText(model.getMsgText());
+                    viewHolder.chat_bot_time.setText(model.getSend_time());
 
                     viewHolder.user_message.setVisibility(View.GONE);
                     viewHolder.chat_bot_message.setVisibility(View.VISIBLE);
@@ -258,13 +274,18 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
 
         Result result = response.getResult();
 
+        //현재 시간 등록
+        Date date = new Date();
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("HH시 mm분", java.util.Locale.getDefault());
+        String set_date = dateFormat.format(date);
+
         String message = result.getResolvedQuery();
-        ChatBot_Message chatBotMessage0 = new ChatBot_Message(message, "user");
-        mDataBaseReference.child("chat").push().setValue(chatBotMessage0);
+        ChatBot_Message chatBotMessage0 = new ChatBot_Message(message, "user", set_date);
+        mDataBaseReference.child("ChatBot").child(App.user_UID_get()).push().setValue(chatBotMessage0);
 
         String reply = result.getFulfillment().getSpeech();
-        ChatBot_Message chatBotMessage = new ChatBot_Message(reply, "bot");
-        mDataBaseReference.child("chat").push().setValue(chatBotMessage);
+        ChatBot_Message chatBotMessage = new ChatBot_Message(reply, "bot", set_date);
+        mDataBaseReference.child("ChatBot").child(App.user_UID_get()).push().setValue(chatBotMessage);
 
     }
 
