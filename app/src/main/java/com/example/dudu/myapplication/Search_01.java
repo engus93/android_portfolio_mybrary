@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -15,7 +14,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -23,7 +21,6 @@ import com.google.zxing.integration.android.IntentResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mozilla.javascript.tools.jsc.Main;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -47,13 +44,15 @@ public class Search_01 extends AppCompatActivity {
 
     Boolean code_search = false;
 
+    //서치 URL
     String search_url = "http://book.interpark.com/api/search.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&output=json&sort=accuracy&maxResults=30&queryType=title&query=";
 
+    //바코드 서치 URL
     String code_search_url = "http://book.interpark.com/api/search.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&output=json&sort=accuracy&maxResults=30&queryType=isbn&query=";
 
     Search_01_Adapter myAdapter;
 
-    protected void onCreate(Bundle savedInstancState){
+    protected void onCreate(Bundle savedInstancState) {
         super.onCreate(savedInstancState);
         setContentView(R.layout.search_01);
 
@@ -64,7 +63,7 @@ public class Search_01 extends AppCompatActivity {
         search_nothing = findViewById(R.id.search_nothing);
         barcode_search = findViewById(R.id.barcode_search);
 
-        search_back_B.setOnClickListener(new View.OnClickListener(){
+        search_back_B.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -99,7 +98,16 @@ public class Search_01 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                new IntentIntegrator(Search_01.this).initiateScan();
+                IntentIntegrator integrator = new IntentIntegrator(Search_01.this);
+
+                integrator.setCaptureActivity(AnyOritationCaptureActivity.class);
+
+                integrator.setOrientationLocked(false);  //가로, 세로모드 전환 작동
+                integrator.setPrompt("바코드를 찍어주세요.");
+                integrator.setCameraId(0);
+                integrator.setBeepEnabled(false);
+                integrator.setBarcodeImageEnabled(false);
+                integrator.initiateScan();
 
             }
         });
@@ -159,10 +167,10 @@ public class Search_01 extends AppCompatActivity {
             try {
                 //[URL 지정과 접속]
 
-                if(!code_search) {
+                if (!code_search) {
                     //웹서버 URL 지정
                     url = new URL(search_url + search_word);
-                }else{
+                } else {
                     url = new URL(code_search_url + search_code);
                 }
 
@@ -200,13 +208,13 @@ public class Search_01 extends AppCompatActivity {
                     String coverLargeUrl = json.getString("coverLargeUrl");
                     String author = json.getString("author");
                     String price = String.valueOf(json.getInt("priceStandard"));
-                    double star = json.getDouble("customerReviewRank")/2.0;
+                    double star = json.getDouble("customerReviewRank") / 2.0;
                     String book_main = json.getString("description");
                     String book_link = json.getString("mobileLink");
                     String book_publisher = json.getString("publisher");
                     String date = json.getString("pubDate");
 
-                    App.search_book_ArrayList.add(new Search_01_ArrayList(coverLargeUrl, title, author, price + "원", book_publisher, date , star, book_main, book_link));
+                    App.search_book_ArrayList.add(new Search_01_ArrayList(coverLargeUrl, title, author, price + "원", book_publisher, date, star, book_main, book_link));
 
                 }
 
@@ -227,10 +235,10 @@ public class Search_01 extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            if(App.search_book_ArrayList.size() == 0) {
+            if (App.search_book_ArrayList.size() == 0) {
                 search_nothing.setVisibility(View.VISIBLE);
                 mRecyclerView.setVisibility(View.GONE);
-            }else {
+            } else {
                 mRecyclerView.setVisibility(View.VISIBLE);
                 search_nothing.setVisibility(View.GONE);
                 mRecyclerView.setAdapter(myAdapter);
