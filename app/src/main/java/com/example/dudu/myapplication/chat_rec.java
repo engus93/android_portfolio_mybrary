@@ -17,6 +17,8 @@ public class chat_rec extends RecyclerView.ViewHolder  {
 
     CircleImageView chat_bot_image;
 
+    RecyclerView chat_bot_ReRe;
+
     public chat_rec(View itemView){
         super(itemView);
 
@@ -28,6 +30,7 @@ public class chat_rec extends RecyclerView.ViewHolder  {
         chat_bot_nick = itemView.findViewById(R.id.chat_bot_nick);
         chat_bot_time = itemView.findViewById(R.id.chat_bot_time);
         chat_bot_time_me = itemView.findViewById(R.id.chat_bot_time_me);
+        chat_bot_ReRe = itemView.findViewById(R.id.chat_bot_ReRe);
 
     }
 

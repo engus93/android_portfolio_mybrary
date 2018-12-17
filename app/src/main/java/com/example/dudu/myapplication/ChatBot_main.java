@@ -6,15 +6,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
@@ -22,14 +26,19 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.mozilla.javascript.tools.jsc.Main;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import ai.api.AIDataService;
 import ai.api.AIListener;
@@ -196,6 +205,8 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
             @Override
             protected void populateViewHolder(chat_rec viewHolder, ChatBot_Message model, int position) {
 
+                viewHolder.chat_bot_ReRe.setVisibility(View.GONE);
+
                 if (model.getMsgUser().equals("user")) {
 
                     viewHolder.rightText.setText(model.getMsgText());
@@ -206,6 +217,7 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
 
                 } else {
 
+                    //NextLine 줄 처리
                     if(model.getMsgText().contains("\\n")){
                         String temp = model.getMsgText();
                         model.setMsgText(temp.replace("\\n", "\n"));
@@ -216,6 +228,24 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
 
                     viewHolder.user_message.setVisibility(View.GONE);
                     viewHolder.chat_bot_message.setVisibility(View.VISIBLE);
+
+                    if(model.getMsgText().contains("베스트셀러")){
+
+                        viewHolder.chat_bot_ReRe.setVisibility(View.VISIBLE);
+
+                        System.out.println("안녕");
+                        viewHolder.chat_bot_ReRe.setHasFixedSize(true);
+                        viewHolder.chat_bot_ReRe.getItemAnimator();
+                        LinearLayoutManager mLayoutManager = new LinearLayoutManager(ChatBot_main.this);
+                        ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.HORIZONTAL);
+                        viewHolder.chat_bot_ReRe.setLayoutManager(mLayoutManager);
+
+                        ChatBot_Horizental_Adapter chatBot_horizental_adapter = new ChatBot_Horizental_Adapter();
+                        viewHolder.chat_bot_ReRe.setAdapter(chatBot_horizental_adapter);
+
+
+                    }
+
                 }
             }
 
@@ -340,6 +370,77 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
 //        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    class ChatBot_Horizental_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+        List<Home_02_02_ArrayList> books_info;
+
+        //글라이드 오류 방지
+        public RequestManager mGlideRequestManager;
+
+        public ChatBot_Horizental_Adapter() {
+
+            books_info = new ArrayList<>();
+
+        }
+
+        @NonNull
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
+
+            View v1 = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_bot_re, parent, false);
+
+            return new chat_bot_re(v1);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
+            chat_bot_re chat_bot_re = ((chat_bot_re)holder);
+
+            //글라이드 오류 방지
+            mGlideRequestManager = Glide.with(ChatBot_main.this);
+
+            mGlideRequestManager.load(App.search_best_book_info_ArrayList.get(position).drawableId).fitCenter().into(chat_bot_re.chat_bot_book_imge_B);
+            chat_bot_re.chat_bot_book_name.setText(App.search_best_book_info_ArrayList.get(position).name);
+            chat_bot_re.chat_bot_book_author.setText(App.search_best_book_info_ArrayList.get(position).author);
+            chat_bot_re.chat_bot_book_date.setText("출간일 : " + App.search_best_book_info_ArrayList.get(position).date);
+
+            chat_bot_re.chat_bot_cardview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    MainActivity.showToast(ChatBot_main.this, position + "번 클릭");
+
+                }
+            });
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return App.search_best_book_info_ArrayList.size();
+        }
+
+        private class chat_bot_re extends RecyclerView.ViewHolder {
+
+            TextView chat_bot_book_name;
+            TextView chat_bot_book_author;
+            TextView chat_bot_book_date;
+            ImageView chat_bot_book_imge_B;
+            CardView chat_bot_cardview;
+
+            chat_bot_re(View view) {
+                super(view);
+                chat_bot_book_imge_B = view.findViewById(R.id.chat_bot_book_imge_B);
+                chat_bot_book_name = view.findViewById(R.id.chat_bot_book_name);
+                chat_bot_book_author = view.findViewById(R.id.chat_bot_book_author);
+                chat_bot_book_date = view.findViewById(R.id.chat_bot_book_date);
+                chat_bot_cardview = view.findViewById(R.id.chat_bot_cardview);
+
+            }
+        }
+
     }
 
 }
