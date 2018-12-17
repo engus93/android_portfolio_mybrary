@@ -32,8 +32,18 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.mozilla.javascript.tools.jsc.Main;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,6 +70,10 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
     Boolean flagFab = true;
     TextView chat_bot_nick;
     ImageView chat_bot_back;
+
+    ArrayList<Search_01_ArrayList> chat_bot_search = new ArrayList<>();
+
+    ChatBot_Horizental_Adapter chatBot_horizental_adapter = null;
 
     private AIService aiService;
 
@@ -108,7 +122,7 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
                     final SimpleDateFormat dateFormat = new SimpleDateFormat("HH시 mm분", java.util.Locale.getDefault());
                     String set_date = dateFormat.format(date);
 
-                    ChatBot_Message chatBotMessage = new ChatBot_Message(message, "user",set_date);
+                    ChatBot_Message chatBotMessage = new ChatBot_Message(message, "user", set_date);
                     mDataBaseReference.child("ChatBot").child(App.user_UID_get()).push().setValue(chatBotMessage);
 
                     aiRequest.setQuery(message);
@@ -203,7 +217,7 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
 
         adapter = new FirebaseRecyclerAdapter<ChatBot_Message, chat_rec>(ChatBot_Message.class, R.layout.chatbot_msglist, chat_rec.class, mDataBaseReference.child("ChatBot").child(App.user_UID_get())) {
             @Override
-            protected void populateViewHolder(chat_rec viewHolder, ChatBot_Message model, int position) {
+            protected void populateViewHolder(final chat_rec viewHolder, ChatBot_Message model, int position) {
 
                 viewHolder.chat_bot_ReRe.setVisibility(View.GONE);
 
@@ -218,7 +232,7 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
                 } else {
 
                     //NextLine 줄 처리
-                    if(model.getMsgText().contains("\\n")){
+                    if (model.getMsgText().contains("\\n")) {
                         String temp = model.getMsgText();
                         model.setMsgText(temp.replace("\\n", "\n"));
                     }
@@ -229,24 +243,41 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
                     viewHolder.user_message.setVisibility(View.GONE);
                     viewHolder.chat_bot_message.setVisibility(View.VISIBLE);
 
-                    if(model.getMsgText().contains("베스트셀러")){
+                    if (model.getMsgText().contains("베스트셀러") || model.getMsgText().contains("신간도서") || model.getMsgText().contains("추천도서")
+                            || model.getMsgText().contains("책 리스트입니다.")) {
 
                         viewHolder.chat_bot_ReRe.setVisibility(View.VISIBLE);
 
-                        System.out.println("안녕");
                         viewHolder.chat_bot_ReRe.setHasFixedSize(true);
                         viewHolder.chat_bot_ReRe.getItemAnimator();
                         LinearLayoutManager mLayoutManager = new LinearLayoutManager(ChatBot_main.this);
                         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.HORIZONTAL);
                         viewHolder.chat_bot_ReRe.setLayoutManager(mLayoutManager);
 
-                        ChatBot_Horizental_Adapter chatBot_horizental_adapter = new ChatBot_Horizental_Adapter();
-                        viewHolder.chat_bot_ReRe.setAdapter(chatBot_horizental_adapter);
+                        if (model.getMsgText().contains("베스트셀러")) {
+                            chatBot_horizental_adapter = new ChatBot_Horizental_Adapter("베스트셀러");
+                        } else if (model.getMsgText().contains("신간도서")) {
+                            chatBot_horizental_adapter = new ChatBot_Horizental_Adapter("신간도서");
+                        } else if (model.getMsgText().contains("추천도서")) {
+                            chatBot_horizental_adapter = new ChatBot_Horizental_Adapter("추천도서");
+                        } else if (model.getMsgText().contains("책 리스트입니다.")) {
 
+                            String temp = null;
+
+                            temp = model.getMsgText().replace("의 책 리스트입니다.", "");
+
+                            new GetChatBotSearchBook(temp).execute();
+
+                            chatBot_horizental_adapter = new ChatBot_Horizental_Adapter("검색");
+
+                        }
+
+                        viewHolder.chat_bot_ReRe.setAdapter(chatBot_horizental_adapter);
 
                     }
 
                 }
+
             }
 
         };
@@ -374,14 +405,43 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
 
     class ChatBot_Horizental_Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        List<Home_02_02_ArrayList> books_info;
+        List<Search_01_ArrayList> books_info = new ArrayList<>();
 
         //글라이드 오류 방지
         public RequestManager mGlideRequestManager;
 
-        public ChatBot_Horizental_Adapter() {
+        public ChatBot_Horizental_Adapter(String subject) {
 
-            books_info = new ArrayList<>();
+            switch (subject) {
+
+                case "베스트셀러": {
+
+                    books_info.addAll(App.search_best_book_info_ArrayList);
+
+                    break;
+                }
+
+                case "추천도서": {
+
+                    books_info.addAll(App.chat_bot_recommendbook);
+
+                    break;
+                }
+
+                case "신간도서": {
+
+                    books_info.addAll(App.chat_bot_newbook);
+
+                    break;
+                }
+
+                case "검색": {
+
+                    books_info.addAll(chat_bot_search);
+
+                    break;
+                }
+            }
 
         }
 
@@ -396,15 +456,15 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
-            chat_bot_re chat_bot_re = ((chat_bot_re)holder);
+            chat_bot_re chat_bot_re = ((chat_bot_re) holder);
 
             //글라이드 오류 방지
             mGlideRequestManager = Glide.with(ChatBot_main.this);
 
-            mGlideRequestManager.load(App.search_best_book_info_ArrayList.get(position).drawableId).fitCenter().into(chat_bot_re.chat_bot_book_imge_B);
-            chat_bot_re.chat_bot_book_name.setText(App.search_best_book_info_ArrayList.get(position).name);
-            chat_bot_re.chat_bot_book_author.setText(App.search_best_book_info_ArrayList.get(position).author);
-            chat_bot_re.chat_bot_book_date.setText("출간일 : " + App.search_best_book_info_ArrayList.get(position).date);
+            mGlideRequestManager.load(books_info.get(position).drawableId).fitCenter().into(chat_bot_re.chat_bot_book_imge_B);
+            chat_bot_re.chat_bot_book_name.setText(books_info.get(position).name);
+            chat_bot_re.chat_bot_book_author.setText(books_info.get(position).author);
+            chat_bot_re.chat_bot_book_date.setText("출간일 : " + books_info.get(position).date);
 
             chat_bot_re.chat_bot_cardview.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -419,7 +479,7 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
 
         @Override
         public int getItemCount() {
-            return App.search_best_book_info_ArrayList.size();
+            return books_info.size();
         }
 
         private class chat_bot_re extends RecyclerView.ViewHolder {
@@ -442,6 +502,97 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
         }
 
     }
+    class GetChatBotSearchBook extends AsyncTask<Void, Void, Void> {
+
+        String search_word;
+        String search_url = "http://book.interpark.com/api/search.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&output=json&sort=accuracy&maxResults=30&queryType=author&query=";
+
+
+        GetChatBotSearchBook(String search_word){
+            this.search_word = search_word;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            URL url = null;
+            HttpURLConnection urlConnection = null;
+            BufferedInputStream buf = null;
+
+            try {
+                //[URL 지정과 접속]
+
+                //웹서버 URL 지정
+                url = new URL(search_url + search_word);
+
+                //URL 접속
+                urlConnection = (HttpURLConnection) url.openConnection();
+
+                //[웹문서 소스를 버퍼에 저장]
+                //데이터를 버퍼에 기록
+
+                BufferedReader bufreader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+
+                String line = null;
+                String page = "";
+
+                //버퍼의 웹문서 소스를 줄단위로 읽어(line), Page에 저장함
+                while ((line = bufreader.readLine()) != null) {
+                    page += line;
+                }
+
+                //읽어들인 JSON포맷의 데이터를 JSON객체로 변환
+                JSONObject json = new JSONObject(page);
+
+                //item 에 해당하는 배열을 할당
+                JSONArray jArr = json.getJSONArray("item");
+
+                chat_bot_search.clear();
+
+                //배열의 크기만큼 반복하면서, name과 address의 값을 추출함
+                for (int i = 0; i < 10; i++) {
+
+                    //i번째 배열 할당
+                    json = jArr.getJSONObject(i);
+
+                    //책 데이터 추출
+                    String title = json.getString("title");
+                    String coverLargeUrl = json.getString("coverLargeUrl");
+                    String author = json.getString("author");
+
+                    String mobileLink = json.getString("mobileLink");
+                    String book_main = json.getString("description");
+                    String price = json.getString("priceStandard");
+                    String book_publisher = json.getString("publisher");
+                    String date = json.getString("pubDate");
+                    double star = json.getDouble("customerReviewRank")/2.0;
+
+                    chat_bot_search.add(new Search_01_ArrayList(coverLargeUrl, title, author, price + "원", book_publisher, date , star, book_main, mobileLink));
+                    System.out.println("시발!!!!! " + chat_bot_search.get(i));
+
+                }
+
+            } catch (IOException e) {
+
+                e.printStackTrace();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            adapter.notifyDataSetChanged();
+
+        }
+    }
+
 
 }
 

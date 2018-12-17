@@ -580,6 +580,7 @@ public class Home_01 extends AppCompatActivity {
                 JSONArray jArr = json.getJSONArray("item");
 
                 new_book_info_ArrayList.clear();
+                App.chat_bot_newbook.clear();
 
                 //배열의 크기만큼 반복하면서, name과 address의 값을 추출함
                 for (int i = 0; i < 10; i++) {
@@ -593,7 +594,15 @@ public class Home_01 extends AppCompatActivity {
                     String pubDate = json.getString("pubDate");
                     String author = json.getString("author");
 
+                    String mobileLink = json.getString("mobileLink");
+                    String book_main = json.getString("description");
+                    String price = json.getString("priceStandard");
+                    String book_publisher = json.getString("publisher");
+                    String date = json.getString("pubDate");
+                    double star = json.getDouble("customerReviewRank")/2.0;
+
                     new_book_info_ArrayList.add(new Home_01_ArrayList(coverLargeUrl, "", title, author, "출간일 : " + pubDate));
+                    App.chat_bot_newbook.add(new Search_01_ArrayList(coverLargeUrl, title, author, price + "원", book_publisher, date , star, book_main, mobileLink));
 
                 }
 
@@ -665,9 +674,8 @@ public class Home_01 extends AppCompatActivity {
                 //item 에 해당하는 배열을 할당
                 JSONArray jArr = json.getJSONArray("item");
 
-                System.out.println("시발" + jArr);
-
                 recommendation_book_info_ArrayList.clear();
+                App.chat_bot_recommendbook.clear();
 
                 //배열의 크기만큼 반복하면서, name과 address의 값을 추출함
                 for (int i = 0; i < 10; i++) {
@@ -681,7 +689,16 @@ public class Home_01 extends AppCompatActivity {
                     String pubDate = json.getString("pubDate");
                     String author = json.getString("author");
 
+
+                    String mobileLink = json.getString("mobileLink");
+                    String book_main = json.getString("description");
+                    String price = json.getString("priceStandard");
+                    String book_publisher = json.getString("publisher");
+                    String date = json.getString("pubDate");
+                    double star = json.getDouble("customerReviewRank")/2.0;
+
                     recommendation_book_info_ArrayList.add(new Home_01_ArrayList(coverLargeUrl, "", title, author, "출간일 : " + pubDate));
+                    App.chat_bot_recommendbook.add(new Search_01_ArrayList(coverLargeUrl, title, author, price + "원", book_publisher, date , star, book_main, mobileLink));
 
                 }
 

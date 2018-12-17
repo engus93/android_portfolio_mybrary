@@ -53,6 +53,10 @@ public class App extends Application {
 
   static ArrayList<Search_01_ArrayList> search_best_book_info_ArrayList = new ArrayList<>();  //검색창 처음에 베스트셀러
 
+  static ArrayList<Search_01_ArrayList> chat_bot_bestbook = new ArrayList<>();  //챗봇 베스트셀러
+  static ArrayList<Search_01_ArrayList> chat_bot_recommendbook = new ArrayList<>();  //챗봇 추천도서
+  static ArrayList<Search_01_ArrayList> chat_bot_newbook = new ArrayList<>();  //챗봇 신간도서
+
   static String my_nick;
 
   static String home_02_01_temp_main;
