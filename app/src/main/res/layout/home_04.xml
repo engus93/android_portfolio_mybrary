@@ -157,6 +157,19 @@
 
         </LinearLayout>
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/chat_bot_button4"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/chat_bot_back"
+            android:padding="7dp"
+            android:clickable="true"
+            android:src="@drawable/chat_bot"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/home_04_re"
             android:layout_width="0dp"
@@ -168,7 +181,9 @@
             app:layout_constraintBottom_toTopOf="@+id/down_line"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view8" />
+            app:layout_constraintTop_toBottomOf="@+id/view8" >
+
+        </android.support.v7.widget.RecyclerView>
 
     </android.support.constraint.ConstraintLayout>
 

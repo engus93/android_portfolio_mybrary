@@ -133,6 +133,17 @@ public class Home_03 extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.chat_bot_button3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent1 = new Intent(Home_03.this, ChatBot_main.class);
+                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent1);
+
+            }
+        });
+
         //유저 정보 파이어 베이스
         FirebaseDatabase.getInstance().getReference("User_Info").addValueEventListener(new ValueEventListener() {
             @Override

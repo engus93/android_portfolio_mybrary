@@ -181,6 +181,17 @@ public class Home_02 extends AppCompatActivity {
 
         });
 
+        findViewById(R.id.chat_bot_button2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent1 = new Intent(Home_02.this, ChatBot_main.class);
+                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent1);
+
+            }
+        });
+
         //메뉴 2 - > 메뉴 1
         findViewById(R.id.home_02_re_fropile_I).setOnClickListener(new View.OnClickListener() {
             @Override

@@ -62,16 +62,11 @@ public class Home_01 extends AppCompatActivity {
     Button home_01_recommend_02;
     Button home_01_recommend_03;
 
-    CircleImageView chat_bot_button;
-
-
     ImageButton home_01_search; //검색창 버튼
 
     CircleImageView drower_profile;
 
     String change;
-
-    String urlzz = "http://book.interpark.com/api/bestSeller.api?key=9A0ACD60A50795084682869204DE13D2A6A3FAB4767E8869BD4C8340C8F61FAC&categoryId=100&output=json";
 
     int REQ_CALL_SELECT = 1300;
     int REQ_SMS_SELECT = 1400;
@@ -111,7 +106,6 @@ public class Home_01 extends AppCompatActivity {
         mGlideRequestManager = Glide.with(this);
 
         drower_profile = findViewById(R.id.home_drawer_profile);
-        chat_bot_button = findViewById(R.id.chat_bot_button);
 
         new GetBestBookTask().execute();
         new GetNewBookTask().execute();
@@ -180,7 +174,7 @@ public class Home_01 extends AppCompatActivity {
             }
         });
 
-        chat_bot_button.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.chat_bot_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
