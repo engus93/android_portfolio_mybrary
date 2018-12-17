@@ -28,7 +28,7 @@ import java.util.HashMap;
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.dudu.myapplication.MainActivity.toast;
 
-public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.MyViewHolder>  {
+public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.MyViewHolder> {
 
     Context context;
     boolean book_check;
@@ -42,7 +42,7 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
     //글라이드 오류 방지
     public RequestManager mGlideRequestManager;
 
-    Search_01_Adapter(Context context,ArrayList<Search_01_ArrayList> searchInfoArrayList){
+    Search_01_Adapter(Context context, ArrayList<Search_01_ArrayList> searchInfoArrayList) {
         this.context = context;
         this.search_book_Array = searchInfoArrayList;
     }
@@ -70,11 +70,10 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
         holder.book_star.setRating((float) search_book_Array.get(position).star);
 
 
-        holder.click_item.setOnClickListener(new View.OnClickListener(){
+        holder.click_item.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                Toast.makeText(context,selItem,Toast.LENGTH_SHORT).show();
+            public void onClick(View v) {
+                Toast.makeText(context, selItem, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -89,20 +88,13 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
                     if (!name.equals(selItem)) {
                         book_check = true;
 
-                        Log.d("체크", "체크 true");
-
                     } else {
                         book_check = false;
-
-                        Log.d("체크", "체크 false");
 
                         break;
                     }
 
-                    Log.d("체크", "break");
-
                 }
-
 
                 if (book_check || App.heart_book_ArrayList.size() == 0) {
 
@@ -118,8 +110,6 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
                         e.printStackTrace();
                     }
 
-                    Log.d("체크", "찜");
-
                     //파이어베이스 데이터베이스 선언
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference myRef = database.getReference("Users_Like_Book").child(App.user_UID_get());
@@ -133,32 +123,6 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
 
                     //파이어베이스에 저장
                     myRef.child(key).setValue(like_plus);
-
-                    showToast(context, selItem + "가 찜목록에 추가 되었습니다.");
-
-//                    ------------------------------------------------쉐어드---------------------------------------
-
-//                    //쉐어드 생성
-//                    SharedPreferences saveMember_info = context.getSharedPreferences("Heart", MODE_PRIVATE);
-//                    SharedPreferences.Editor save = saveMember_info.edit();
-//
-//                    //해쉬맵 생성
-//                    HashMap<String, Home_05_ArrayList> heart_map = new HashMap<>();
-//
-//                    //정보 -> 해쉬맵에 삽입
-//                    for (int i = 0; i < App.heart_book_ArrayList.size(); i++) {
-//
-//                        heart_map.put(App.User_ID + "_Heart_" + i, App.heart_book_ArrayList.get(i));
-//
-//                    }
-//
-//                    save.clear();
-//
-//                    //해쉬맵(Gson 변환) -> 쉐어드 삽입
-//                    save.putString(App.User_ID + "_Heart", App.gson.toJson(heart_map));
-//
-//                    //저장
-//                    save.apply();
 
                     showToast(context, selItem + "가 찜목록에 추가 되었습니다.");
 
@@ -197,7 +161,6 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
 
             }
         });
-
 
     }
 
@@ -242,4 +205,27 @@ public class Search_01_Adapter extends RecyclerView.Adapter<Search_01_Adapter.My
 }
 
 
+//                    ------------------------------------------------쉐어드---------------------------------------
+//
+//                    //쉐어드 생성
+//                    SharedPreferences saveMember_info = context.getSharedPreferences("Heart", MODE_PRIVATE);
+//                    SharedPreferences.Editor save = saveMember_info.edit();
+//
+//                    //해쉬맵 생성
+//                    HashMap<String, Home_05_ArrayList> heart_map = new HashMap<>();
+//
+//                    //정보 -> 해쉬맵에 삽입
+//                    for (int i = 0; i < App.heart_book_ArrayList.size(); i++) {
+//
+//                        heart_map.put(App.User_ID + "_Heart_" + i, App.heart_book_ArrayList.get(i));
+//
+//                    }
+//
+//                    save.clear();
+//
+//                    //해쉬맵(Gson 변환) -> 쉐어드 삽입
+//                    save.putString(App.User_ID + "_Heart", App.gson.toJson(heart_map));
+//
+//                    //저장
+//                    save.apply();
 

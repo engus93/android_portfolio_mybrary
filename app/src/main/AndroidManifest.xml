@@ -37,6 +37,8 @@
 
         <activity android:name=".ChatBot_main"/>
 
+        <activity android:name=".ChatBot_Search"/>
+
         <activity android:name=".Home_01"/>
 
         <activity android:name=".Home_00_my_info"/>

@@ -53,7 +53,7 @@ public class App extends Application {
 
   static ArrayList<Search_01_ArrayList> search_best_book_info_ArrayList = new ArrayList<>();  //검색창 처음에 베스트셀러
 
-  static ArrayList<Search_01_ArrayList> chat_bot_bestbook = new ArrayList<>();  //챗봇 베스트셀러
+  static Search_01_ArrayList chat_bot_search_book;  //챗봇 베스트셀러
   static ArrayList<Search_01_ArrayList> chat_bot_recommendbook = new ArrayList<>();  //챗봇 추천도서
   static ArrayList<Search_01_ArrayList> chat_bot_newbook = new ArrayList<>();  //챗봇 신간도서
 
@@ -98,28 +98,28 @@ public class App extends Application {
 
   }
 
-  static void heart_sort(){
-
-
-    App.list_01.clear();
-
-    for (int i = App.heart_book_ArrayList.size(); 0 < i; i--) {
-
-      App.list_01.add(App.heart_book_ArrayList.get(i - 1));
-
-    }
-
-    App.heart_book_ArrayList.clear();
-
-    for (int i = 0; i < App.list_01.size(); i++) {
-
-      Log.d("체크", "잘 넣음");
-
-      App.heart_book_ArrayList.add(App.list_01.get(i));
-
-    }
-
-  }
+//  static void heart_sort(){
+//
+//
+//    App.list_01.clear();
+//
+//    for (int i = App.heart_book_ArrayList.size(); 0 < i; i--) {
+//
+//      App.list_01.add(App.heart_book_ArrayList.get(i - 1));
+//
+//    }
+//
+//    App.heart_book_ArrayList.clear();
+//
+//    for (int i = 0; i < App.list_01.size(); i++) {
+//
+//      Log.d("체크", "잘 넣음");
+//
+//      App.heart_book_ArrayList.add(App.list_01.get(i));
+//
+//    }
+//
+//  }
 
   //비트맵 -> 스트링 변환
   static String getBase64String(Bitmap bitmap) {

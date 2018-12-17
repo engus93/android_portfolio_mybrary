@@ -355,7 +355,6 @@ public class Home_01 extends AppCompatActivity {
 
         });
 
-
     }
 
     void getToken() {
