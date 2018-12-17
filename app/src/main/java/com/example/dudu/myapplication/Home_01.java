@@ -49,6 +49,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class Home_01 extends AppCompatActivity {
 
@@ -98,6 +100,8 @@ public class Home_01 extends AppCompatActivity {
 
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_01);
+
+
 
         //파베 객체선언
         mAuth = FirebaseAuth.getInstance();
@@ -723,6 +727,11 @@ public class Home_01 extends AppCompatActivity {
             mRecyclerView_03.setAdapter(myAdapter);
 
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
 

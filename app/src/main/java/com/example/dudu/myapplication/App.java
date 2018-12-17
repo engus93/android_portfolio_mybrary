@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+
 public class App extends Application {
 
   static String User_ID; //현재 로그인 아이디
@@ -71,6 +73,11 @@ public class App extends Application {
   public void onCreate() {
     super.onCreate();
     Stetho.initializeWithDefaults(this);
+
+    CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+            .setDefaultFontPath("hmkmmag.ttf")
+            .setFontAttrId(R.attr.fontPath)
+            .build());
 
     FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
