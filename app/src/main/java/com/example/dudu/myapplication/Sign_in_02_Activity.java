@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.github.ybq.android.spinkit.SpinKitView;
@@ -42,6 +43,8 @@ public class Sign_in_02_Activity extends AppCompatActivity {
 
     Animation shake;
 
+    ProgressBar sign_progressBar;
+
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
 
@@ -65,6 +68,7 @@ public class Sign_in_02_Activity extends AppCompatActivity {
         sign_in_02_password = findViewById(R.id.sign_in_02_password);
         auto_login = findViewById(R.id.sign_02_auto);
         sign_in_02_constraint = findViewById(R.id.sign_in_02_constraint);
+        sign_progressBar = findViewById(R.id.sign_progressBar);
 
         //애니메이션 파인드
         shake = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shake);
@@ -160,6 +164,8 @@ public class Sign_in_02_Activity extends AppCompatActivity {
                     MainActivity.showToast(Sign_in_02_Activity.this, "비밀번호를 입력해주세요");
 
                 } else {
+
+                    sign_progressBar.setVisibility(View.VISIBLE);
 
                     loginUser(sign_in_02_id.getText().toString(), sign_in_02_password.getText().toString());
 
@@ -302,6 +308,9 @@ public class Sign_in_02_Activity extends AppCompatActivity {
 
                 } else {
                     // 로그인 실패
+
+                    sign_progressBar.setVisibility(View.GONE);
+
                     Toast.makeText(Sign_in_02_Activity.this, "아이디나 비밀번호를 확인해주세요.", Toast.LENGTH_SHORT).show();
                     sign_in_02_constraint.startAnimation(shake);
 

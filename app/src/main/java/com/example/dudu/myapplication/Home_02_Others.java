@@ -85,7 +85,7 @@ public class Home_02_Others extends AppCompatActivity {
         other_user_uid = getIntent().getStringExtra("user_uid");
 
         //유저 정보 세팅
-        FirebaseDatabase.getInstance().getReference().child("User_Info").child(other_user_uid).addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("User_Info").child(other_user_uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -118,40 +118,56 @@ public class Home_02_Others extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        Boolean skip = true;
-
                         Home_04_ChatRoom_Model chatRoom_model = new Home_04_ChatRoom_Model();
+
+                        Boolean skip = true;
 
                         for (DataSnapshot item : dataSnapshot.getChildren()) {
 
                             chatRoom_model = item.getValue(Home_04_ChatRoom_Model.class);
 
-                            if (chatRoom_model.users.containsKey(other_user_uid) && chatRoom_model.users.size() == 2) {
+                            System.out.println("시발~" + other_user_uid);
+
+                            if (chatRoom_model.users.containsKey(other_info.user_UID) && chatRoom_model.users.size() == 2) {
 
                                 roomkey = item.getKey();
 
-                                Log.d("체크", "넌 되냐");
-
                                 skip = false;
+
+                                break;
+
+                            }else{
+
+                                chatRoom_model = new Home_04_ChatRoom_Model();
 
                             }
 
                         }
 
                         if (skip) {
+                            roomkey = FirebaseDatabase.getInstance().getReference().child("Chatting_Room").push().getKey();
+
                             chatRoom_model.users.put(App.user_UID_get(), true);
-                            chatRoom_model.users.put(other_user_uid, true);
+                            chatRoom_model.users.put(other_info.user_UID, true);
+                            chatRoom_model.now_login.put(App.user_UID_get(), true);
+                            chatRoom_model.now_login.put(other_info.user_UID, true);
+                            chatRoom_model.message_count.put(App.user_UID_get(), 0);
+                            chatRoom_model.message_count.put(other_info.user_UID, 0);
+                            chatRoom_model.lasttime = System.currentTimeMillis();
+                            chatRoom_model.chat_medel_room_key = roomkey;
+
                             FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(roomkey).setValue(chatRoom_model);
 
-                            Log.d("체크", "뭐지");
+                        }else{
 
                         }
 
                         Intent intent = new Intent(Home_02_Others.this, Home_04_Chatting.class);
-                        intent.putExtra("opponent_uid", other_user_uid);
+                        intent.putExtra("opponent_uid", other_info.user_UID);
                         intent.putExtra("chat_room_key", roomkey);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         startActivity(intent);
+
 
                     }
 
@@ -292,13 +308,9 @@ public class Home_02_Others extends AppCompatActivity {
 
         public Home_02_Others_Adapter() {
 
-            Log.d("리싸이", "어댑터 - 파이어베이스 0 ");
-
             FirebaseDatabase.getInstance().getReference().child("Users_MyBrary").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                    Log.d("리싸이", "어댑터 - 파이어베이스");
 
                     others_mybrary.clear();
 
@@ -310,11 +322,7 @@ public class Home_02_Others extends AppCompatActivity {
 
                         if(temp.user_uid.equals(other_user_uid)) {
 
-//                            Collections.reverse(others_mybrary);
-
                             others_mybrary.add(item.getValue(Home_02_02_ArrayList.class));
-
-//                            Collections.reverse(others_mybrary);
 
                         }else {
 
@@ -341,20 +349,18 @@ public class Home_02_Others extends AppCompatActivity {
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
 
-            Log.d("리싸이", "어댑터 - 생성");
-
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_02_re_02, parent, false);
             return new home_02_other_re(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
-            Log.d("리싸이", "어댑터 - 바인드");
             final home_02_other_re home_02_other_re = ((home_02_other_re)holder);
 
-            Log.d("리싸클", "" + others_mybrary.get(position).book);
+            //글라이드 오류 방지
+            mGlideRequestManager = Glide.with(Home_02_Others.this);
 
-//            mGlideRequestManager.load(others_mybrary.get(position).book).into(((home_02_other_re) holder).book_image);
+            mGlideRequestManager.load(others_mybrary.get(position).book).into(((home_02_other_re) holder).book_image);
             ((home_02_other_re) holder).book_name.setText(others_mybrary.get(position).name);
             ((home_02_other_re) holder).book_author.setText(others_mybrary.get(position).author);
             ((home_02_other_re) holder).book_finish.setText(others_mybrary.get(position).finish);

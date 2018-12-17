@@ -269,7 +269,7 @@ public class Home_04_FriendList extends AppCompatActivity {
             holder.user_nick.setText(search_user_info.get(position).getUser_nick());
             holder.user_id.setText(search_user_info.get(position).getMember_id());
 
-            roomkey = FirebaseDatabase.getInstance().getReference("User_Message").child("User_Room").push().getKey();
+            roomkey = FirebaseDatabase.getInstance().getReference().child("Chatting_Room").push().getKey();
 
             //채팅 상대 클릭 채팅 시작
             holder.click_item.setOnClickListener(new View.OnClickListener() {
@@ -309,8 +309,6 @@ public class Home_04_FriendList extends AppCompatActivity {
                                 chatRoom_model.chat_medel_room_key = roomkey;
 
                                 FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(roomkey).setValue(chatRoom_model);
-
-                                Log.d("체크", "뭐지");
 
                             }
 
