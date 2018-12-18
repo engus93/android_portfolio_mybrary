@@ -11,6 +11,8 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 public class MainActivity extends AppCompatActivity {
 
     Button sign_in_01_sign_up_01_button;    //로그인 버튼
@@ -87,6 +89,11 @@ public class MainActivity extends AppCompatActivity {
             toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
         }
         toast.show();
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
 }

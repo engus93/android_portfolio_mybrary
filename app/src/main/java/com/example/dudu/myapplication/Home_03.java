@@ -1,6 +1,7 @@
 package com.example.dudu.myapplication;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -31,6 +32,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class Home_03 extends AppCompatActivity {
 
@@ -67,7 +70,7 @@ public class Home_03 extends AppCompatActivity {
 
         mRecyclerView = findViewById(R.id.home_03_Re);
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new GridLayoutManager(this,3);
+        mLayoutManager = new GridLayoutManager(this, 3);
         ((LinearLayoutManager) mLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
@@ -79,7 +82,7 @@ public class Home_03 extends AppCompatActivity {
                 Intent intent1 = new Intent(Home_03.this, Home_01.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
-                overridePendingTransition(0,0 );
+                overridePendingTransition(0, 0);
             }
         });
 
@@ -91,7 +94,7 @@ public class Home_03 extends AppCompatActivity {
                 Intent intent1 = new Intent(Home_03.this, Home_02.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
-                overridePendingTransition(0,0 );
+                overridePendingTransition(0, 0);
             }
         });
 
@@ -103,7 +106,7 @@ public class Home_03 extends AppCompatActivity {
                 Intent intent1 = new Intent(Home_03.this, Home_04.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
-                overridePendingTransition(0,0 );
+                overridePendingTransition(0, 0);
 
             }
         });
@@ -116,7 +119,7 @@ public class Home_03 extends AppCompatActivity {
                 Intent intent1 = new Intent(Home_03.this, Home_05.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
-                overridePendingTransition(0,0 );
+                overridePendingTransition(0, 0);
 
             }
         });
@@ -260,7 +263,6 @@ public class Home_03 extends AppCompatActivity {
         });
 
 
-
     }
 
     //뒤로 두번 누르면 종료
@@ -334,7 +336,12 @@ public class Home_03 extends AppCompatActivity {
         builder.show();
     }
 
-
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
+
+
+}
 
 

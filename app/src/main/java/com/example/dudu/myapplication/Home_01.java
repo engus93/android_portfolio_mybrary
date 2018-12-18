@@ -101,8 +101,6 @@ public class Home_01 extends AppCompatActivity {
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_01);
 
-
-
         //파베 객체선언
         mAuth = FirebaseAuth.getInstance();
 
@@ -185,6 +183,7 @@ public class Home_01 extends AppCompatActivity {
                 Intent intent1 = new Intent(Home_01.this, ChatBot_main.class);
                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
+                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_left_out);
 
             }
         });

@@ -28,6 +28,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 public class Sign_up_02_Activity extends AppCompatActivity {
 
     //회원정보 받는 뷰
@@ -307,6 +309,11 @@ public class Sign_up_02_Activity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
 }

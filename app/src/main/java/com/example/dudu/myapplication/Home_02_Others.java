@@ -1,5 +1,6 @@
 package com.example.dudu.myapplication;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class Home_02_Others extends AppCompatActivity {
 
@@ -167,6 +169,7 @@ public class Home_02_Others extends AppCompatActivity {
                         intent.putExtra("chat_room_key", roomkey);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         startActivity(intent);
+                        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_left_out);
 
 
                     }
@@ -365,6 +368,7 @@ public class Home_02_Others extends AppCompatActivity {
             ((home_02_other_re) holder).book_author.setText(others_mybrary.get(position).author);
             ((home_02_other_re) holder).book_finish.setText(others_mybrary.get(position).finish);
 
+            //게시물 보기
             ((home_02_other_re) holder).click_item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -409,4 +413,9 @@ public class Home_02_Others extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 }

@@ -53,6 +53,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 public class Home_02_03 extends AppCompatActivity {
 
     String key;
@@ -649,7 +651,10 @@ public class Home_02_03 extends AppCompatActivity {
 
     }
 
-
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
 
 }

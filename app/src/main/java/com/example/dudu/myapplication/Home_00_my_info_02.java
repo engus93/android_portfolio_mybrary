@@ -1,5 +1,6 @@
 package com.example.dudu.myapplication;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,6 +19,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class Home_00_my_info_02 extends AppCompatActivity {
 
@@ -113,5 +116,10 @@ public class Home_00_my_info_02 extends AppCompatActivity {
         intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent1);
 
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 }

@@ -1,5 +1,6 @@
 package com.example.dudu.myapplication;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -34,6 +35,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class Home_04_FriendList extends AppCompatActivity {
 
@@ -121,7 +124,8 @@ public class Home_04_FriendList extends AppCompatActivity {
                             intent.putExtra("chat_room_name", room_name);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             startActivity(intent);
-                            onBackPressed();
+                            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_left_out);
+                            finish();
 
                         }
 
@@ -317,6 +321,7 @@ public class Home_04_FriendList extends AppCompatActivity {
                             intent.putExtra("chat_room_key", roomkey);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             startActivity(intent);
+                            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_left_out);
                             finish();
 
                         }
@@ -409,6 +414,9 @@ public class Home_04_FriendList extends AppCompatActivity {
 
     }
 
-
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
 }

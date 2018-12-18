@@ -75,7 +75,7 @@ public class App extends Application {
     Stetho.initializeWithDefaults(this);
 
     CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-            .setDefaultFontPath("hmkmmag.ttf")
+            .setDefaultFontPath("mybrary.ttf")
             .setFontAttrId(R.attr.fontPath)
             .build());
 

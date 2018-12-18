@@ -1,5 +1,6 @@
 package com.example.dudu.myapplication;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +22,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class Home_02_02 extends AppCompatActivity {
 
@@ -215,6 +218,10 @@ public class Home_02_02 extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
 }
 

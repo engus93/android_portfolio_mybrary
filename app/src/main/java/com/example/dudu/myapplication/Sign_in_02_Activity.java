@@ -31,6 +31,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.HashMap;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 public class Sign_in_02_Activity extends AppCompatActivity {
 
     Button sign_in_02_home; //로그인 ->  버튼
@@ -317,6 +319,11 @@ public class Sign_in_02_Activity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
 }

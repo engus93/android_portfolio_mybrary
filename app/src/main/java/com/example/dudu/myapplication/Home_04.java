@@ -1,6 +1,7 @@
 package com.example.dudu.myapplication;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -43,6 +44,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.TreeMap;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class Home_04 extends AppCompatActivity {
 
@@ -581,5 +584,9 @@ public class Home_04 extends AppCompatActivity {
         builder.show();
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
 }

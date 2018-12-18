@@ -60,6 +60,7 @@ import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 import ai.api.model.ResponseMessage;
 import ai.api.model.Result;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class ChatBot_main extends AppCompatActivity implements AIListener {
 
@@ -107,6 +108,15 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
         final AIDataService aiDataService = new AIDataService(config);
 
         final AIRequest aiRequest = new AIRequest();
+
+        chat_bot_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                onBackPressed();
+
+            }
+        });
 
         chat_bot_send_B.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("StaticFieldLeak")
@@ -689,6 +699,17 @@ public class ChatBot_main extends AppCompatActivity implements AIListener {
             }
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_right_out);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
 }

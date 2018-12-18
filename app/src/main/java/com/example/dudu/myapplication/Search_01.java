@@ -29,6 +29,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 public class Search_01 extends AppCompatActivity {
 
     ImageButton search_back_B;
@@ -247,6 +249,11 @@ public class Search_01 extends AppCompatActivity {
             code_search = false;
 
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
 }
