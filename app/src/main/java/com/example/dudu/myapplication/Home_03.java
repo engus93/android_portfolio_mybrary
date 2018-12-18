@@ -21,9 +21,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -54,12 +58,15 @@ public class Home_03 extends AppCompatActivity {
     //글라이드 오류 방지
     public RequestManager mGlideRequestManager;
 
+    ProgressBar home_drower_progress;
+
     protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
         setContentView(R.layout.home_03);
 
         drower_profile = findViewById(R.id.home_drawer_profile);
+        home_drower_progress = findViewById(R.id.home_drower_progress);
 
         //글라이드 오류 방지
         mGlideRequestManager = Glide.with(this);
@@ -158,7 +165,20 @@ public class Home_03 extends AppCompatActivity {
 
                 Log.d("체크", "" + temp.user_profile);
 
-                mGlideRequestManager.load(temp.user_profile).fitCenter().into(drower_profile);
+                mGlideRequestManager.load(temp.user_profile).fitCenter()
+                        .listener(new RequestListener<String, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                home_drower_progress.setVisibility(View.GONE);
+                                return false;
+                            }
+                        })
+                        .into(drower_profile);
 
             }
 

@@ -22,9 +22,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -96,6 +100,8 @@ public class Home_01 extends AppCompatActivity {
 
     Home_01_Adapter myAdapter;
 
+    ProgressBar home_drower_progress;
+
     protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
@@ -108,6 +114,7 @@ public class Home_01 extends AppCompatActivity {
         mGlideRequestManager = Glide.with(this);
 
         drower_profile = findViewById(R.id.home_drawer_profile);
+        home_drower_progress = findViewById(R.id.home_drower_progress);
 
         new GetBestBookTask().execute();
         new GetNewBookTask().execute();
@@ -252,9 +259,24 @@ public class Home_01 extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+
                 change = (String) dataSnapshot.child(App.user_UID_get()).child("user_profile").getValue();
                 if (!(change.equals(""))) {
-                    mGlideRequestManager.load(change).into(drower_profile);
+                    home_drower_progress.setVisibility(View.VISIBLE);
+                    mGlideRequestManager.load(change)
+                            .listener(new RequestListener<String, GlideDrawable>() {
+                                @Override
+                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                    home_drower_progress.setVisibility(View.GONE);
+                                    return false;
+                                }
+                            })
+                            .into(drower_profile);
                 }
 
             }

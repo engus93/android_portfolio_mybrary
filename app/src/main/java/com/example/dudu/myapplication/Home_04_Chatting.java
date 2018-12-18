@@ -543,9 +543,22 @@ public class Home_04_Chatting extends AppCompatActivity {
 
                     messageViewHolder.chat_you_image.setVisibility(View.VISIBLE);
                     messageViewHolder.user_nick_image.setText(opponent_chat_info.user_nick);
+                    messageViewHolder.home_04_chatting_progress_you.setVisibility(View.VISIBLE);
                     mGlideRequestManager.load(contents.get(position).picture).fitCenter().crossFade()
                             .centerCrop()
                             .override(600, 800)
+                            .listener(new RequestListener<String, GlideDrawable>() {
+                                @Override
+                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                    messageViewHolder.home_04_chatting_progress_you.setVisibility(View.GONE);
+                                    return false;
+                                }
+                            })
                             .into(messageViewHolder.user_contents_image);
                     mGlideRequestManager.load(opponent_chat_info.user_profile).fitCenter().into(messageViewHolder.user_profile_image);
                     messageViewHolder.time_you_image.setText(message_time);
@@ -640,6 +653,7 @@ public class Home_04_Chatting extends AppCompatActivity {
             ConstraintLayout chat_you_image;
             ConstraintLayout chat_me_image;
             ProgressBar home_04_chatting_progress_me;//사진 프로그레스바 내꺼
+            ProgressBar home_04_chatting_progress_you;//사진 프로그레스바 내꺼
 
             home_04_chatting_re(View view) {
                 super(view);
@@ -666,6 +680,7 @@ public class Home_04_Chatting extends AppCompatActivity {
                 chat_you_image = view.findViewById(R.id.home_04_chatting_re_you_image);
                 chat_me_image = view.findViewById(R.id.home_04_chatting_re_me_image);
                 home_04_chatting_progress_me = view.findViewById(R.id.home_04_chatting_progress_me);
+                home_04_chatting_progress_you =view.findViewById(R.id.home_04_chatting_progress_you);
 
             }
         }

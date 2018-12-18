@@ -25,10 +25,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -72,6 +76,8 @@ public class Home_04 extends AppCompatActivity {
 
     Animation shake;
 
+    ProgressBar home_drower_progress;
+
     protected void onCreate(Bundle savedInstancesState) {
 
         super.onCreate(savedInstancesState);
@@ -81,6 +87,7 @@ public class Home_04 extends AppCompatActivity {
         mGlideRequestManager = Glide.with(this);
 
         drower_profile = findViewById(R.id.home_drawer_profile);
+        home_drower_progress = findViewById(R.id.home_drower_progress);
 
         //애니메이션 파인드
         shake = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.message_shake);
@@ -170,7 +177,20 @@ public class Home_04 extends AppCompatActivity {
 
                 Log.d("체크", "" + temp.user_profile);
 
-                mGlideRequestManager.load(temp.user_profile).fitCenter().into(drower_profile);
+                mGlideRequestManager.load(temp.user_profile).fitCenter()
+                        .listener(new RequestListener<String, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                home_drower_progress.setVisibility(View.GONE);
+                                return false;
+                            }
+                        })
+                        .into(drower_profile);
 
             }
 
