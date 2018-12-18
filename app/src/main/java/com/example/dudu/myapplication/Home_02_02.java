@@ -10,10 +10,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.FadingCircle;
@@ -42,6 +46,7 @@ public class Home_02_02 extends AppCompatActivity {
     ImageButton home_02_02_back_B;
     Button home_02_02_remove_B;
     SpinKitView home_02_01_book_image_progress;
+    ProgressBar home_02_01_progress;
 
     @Override
     protected void onCreate(Bundle savedInstancesState) {
@@ -58,6 +63,7 @@ public class Home_02_02 extends AppCompatActivity {
         home_02_02_book_main = findViewById(R.id.home_02_01_main);
         home_02_02_remove_B = findViewById(R.id.home_02_01_plus_B);
         home_02_01_book_image_progress = findViewById(R.id.my_info_progress);
+        home_02_01_progress = findViewById(R.id.home_02_01_progress);
 
         Sprite FadingCircle = new FadingCircle();
         home_02_01_book_image_progress.setIndeterminateDrawable(FadingCircle);
@@ -78,7 +84,21 @@ public class Home_02_02 extends AppCompatActivity {
             if(App.home_02_02_ArrayList.get(position).book.equals("null")){
                 home_02_02_book_image.setImageResource(R.drawable.home_02_default);
             }else{  //비트맵일 경우
-                mGlideRequestManager.load(App.home_02_02_ArrayList.get(position).book).into(home_02_02_book_image);
+                home_02_01_progress.setVisibility(View.VISIBLE);
+                mGlideRequestManager.load(App.home_02_02_ArrayList.get(position).book)
+                        .listener(new RequestListener<String, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                home_02_01_progress.setVisibility(View.GONE);
+                                return false;
+                            }
+                        })
+                        .into(home_02_02_book_image);
 
             }
 

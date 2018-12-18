@@ -430,10 +430,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -467,6 +471,7 @@ public class Home_03_View extends AppCompatActivity {
     Button home_03_view_follow_B;
     ImageView home_03_like_image;
     TextView home_03_like_text;
+    ProgressBar home_02_02_progress;
 
     String opponent_uid;
     String my_uid;
@@ -494,6 +499,7 @@ public class Home_03_View extends AppCompatActivity {
         home_03_view_follow_B = findViewById(R.id.home_03_view_Follow);
         home_03_like_image = findViewById(R.id.home_03_like_image);
         home_03_like_text = findViewById(R.id.home_03_like_text);
+        home_02_02_progress = findViewById(R.id.home_02_02_progress);
 
         Intent intent1 = getIntent();
 
@@ -508,7 +514,21 @@ public class Home_03_View extends AppCompatActivity {
 
                 now_mybrary = dataSnapshot.getValue(Home_02_02_ArrayList.class);
 
-                mGlideRequestManager.load(now_mybrary.book).fitCenter().into(home_02_02_book_image);
+                home_02_02_progress.setVisibility(View.VISIBLE);
+                mGlideRequestManager.load(now_mybrary.book).fitCenter()
+                        .listener(new RequestListener<String, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                home_02_02_progress.setVisibility(View.GONE);
+                                return false;
+                            }
+                        })
+                        .into(home_02_02_book_image);
 
                 home_02_02_book_name.setText(now_mybrary.name);
                 home_02_02_book_author.setText(now_mybrary.author);

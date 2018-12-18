@@ -12,10 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 
@@ -42,7 +46,7 @@ public class Home_03_Adapter extends RecyclerView.Adapter<Home_03_Adapter.home_0
 
     //묶어주기
     @Override
-    public void onBindViewHolder(home_03_re holder, final int position) {
+    public void onBindViewHolder(final home_03_re holder, final int position) {
 
         //글라이드 오류 방지
         mGlideRequestManager = Glide.with(context);
@@ -53,7 +57,21 @@ public class Home_03_Adapter extends RecyclerView.Adapter<Home_03_Adapter.home_0
         if(home_02_02_Array.get(position).book.equals("null")){
             holder.book_image.setImageResource(R.drawable.home_02_default);
         }else{  //비트맵일 경우
-            mGlideRequestManager.load(home_02_02_Array.get(position).book).into(holder.book_image);
+            holder.home_02_progress.setVisibility(View.VISIBLE);
+            mGlideRequestManager.load(home_02_02_Array.get(position).book)
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            holder.home_02_progress.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .into(holder.book_image);
         }
 
         holder.book_name.setText(home_02_02_Array.get(position).name);
@@ -105,6 +123,7 @@ public class Home_03_Adapter extends RecyclerView.Adapter<Home_03_Adapter.home_0
         TextView book_author;
         TextView book_finish;
         CardView click_item;
+        ProgressBar home_02_progress;
 
         home_03_re(View view) {
             super(view);
@@ -113,6 +132,7 @@ public class Home_03_Adapter extends RecyclerView.Adapter<Home_03_Adapter.home_0
             book_author = view.findViewById(R.id.home_02_re_book_author_T);
             book_finish = view.findViewById(R.id.home_02_re_book_finish_T);
             click_item = view.findViewById(R.id.home_02_cardview);
+            home_02_progress = view.findViewById(R.id.home_02_progress);
 
 
         }
