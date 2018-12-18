@@ -115,6 +115,8 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
 
     Context context;
 
+    Boolean remove = false;
+
 
     //사진 추가하기
 
@@ -152,12 +154,36 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
 
         chatting_progress = findViewById(R.id.chatting_progress);
 
+        remove = false;
+
         //메뉴창
         home_04_chatting_joinlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                MainActivity.showToast(Home_04_Group_Chatting.this, "메뉴 창!");
+                //가짜 구현 이거 안되는거 ㅋㅋ
+                android.app.AlertDialog.Builder alert_confirm = new android.app.AlertDialog.Builder(Home_04_Group_Chatting.this);
+                alert_confirm.setMessage("채팅방을 나가시겠습니까?").setCancelable(false).setPositiveButton("아니요", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+
+                }).setNegativeButton("네",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                remove = true;
+
+                                onBackPressed();
+
+                            }
+                        });
+
+                android.app.AlertDialog alert = alert_confirm.create();
+
+                alert.show();
 
             }
         });
@@ -188,7 +214,9 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("now_login").child(App.user_UID_get()).setValue(false);
+        if(!remove) {
+            FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("now_login").child(App.user_UID_get()).setValue(false);
+        }
 
         FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("message_count").child(App.user_UID_get()).setValue(0);
 
@@ -286,13 +314,23 @@ public class Home_04_Group_Chatting extends AppCompatActivity {
             databaseReference.removeEventListener(valueEventListener);
         }
 
-        FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("now_login").child(App.user_UID_get()).setValue(true);
-
+        if(!remove) {
+            FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("now_login").child(App.user_UID_get()).setValue(true);
+        }
 
     }
 
     @Override
     public void onBackPressed() {
+
+        if(remove){
+            FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("message_count").child(App.user_UID_get()).removeValue();
+
+            FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("users").child(App.user_UID_get()).removeValue();
+
+            FirebaseDatabase.getInstance().getReference().child("Chatting_Room").child(chat_room_key).child("now_login").child(App.user_UID_get()).removeValue();
+
+        }
 
         finish();
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_right_out);
