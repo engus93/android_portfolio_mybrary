@@ -33,6 +33,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.DoubleBounce;
@@ -174,12 +177,24 @@ public class Home_00_my_info extends AppCompatActivity {
                 user_nick.setText((CharSequence) dataSnapshot.child(App.user_UID_get()).child("user_nick").getValue());
                 user_like.setText((CharSequence) dataSnapshot.child(App.user_UID_get()).child("user_like").getValue());
                 user_talk.setText((CharSequence) dataSnapshot.child(App.user_UID_get()).child("user_talk").getValue());
-
-
                 String profile = dataSnapshot.child(App.user_UID_get()).child("user_profile").getValue().toString();
-                mGlideRequestManager.load(profile).into(iv_view);
 
-                my_info_progress.setVisibility(View.GONE);
+                mGlideRequestManager.load(profile)
+                        .listener(new RequestListener<String, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                my_info_progress.setVisibility(View.GONE);
+                                return false;
+                            }
+                        })
+                        .into(iv_view);
+
+
                 user_profile.setVisibility(View.VISIBLE);
 
             }
@@ -655,7 +670,7 @@ public class Home_00_my_info extends AppCompatActivity {
 
                     App.Login_User_Profile = change;
 
-                    Toast.makeText(Home_00_my_info.this, "사진이 업로드 되었습니다.", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(Home_00_my_info.this, "사진이 업로드 되었습니다.", Toast.LENGTH_SHORT).show();
 
                 } else {
                     Toast.makeText(Home_00_my_info.this, "업로드 실패", Toast.LENGTH_SHORT).show();

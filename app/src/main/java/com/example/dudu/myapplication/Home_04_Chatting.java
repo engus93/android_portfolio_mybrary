@@ -32,11 +32,15 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -467,7 +471,7 @@ public class Home_04_Chatting extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
-            home_04_chatting_re messageViewHolder = ((home_04_chatting_re)holder);
+            final home_04_chatting_re messageViewHolder = ((home_04_chatting_re)holder);
 
             //레이아웃 초기화
             messageViewHolder.chat_you.setVisibility(View.GONE);
@@ -513,9 +517,22 @@ public class Home_04_Chatting extends AppCompatActivity {
 
                     messageViewHolder.chat_me_image.setVisibility(View.VISIBLE);
 
+                    messageViewHolder.home_04_chatting_progress_me.setVisibility(View.VISIBLE);
                     mGlideRequestManager.load(contents.get(position).picture).fitCenter()
                             .centerCrop()
                             .override(600, 800)
+                            .listener(new RequestListener<String, GlideDrawable>() {
+                                @Override
+                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                    messageViewHolder.home_04_chatting_progress_me.setVisibility(View.GONE);
+                                    return false;
+                                }
+                            })
                             .into(messageViewHolder.user_contents_me_image);
 
                     messageViewHolder.time_me_image.setText(message_time);
@@ -622,6 +639,7 @@ public class Home_04_Chatting extends AppCompatActivity {
             TextView read_me_image;
             ConstraintLayout chat_you_image;
             ConstraintLayout chat_me_image;
+            ProgressBar home_04_chatting_progress_me;//사진 프로그레스바 내꺼
 
             home_04_chatting_re(View view) {
                 super(view);
@@ -647,6 +665,7 @@ public class Home_04_Chatting extends AppCompatActivity {
                 read_me_image = view.findViewById(R.id.home_04_chat_read_me_image);
                 chat_you_image = view.findViewById(R.id.home_04_chatting_re_you_image);
                 chat_me_image = view.findViewById(R.id.home_04_chatting_re_me_image);
+                home_04_chatting_progress_me = view.findViewById(R.id.home_04_chatting_progress_me);
 
             }
         }
