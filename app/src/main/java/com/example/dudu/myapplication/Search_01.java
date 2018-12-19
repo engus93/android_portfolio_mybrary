@@ -156,6 +156,13 @@ public class Search_01 extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        search_searchbar.setText(null);
+    }
+
     //베스트셀러
     private class GetBookSearchTask extends AsyncTask<Void, Void, Void> {
 

@@ -18,10 +18,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -87,7 +91,7 @@ public class Home_02_Others extends AppCompatActivity {
         other_user_uid = getIntent().getStringExtra("user_uid");
 
         //유저 정보 세팅
-        FirebaseDatabase.getInstance().getReference().child("User_Info").child(other_user_uid).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("User_Info").child(other_user_uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -357,13 +361,26 @@ public class Home_02_Others extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
-            final home_02_other_re home_02_other_re = ((home_02_other_re)holder);
+        public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
 
             //글라이드 오류 방지
             mGlideRequestManager = Glide.with(Home_02_Others.this);
 
-            mGlideRequestManager.load(others_mybrary.get(position).book).into(((home_02_other_re) holder).book_image);
+            ((home_02_other_re) holder).home_02_progress.setVisibility(View.VISIBLE);
+            mGlideRequestManager.load(others_mybrary.get(position).book)
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            ((home_02_other_re) holder).home_02_progress.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .into(((home_02_other_re) holder).book_image);
             ((home_02_other_re) holder).book_name.setText(others_mybrary.get(position).name);
             ((home_02_other_re) holder).book_author.setText(others_mybrary.get(position).author);
             ((home_02_other_re) holder).book_finish.setText(others_mybrary.get(position).finish);
@@ -397,6 +414,7 @@ public class Home_02_Others extends AppCompatActivity {
             TextView book_author;
             TextView book_finish;
             CardView click_item;
+            ProgressBar home_02_progress;
 
             public home_02_other_re(View view) {
                 super(view);
@@ -406,6 +424,7 @@ public class Home_02_Others extends AppCompatActivity {
                 book_author = view.findViewById(R.id.home_02_re_book_author_T);
                 book_finish = view.findViewById(R.id.home_02_re_book_finish_T);
                 click_item = view.findViewById(R.id.home_02_cardview);
+                home_02_progress = view.findViewById(R.id.home_02_progress);
 
 
             }

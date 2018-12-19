@@ -431,7 +431,7 @@ public class Home_01 extends AppCompatActivity {
                                 // 권한 없음
                                 ActivityCompat.requestPermissions(Home_01.this, new String[]{Manifest.permission.CALL_PHONE}, REQ_CALL_SELECT);
                             } else {    // ACCESS_FINE_LOCATION 에 대한 권한이 이미 있음.
-                                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:010-2905-3908"));
+                                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:010-1234-1234"));
                                 startActivity(intent);
 
                             }
@@ -450,7 +450,7 @@ public class Home_01 extends AppCompatActivity {
                                 // 권한 없음
                                 ActivityCompat.requestPermissions(Home_01.this, new String[]{Manifest.permission.SEND_SMS}, REQ_SMS_SELECT);
                             } else {    // ACCESS_FINE_LOCATION 에 대한 권한이 이미 있음.
-                                Uri uri = Uri.parse("smsto:01029053908");
+                                Uri uri = Uri.parse("smsto:01012341234");
                                 Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
                                 intent.putExtra("sms_body", "성함 : \n내용 : ");
                                 startActivity(intent);

@@ -62,6 +62,7 @@ public class Home_02 extends AppCompatActivity {
     TextView home_02_following_count;  //내 서재 게시글 변수
     ImageView drower_profile;   //드로어 프로필
     ImageView mybrary_profile;  //서재 프로필
+    ProgressBar home_02_re_01_progress;
 
     private long backPressedTime = 0;
 
@@ -96,6 +97,7 @@ public class Home_02 extends AppCompatActivity {
         drower_profile = findViewById(R.id.home_drawer_profile);    //드로어 프로필
         mybrary_profile = findViewById(R.id.home_02_re_fropile_I);  //서재 프로필
         home_drower_progress = findViewById(R.id.home_drower_progress);
+        home_02_re_01_progress = findViewById(R.id.home_02_re_01_progress);
 
         //-------------------------------쉐어드-------------------------------------
 
@@ -251,7 +253,21 @@ public class Home_02 extends AppCompatActivity {
 
                 String change = (String) dataSnapshot.child(App.user_UID_get()).child("user_profile").getValue();
                 if (!(change.equals(""))) {
-                    mGlideRequestManager.load(change).into(mybrary_profile);
+                    home_02_re_01_progress.setVisibility(View.VISIBLE);
+                    mGlideRequestManager.load(change)
+                            .listener(new RequestListener<String, GlideDrawable>() {
+                                @Override
+                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                    home_02_re_01_progress.setVisibility(View.GONE);
+                                    return false;
+                                }
+                            })
+                            .into(mybrary_profile);
 
                     home_drower_progress.setVisibility(View.VISIBLE);
                     mGlideRequestManager.

@@ -263,7 +263,7 @@ public class Sign_up_02_Activity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (user_sign_up_check.isChecked()) {
-                    Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.vp.co.kr/home/agreement_03.html"));
+                    Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse("about:blank"));
                     startActivity(intent1);
                     //
                 } else {

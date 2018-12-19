@@ -398,4 +398,11 @@ public class Home_02_following extends AppCompatActivity {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        home_04_friend_search.setText(null);
+
+    }
 }

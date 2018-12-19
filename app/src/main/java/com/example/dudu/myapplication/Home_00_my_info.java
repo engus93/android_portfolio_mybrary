@@ -179,6 +179,7 @@ public class Home_00_my_info extends AppCompatActivity {
                 user_talk.setText((CharSequence) dataSnapshot.child(App.user_UID_get()).child("user_talk").getValue());
                 String profile = dataSnapshot.child(App.user_UID_get()).child("user_profile").getValue().toString();
 
+                my_info_progress.setVisibility(View.VISIBLE);
                 mGlideRequestManager.load(profile)
                         .listener(new RequestListener<String, GlideDrawable>() {
                             @Override
